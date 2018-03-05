@@ -1,0 +1,29 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- http://garden.zendesk.com -->
+  <link href="https://cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+  <link href="main.css" rel="stylesheet">
+</head>
+<body>
+  <div id="content"></div>
+  <script id="add_task-hdbs" type="text/x-handlebars-template">
+  <form id="task-form">
+ 	{{#each comments}}
+	    <input type="text" name="comment_{{id}}" id="comment_{{id}}" maxlength="50" value="{{comment}}" />
+	    <button id="add-btn" class="btn btn-primary btn-small" onclick="applyComment(event, {{id}})" >Apply</button>
+	{{/each}}
+  </form>
+  </script>  
+  <script id="error-template" type="text/x-handlebars-template">
+  	<p>{{status}} - {{statusText}} error. Please report a bug at the link below.</p>
+  </script>
+  
+  <script src="https://cdn.jsdelivr.net/jquery/3.0.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+  <!-- https://github.com/zendesk/zendesk_app_framework_sdk -->
+  <script type="text/javascript" src="https://assets.zendesk.com/apps/sdk/2.0/zaf_sdk.js"></script>
+  <script type="text/javascript" src="main.js"></script>
+  
+</body>
+</html>

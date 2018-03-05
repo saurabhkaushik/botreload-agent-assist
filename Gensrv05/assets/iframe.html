@@ -1,0 +1,35 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- http://garden.zendesk.com -->
+  <link href="https://cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+  <link href="main.css" rel="stylesheet">
+</head>
+<body>
+  <div id="content"></div>
+  <script id="add_task-hdbs" type="text/x-handlebars-template">
+  <form id="task-form">
+	<b>Here are suggested replies with Confidence score. Please press 'Apply' for Public Reply.</b>
+ 	<br><br>
+	{{#each comments}}
+		<b>{{name}}</b> with <b>Confidence Score</b> {{prob}}<br>.
+	    <textarea name="comment_{{id}}" id="comment_{{id}}" rows="2" cols="40" > {{comment}} </textarea>
+	    <button id="add-btn" onclick="applyComment(event, {{id}})" >Apply</button>
+	{{/each}}
+  </form>
+  </script>  
+  <script id="error-template" type="text/x-handlebars-template">
+  	<p>{{status}} - {{statusText}} error. Please report a bug at the link below.</p><br><a href='mailto:botreload@gmail.com'>Report a bug.</a><br>
+  </script>
+  <script id="post-apply-template" type="text/x-handlebars-template">
+  	<p>Comment has been applied to <b>Public Reply</b>. Please Edit (if required) and Submit.</p>
+  </script>
+  
+  <script src="https://cdn.jsdelivr.net/jquery/3.0.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+  <!-- https://github.com/zendesk/zendesk_app_framework_sdk -->
+  <script type="text/javascript" src="https://assets.zendesk.com/apps/sdk/2.0/zaf_sdk.js"></script>
+  <script type="text/javascript" src="main.js"></script>
+  
+</body>
+</html>
