@@ -1,0 +1,7 @@
+Amount,payment,value,amount,fees,deducted,reverse,euro,difference
+Invoice No,invoice,invoices,claim,apply
+Date,date,dated,posted,post,arrived,arrive
+Check No,check,order
+Account,acct,account,acc
+Customer Name,cust,customer
+Document No,documentno
