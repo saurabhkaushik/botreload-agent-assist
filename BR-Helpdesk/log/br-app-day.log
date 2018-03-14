@@ -1,0 +1,323 @@
+2018-03-14 19:37:02,914 INFO 
+################# Preparing Training Data ################################
+
+2018-03-14 19:37:02,914 INFO Tags, Description  =>  Intent Name
+2018-03-14 19:37:02,914 INFO Product Info, Information about Product, Planning to purchase, saurabh  =>  Product_Initial_Info
+2018-03-14 19:37:02,914 INFO Cost, Price, Charges, Tax,   =>  Product_Price 
+2018-03-14 19:37:02,914 INFO Pre-Sale Question, Before purchase, Before Sales, ,   =>  Product_PreSales
+2018-03-14 19:37:02,914 INFO Order Status, Order Info,   =>  Order_info 
+2018-03-14 19:37:02,914 INFO Order Return, Shipping back, ,   =>  Product_Return 
+2018-03-14 19:37:02,914 INFO Shipping/Delivery, Product Delivery,,   =>  Product_Delivery_Status 
+2018-03-14 19:37:02,914 INFO Vendor issue,   =>  Vendor_Issue
+2018-03-14 19:37:02,914 INFO Affiliate issue,   =>  Affiliate_Issue
+2018-03-14 19:37:02,914 INFO Product Availability,   =>  Product_Availability 
+2018-03-14 19:37:02,914 INFO Technical Issue, Not Working, ,   =>  Technical_Issue
+2018-03-14 19:37:02,914 INFO Defective, Broken, Malfunctioning ,   =>  Product_Defective 
+2018-03-14 19:37:02,914 INFO Cancel my order, Cancel product delivery ,   =>  Order_Cancel_Request
+2018-03-14 19:37:02,914 INFO Refund ,   =>  Product_Refund_Request
+2018-03-14 19:37:02,914 INFO Start my subscription, Subscribe me, ,   =>  Subscription_new 
+2018-03-14 19:37:02,914 INFO Subscription Renewal ,   =>  Subscription_Renewal 
+2018-03-14 19:37:02,914 INFO Disruption ,   =>  Service_Disruption 
+2018-03-14 19:37:02,914 INFO Unsubscribe, Cancellation, Discontinue,   =>  Service_Cancel_request
+2018-03-14 19:37:02,914 INFO Bug,   =>  Software_bug
+2018-03-14 19:37:02,914 INFO Feature Request,   =>  Software_Feature_Request 
+2018-03-14 19:37:02,914 INFO Sales Question – Billing ,   =>  Software_Sales_Billing
+2018-03-14 19:37:02,914 INFO How To, Instruction, Manual, Guide, ,   =>  Software_How_To
+2018-03-14 19:37:02,914 INFO Technical Issue, Unable to fix it, Unable to open it, Debug,   =>  Software_Technical_Issue
+2018-03-14 19:37:02,914 INFO Subscription Cancel, Cancellation,   =>  Software_Cancellation 
+2018-03-14 19:37:02,914 INFO Complaint, Issues, ,   =>  Phase_complaint
+2018-03-14 19:37:02,914 INFO Query, Clarifications, Question, Answer, ,   =>  Software_Query
+2018-03-14 19:37:02,914 INFO SME Help, Need technician, Need Expert, Need SME, Need Specialist. ,   =>  Request_for_Expert 
+2018-03-14 19:37:02,914 INFO SLA breach, Longer Response, Have not heard, Pending for long,,   =>  Phase_sla_breach
+2018-03-14 19:37:02,914 INFO Status of my ticket, Any Update, Waiting for resolution, Long time, ,   =>  Phase_Resolution_Wait
+2018-03-14 19:37:02,914 INFO Fuck, Stupid, Bloody hell, Asshole, ,   =>  Response_to_Diffuse_Situation 
+2018-03-14 19:37:02,914 INFO Frustrated, ,   =>  Response_to_Angry_situation
+2018-03-14 19:37:02,914 INFO Worked, Working Now, Thanks for help, Close the Ticket, Close the ticket, It is working, Satisfaction,   =>  Phase_Feedback
+2018-03-14 19:37:02,914 INFO Total Training Examples : 32
+2018-03-14 19:37:02,914 INFO 
+################# Starting Training Processing ################################
+
+2018-03-14 19:37:03,294 INFO Total Training Samples : 32
+2018-03-14 19:37:51,835 INFO 
+################# Preparing Training Data ################################
+
+2018-03-14 19:37:51,836 INFO Tags, Description  =>  Intent Name
+2018-03-14 19:37:51,836 INFO Product Info, Information about Product, Planning to purchase, saurabh  =>  Product_Initial_Info
+2018-03-14 19:37:51,836 INFO Cost, Price, Charges, Tax,   =>  Product_Price 
+2018-03-14 19:37:51,836 INFO Pre-Sale Question, Before purchase, Before Sales, ,   =>  Product_PreSales
+2018-03-14 19:37:51,836 INFO Order Status, Order Info,   =>  Order_info 
+2018-03-14 19:37:51,836 INFO Order Return, Shipping back, ,   =>  Product_Return 
+2018-03-14 19:37:51,836 INFO Shipping/Delivery, Product Delivery,,   =>  Product_Delivery_Status 
+2018-03-14 19:37:51,836 INFO Vendor issue,   =>  Vendor_Issue
+2018-03-14 19:37:51,837 INFO Affiliate issue,   =>  Affiliate_Issue
+2018-03-14 19:37:51,837 INFO Product Availability,   =>  Product_Availability 
+2018-03-14 19:37:51,837 INFO Technical Issue, Not Working, ,   =>  Technical_Issue
+2018-03-14 19:37:51,837 INFO Defective, Broken, Malfunctioning ,   =>  Product_Defective 
+2018-03-14 19:37:51,837 INFO Cancel my order, Cancel product delivery ,   =>  Order_Cancel_Request
+2018-03-14 19:37:51,837 INFO Refund ,   =>  Product_Refund_Request
+2018-03-14 19:37:51,837 INFO Start my subscription, Subscribe me, ,   =>  Subscription_new 
+2018-03-14 19:37:51,837 INFO Subscription Renewal ,   =>  Subscription_Renewal 
+2018-03-14 19:37:51,838 INFO Disruption ,   =>  Service_Disruption 
+2018-03-14 19:37:51,838 INFO Unsubscribe, Cancellation, Discontinue,   =>  Service_Cancel_request
+2018-03-14 19:37:51,838 INFO Bug,   =>  Software_bug
+2018-03-14 19:37:51,838 INFO Feature Request,   =>  Software_Feature_Request 
+2018-03-14 19:37:51,838 INFO Sales Question – Billing ,   =>  Software_Sales_Billing
+2018-03-14 19:37:51,838 INFO How To, Instruction, Manual, Guide, ,   =>  Software_How_To
+2018-03-14 19:37:51,838 INFO Technical Issue, Unable to fix it, Unable to open it, Debug,   =>  Software_Technical_Issue
+2018-03-14 19:37:51,838 INFO Subscription Cancel, Cancellation,   =>  Software_Cancellation 
+2018-03-14 19:37:51,838 INFO Complaint, Issues, ,   =>  Phase_complaint
+2018-03-14 19:37:51,838 INFO Query, Clarifications, Question, Answer, ,   =>  Software_Query
+2018-03-14 19:37:51,839 INFO SME Help, Need technician, Need Expert, Need SME, Need Specialist. ,   =>  Request_for_Expert 
+2018-03-14 19:37:51,839 INFO SLA breach, Longer Response, Have not heard, Pending for long,,   =>  Phase_sla_breach
+2018-03-14 19:37:51,839 INFO Status of my ticket, Any Update, Waiting for resolution, Long time, ,   =>  Phase_Resolution_Wait
+2018-03-14 19:37:51,839 INFO Fuck, Stupid, Bloody hell, Asshole, ,   =>  Response_to_Diffuse_Situation 
+2018-03-14 19:37:51,839 INFO Frustrated, ,   =>  Response_to_Angry_situation
+2018-03-14 19:37:51,839 INFO Worked, Working Now, Thanks for help, Close the Ticket, Close the ticket, It is working, Satisfaction,   =>  Phase_Feedback
+2018-03-14 19:37:51,839 INFO Total Training Examples : 32
+2018-03-14 19:37:51,839 INFO 
+################# Starting Training Processing ################################
+
+2018-03-14 19:37:52,269 INFO Total Training Samples : 32
+2018-03-14 19:37:56,420 INFO intent : Request : {'id': 3, 'currentUser': {'id': 361015800652, 'details': None, 'isSystemUser': False, 'locale': 'en-US', 'timeZone': {'name': 'Eastern Time (US & Canada)', 'offset': -240, 'translatedName': 'Eastern Time (US & Canada)', 'ianaName': 'America/New_York', 'formattedOffset': 'GMT-04:00'}, 'groups': [{'id': 360000289132, 'name': 'Support'}], 'notes': None, 'externalId': None, 'alias': None, 'tags': [], 'email': 'saurabhk666@gmail.com', 'identities': [{'id': 360313797932, 'userId': 361015800652, 'undeliverableCount': 0, 'primary': True, 'value': 'saurabhk666@gmail.com', 'verified': True, 'type': 'email', 'deliverableState': 'deliverable'}], 'signature': None, 'name': 'Saurabh K', 'organizations': [{'id': 360024208172, 'details': None, 'sharedTickets': False, 'tags': [], 'sharedComments': False, 'notes': None, 'externalId': None, 'name': 'GenX', 'organizationFields': {}, 'domains': ''}], 'role': 'admin', 'avatarUrl': 'https://secure.gravatar.com/avatar/f29f706f3171299cacac18c0e54f58b3?d=https%3A//assets.zendesk.com/images/2016/default-avatar-80.png&s=80&r=g'}, 'currentAccount': 'Enterprise', 'description': 'This is a test ticket', 'requester': 'Saurabh K', 'subject': 'Test ticket #1', 'comment': '', 'assignee': {'id': 361015800652, 'details': None, 'isSystemUser': False, 'locale': 'en-US', 'timeZone': {'name': 'Eastern Time (US & Canada)', 'offset': -240, 'translatedName': 'Eastern Time (US & Canada)', 'ianaName': 'America/New_York', 'formattedOffset': 'GMT-04:00'}, 'groups': [{'id': 360000289132, 'name': 'Support'}], 'notes': None, 'externalId': None, 'alias': None, 'tags': [], 'email': 'saurabhk666@gmail.com', 'identities': [{'id': 360313797932, 'userId': 361015800652, 'undeliverableCount': 0, 'primary': True, 'value': 'saurabhk666@gmail.com', 'verified': True, 'type': 'email', 'deliverableState': 'deliverable'}], 'signature': None, 'name': 'Saurabh K', 'organizations': [{'id': 360024208172, 'details': None, 'sharedTickets': False, 'tags': [], 'sharedComments': False, 'notes': None, 'externalId': None, 'name': 'GenX', 'organizationFields': {}, 'domains': ''}], 'role': 'admin', 'avatarUrl': 'https://secure.gravatar.com/avatar/f29f706f3171299cacac18c0e54f58b3?d=https%3A//assets.zendesk.com/images/2016/default-avatar-80.png&s=80&r=g'}}
+2018-03-14 19:37:56,420 INFO 
+################# Starting Testing Process ################################
+
+2018-03-14 19:37:56,421 INFO [['This', 'is', 'a', 'test', 'ticket.', '.', 'Test', 'ticket', '#1']]
+2018-03-14 19:38:27,955 INFO 
+################# Preparing Training Data ################################
+
+2018-03-14 19:38:27,956 INFO Tags, Description  =>  Intent Name
+2018-03-14 19:38:27,956 INFO Product Info, Information about Product, Planning to purchase, saurabh  =>  Product_Initial_Info
+2018-03-14 19:38:27,957 INFO Cost, Price, Charges, Tax,   =>  Product_Price 
+2018-03-14 19:38:27,957 INFO Pre-Sale Question, Before purchase, Before Sales, ,   =>  Product_PreSales
+2018-03-14 19:38:27,957 INFO Order Status, Order Info,   =>  Order_info 
+2018-03-14 19:38:27,957 INFO Order Return, Shipping back, ,   =>  Product_Return 
+2018-03-14 19:38:27,957 INFO Shipping/Delivery, Product Delivery,,   =>  Product_Delivery_Status 
+2018-03-14 19:38:27,957 INFO Vendor issue,   =>  Vendor_Issue
+2018-03-14 19:38:27,957 INFO Affiliate issue,   =>  Affiliate_Issue
+2018-03-14 19:38:27,957 INFO Product Availability,   =>  Product_Availability 
+2018-03-14 19:38:27,957 INFO Technical Issue, Not Working, ,   =>  Technical_Issue
+2018-03-14 19:38:27,958 INFO Defective, Broken, Malfunctioning ,   =>  Product_Defective 
+2018-03-14 19:38:27,958 INFO Cancel my order, Cancel product delivery ,   =>  Order_Cancel_Request
+2018-03-14 19:38:27,958 INFO Refund ,   =>  Product_Refund_Request
+2018-03-14 19:38:27,958 INFO Start my subscription, Subscribe me, ,   =>  Subscription_new 
+2018-03-14 19:38:27,958 INFO Subscription Renewal ,   =>  Subscription_Renewal 
+2018-03-14 19:38:27,958 INFO Disruption ,   =>  Service_Disruption 
+2018-03-14 19:38:27,958 INFO Unsubscribe, Cancellation, Discontinue,   =>  Service_Cancel_request
+2018-03-14 19:38:27,958 INFO Bug,   =>  Software_bug
+2018-03-14 19:38:27,958 INFO Feature Request,   =>  Software_Feature_Request 
+2018-03-14 19:38:27,959 INFO Sales Question – Billing ,   =>  Software_Sales_Billing
+2018-03-14 19:38:27,959 INFO How To, Instruction, Manual, Guide, ,   =>  Software_How_To
+2018-03-14 19:38:27,959 INFO Technical Issue, Unable to fix it, Unable to open it, Debug,   =>  Software_Technical_Issue
+2018-03-14 19:38:27,959 INFO Subscription Cancel, Cancellation,   =>  Software_Cancellation 
+2018-03-14 19:38:27,959 INFO Complaint, Issues, ,   =>  Phase_complaint
+2018-03-14 19:38:27,959 INFO Query, Clarifications, Question, Answer, ,   =>  Software_Query
+2018-03-14 19:38:27,959 INFO SME Help, Need technician, Need Expert, Need SME, Need Specialist. ,   =>  Request_for_Expert 
+2018-03-14 19:38:27,959 INFO SLA breach, Longer Response, Have not heard, Pending for long,,   =>  Phase_sla_breach
+2018-03-14 19:38:27,959 INFO Status of my ticket, Any Update, Waiting for resolution, Long time, ,   =>  Phase_Resolution_Wait
+2018-03-14 19:38:27,960 INFO Fuck, Stupid, Bloody hell, Asshole, ,   =>  Response_to_Diffuse_Situation 
+2018-03-14 19:38:27,960 INFO Frustrated, ,   =>  Response_to_Angry_situation
+2018-03-14 19:38:27,960 INFO Worked, Working Now, Thanks for help, Close the Ticket, Close the ticket, It is working, Satisfaction,   =>  Phase_Feedback
+2018-03-14 19:38:27,960 INFO Total Training Examples : 32
+2018-03-14 19:38:27,960 INFO 
+################# Starting Training Processing ################################
+
+2018-03-14 19:38:28,339 INFO Total Training Samples : 32
+2018-03-14 19:38:28,864 INFO intent : Request : {'id': 3, 'comment': '', 'requester': 'Saurabh K', 'subject': 'Test ticket #1', 'assignee': {'isSystemUser': False, 'tags': [], 'externalId': None, 'organizations': [{'sharedTickets': False, 'name': 'GenX', 'id': 360024208172, 'notes': None, 'domains': '', 'externalId': None, 'organizationFields': {}, 'tags': [], 'details': None, 'sharedComments': False}], 'email': 'saurabhk666@gmail.com', 'role': 'admin', 'identities': [{'userId': 361015800652, 'type': 'email', 'primary': True, 'verified': True, 'undeliverableCount': 0, 'id': 360313797932, 'value': 'saurabhk666@gmail.com', 'deliverableState': 'deliverable'}], 'signature': None, 'locale': 'en-US', 'notes': None, 'groups': [{'name': 'Support', 'id': 360000289132}], 'timeZone': {'offset': -240, 'translatedName': 'Eastern Time (US & Canada)', 'name': 'Eastern Time (US & Canada)', 'ianaName': 'America/New_York', 'formattedOffset': 'GMT-04:00'}, 'id': 361015800652, 'name': 'Saurabh K', 'details': None, 'avatarUrl': 'https://secure.gravatar.com/avatar/f29f706f3171299cacac18c0e54f58b3?d=https%3A//assets.zendesk.com/images/2016/default-avatar-80.png&s=80&r=g', 'alias': None}, 'description': 'This is a test ticket', 'currentAccount': 'Enterprise', 'currentUser': {'isSystemUser': False, 'tags': [], 'externalId': None, 'organizations': [{'sharedTickets': False, 'name': 'GenX', 'id': 360024208172, 'notes': None, 'domains': '', 'externalId': None, 'organizationFields': {}, 'tags': [], 'details': None, 'sharedComments': False}], 'email': 'saurabhk666@gmail.com', 'role': 'admin', 'identities': [{'userId': 361015800652, 'type': 'email', 'primary': True, 'verified': True, 'undeliverableCount': 0, 'id': 360313797932, 'value': 'saurabhk666@gmail.com', 'deliverableState': 'deliverable'}], 'signature': None, 'locale': 'en-US', 'notes': None, 'groups': [{'name': 'Support', 'id': 360000289132}], 'timeZone': {'offset': -240, 'translatedName': 'Eastern Time (US & Canada)', 'name': 'Eastern Time (US & Canada)', 'ianaName': 'America/New_York', 'formattedOffset': 'GMT-04:00'}, 'id': 361015800652, 'name': 'Saurabh K', 'details': None, 'avatarUrl': 'https://secure.gravatar.com/avatar/f29f706f3171299cacac18c0e54f58b3?d=https%3A//assets.zendesk.com/images/2016/default-avatar-80.png&s=80&r=g', 'alias': None}}
+2018-03-14 19:38:28,864 INFO 
+################# Starting Testing Process ################################
+
+2018-03-14 19:38:28,864 INFO [['This', 'is', 'a', 'test', 'ticket.', '.', 'Test', 'ticket', '#1']]
+2018-03-14 19:38:28,908 INFO Predicted Sorted Dictionary : {'Phase_Feedback': 0.05, 'Service_Cancel_request': 0.005, 'Product_Defective ': 0.01, 'Response_to_Diffuse_Situation ': 0.02, 'Software_Cancellation ': 0.025, 'Service_Disruption ': 0.015, 'Subscription_Renewal ': 0.045, 'Product_Delivery_Status ': 0.025, 'Software_Sales_Billing': 0.025, 'Product_Availability ': 0.085, 'Product_Refund_Request': 0.025, 'Product_Price ': 0.025, 'Product_Initial_Info': 0.0, 'Product_Return ': 0.05, 'Software_Query': 0.015, 'Technical_Issue': 0.045, 'Order_info ': 0.03, 'Order_Cancel_Request': 0.045, 'Subscription_new ': 0.01, 'Vendor_Issue': 0.035, 'Software_Feature_Request ': 0.005, 'Phase_sla_breach': 0.03, 'Software_How_To': 0.03, 'Request_for_Expert ': 0.02, 'Response_to_Angry_situation': 0.035, 'Software_bug': 0.045, 'Phase_Resolution_Wait': 0.04, 'Software_Technical_Issue': 0.03, 'Product_PreSales': 0.05, 'Intent Name': 0.045, 'Affiliate_Issue': 0.06, 'Phase_complaint': 0.025}
+2018-03-14 19:39:02,855 INFO 
+################# Preparing Training Data ################################
+
+2018-03-14 19:39:02,855 INFO Tags, Description  =>  Intent Name
+2018-03-14 19:39:02,855 INFO Product Info, Information about Product, Planning to purchase, saurabh  =>  Product_Initial_Info
+2018-03-14 19:39:02,855 INFO Cost, Price, Charges, Tax,   =>  Product_Price 
+2018-03-14 19:39:02,855 INFO Pre-Sale Question, Before purchase, Before Sales, ,   =>  Product_PreSales
+2018-03-14 19:39:02,855 INFO Order Status, Order Info,   =>  Order_info 
+2018-03-14 19:39:02,855 INFO Order Return, Shipping back, ,   =>  Product_Return 
+2018-03-14 19:39:02,855 INFO Shipping/Delivery, Product Delivery,,   =>  Product_Delivery_Status 
+2018-03-14 19:39:02,855 INFO Vendor issue,   =>  Vendor_Issue
+2018-03-14 19:39:02,855 INFO Affiliate issue,   =>  Affiliate_Issue
+2018-03-14 19:39:02,855 INFO Product Availability,   =>  Product_Availability 
+2018-03-14 19:39:02,855 INFO Technical Issue, Not Working, ,   =>  Technical_Issue
+2018-03-14 19:39:02,855 INFO Defective, Broken, Malfunctioning ,   =>  Product_Defective 
+2018-03-14 19:39:02,855 INFO Cancel my order, Cancel product delivery ,   =>  Order_Cancel_Request
+2018-03-14 19:39:02,855 INFO Refund ,   =>  Product_Refund_Request
+2018-03-14 19:39:02,855 INFO Start my subscription, Subscribe me, ,   =>  Subscription_new 
+2018-03-14 19:39:02,855 INFO Subscription Renewal ,   =>  Subscription_Renewal 
+2018-03-14 19:39:02,855 INFO Disruption ,   =>  Service_Disruption 
+2018-03-14 19:39:02,855 INFO Unsubscribe, Cancellation, Discontinue,   =>  Service_Cancel_request
+2018-03-14 19:39:02,855 INFO Bug,   =>  Software_bug
+2018-03-14 19:39:02,855 INFO Feature Request,   =>  Software_Feature_Request 
+2018-03-14 19:39:02,855 INFO Sales Question – Billing ,   =>  Software_Sales_Billing
+2018-03-14 19:39:02,855 INFO How To, Instruction, Manual, Guide, ,   =>  Software_How_To
+2018-03-14 19:39:02,855 INFO Technical Issue, Unable to fix it, Unable to open it, Debug,   =>  Software_Technical_Issue
+2018-03-14 19:39:02,855 INFO Subscription Cancel, Cancellation,   =>  Software_Cancellation 
+2018-03-14 19:39:02,855 INFO Complaint, Issues, ,   =>  Phase_complaint
+2018-03-14 19:39:02,855 INFO Query, Clarifications, Question, Answer, ,   =>  Software_Query
+2018-03-14 19:39:02,855 INFO SME Help, Need technician, Need Expert, Need SME, Need Specialist. ,   =>  Request_for_Expert 
+2018-03-14 19:39:02,855 INFO SLA breach, Longer Response, Have not heard, Pending for long,,   =>  Phase_sla_breach
+2018-03-14 19:39:02,855 INFO Status of my ticket, Any Update, Waiting for resolution, Long time, ,   =>  Phase_Resolution_Wait
+2018-03-14 19:39:02,855 INFO Fuck, Stupid, Bloody hell, Asshole, ,   =>  Response_to_Diffuse_Situation 
+2018-03-14 19:39:02,855 INFO Frustrated, ,   =>  Response_to_Angry_situation
+2018-03-14 19:39:02,855 INFO Worked, Working Now, Thanks for help, Close the Ticket, Close the ticket, It is working, Satisfaction,   =>  Phase_Feedback
+2018-03-14 19:39:02,855 INFO Total Training Examples : 32
+2018-03-14 19:39:02,855 INFO 
+################# Starting Training Processing ################################
+
+2018-03-14 19:39:03,229 INFO Total Training Samples : 32
+2018-03-14 19:39:06,632 INFO intent : Request : {'comment': '', 'subject': 'Test ticket #1', 'requester': 'Saurabh K', 'description': 'This is a test ticket', 'id': 3, 'assignee': {'alias': None, 'name': 'Saurabh K', 'id': 361015800652, 'signature': None, 'avatarUrl': 'https://secure.gravatar.com/avatar/f29f706f3171299cacac18c0e54f58b3?d=https%3A//assets.zendesk.com/images/2016/default-avatar-80.png&s=80&r=g', 'isSystemUser': False, 'externalId': None, 'role': 'admin', 'organizations': [{'notes': None, 'id': 360024208172, 'name': 'GenX', 'externalId': None, 'sharedComments': False, 'sharedTickets': False, 'details': None, 'tags': [], 'organizationFields': {}, 'domains': ''}], 'timeZone': {'translatedName': 'Eastern Time (US & Canada)', 'offset': -240, 'ianaName': 'America/New_York', 'name': 'Eastern Time (US & Canada)', 'formattedOffset': 'GMT-04:00'}, 'notes': None, 'email': 'saurabhk666@gmail.com', 'groups': [{'name': 'Support', 'id': 360000289132}], 'details': None, 'tags': [], 'identities': [{'undeliverableCount': 0, 'value': 'saurabhk666@gmail.com', 'deliverableState': 'deliverable', 'id': 360313797932, 'type': 'email', 'userId': 361015800652, 'primary': True, 'verified': True}], 'locale': 'en-US'}, 'currentAccount': 'Enterprise', 'currentUser': {'alias': None, 'name': 'Saurabh K', 'id': 361015800652, 'signature': None, 'avatarUrl': 'https://secure.gravatar.com/avatar/f29f706f3171299cacac18c0e54f58b3?d=https%3A//assets.zendesk.com/images/2016/default-avatar-80.png&s=80&r=g', 'isSystemUser': False, 'externalId': None, 'role': 'admin', 'organizations': [{'notes': None, 'id': 360024208172, 'name': 'GenX', 'externalId': None, 'sharedComments': False, 'sharedTickets': False, 'details': None, 'tags': [], 'organizationFields': {}, 'domains': ''}], 'timeZone': {'translatedName': 'Eastern Time (US & Canada)', 'offset': -240, 'ianaName': 'America/New_York', 'name': 'Eastern Time (US & Canada)', 'formattedOffset': 'GMT-04:00'}, 'notes': None, 'email': 'saurabhk666@gmail.com', 'groups': [{'name': 'Support', 'id': 360000289132}], 'details': None, 'tags': [], 'identities': [{'undeliverableCount': 0, 'value': 'saurabhk666@gmail.com', 'deliverableState': 'deliverable', 'id': 360313797932, 'type': 'email', 'userId': 361015800652, 'primary': True, 'verified': True}], 'locale': 'en-US'}}
+2018-03-14 19:39:06,632 INFO 
+################# Starting Testing Process ################################
+
+2018-03-14 19:39:06,632 INFO [['This', 'is', 'a', 'test', 'ticket.', '.', 'Test', 'ticket', '#1']]
+2018-03-14 19:39:06,681 INFO Predicted Sorted Dictionary : {'Product_Defective ': 0.03, 'Software_bug': 0.06, 'Product_Delivery_Status ': 0.04, 'Affiliate_Issue': 0.03, 'Product_Return ': 0.04, 'Phase_Feedback': 0.03, 'Software_Sales_Billing': 0.02, 'Phase_sla_breach': 0.015, 'Subscription_Renewal ': 0.045, 'Phase_complaint': 0.04, 'Product_Availability ': 0.015, 'Product_Initial_Info': 0.035, 'Intent Name': 0.015, 'Vendor_Issue': 0.005, 'Software_Feature_Request ': 0.03, 'Technical_Issue': 0.045, 'Software_Query': 0.02, 'Order_Cancel_Request': 0.01, 'Phase_Resolution_Wait': 0.025, 'Service_Disruption ': 0.035, 'Order_info ': 0.035, 'Software_Technical_Issue': 0.02, 'Product_Price ': 0.015, 'Service_Cancel_request': 0.045, 'Software_How_To': 0.015, 'Response_to_Diffuse_Situation ': 0.04, 'Subscription_new ': 0.05, 'Product_PreSales': 0.015, 'Product_Refund_Request': 0.06, 'Software_Cancellation ': 0.025, 'Response_to_Angry_situation': 0.065, 'Request_for_Expert ': 0.03}
+2018-03-14 19:39:06,682 INFO Output :[{'comment': 'I’m really sorry you’re experiencing this problem. I understand how frustrating it must be. I’ll work on finding a solution right away!', 'name': 'Response_to_Angry_situation', 'id': 0, 'prob': 6}, {'comment': 'Thanks for reporting this defect in our product. We have started working on it and soon, we will update you on its resolution. ', 'name': 'Software_bug', 'id': 1, 'prob': 6}, {'comment': 'We have received your request for Refund. Here are updates on it. \n[Update on Refund]\nHope this helps. Please let us know, if you need more or specific info.', 'name': 'Product_Refund_Request', 'id': 2, 'prob': 6}, {'comment': 'Thanks for getting in touch in regards subscription to our service.  \nHere are details. \n[Service Subscription Details]\nHope this helps. Please let us know of any other requirement or concerns. ', 'name': 'Subscription_new ', 'id': 3, 'prob': 5}, {'comment': 'Thanks for getting in touch in regards renewal of subscription to our service.  \nHere are details. \n[Service Subscription Details]\nHope this helps. Please let us know of any other requirement or concerns. ', 'name': 'Subscription_Renewal ', 'id': 4, 'prob': 4}]
+2018-03-14 19:39:14,381 INFO intent : Request : {'comment': '', 'subject': 'Test ticket #1', 'requester': 'Saurabh K', 'description': 'This is a test ticket', 'id': 3, 'assignee': {'alias': None, 'name': 'Saurabh K', 'id': 361015800652, 'signature': None, 'avatarUrl': 'https://secure.gravatar.com/avatar/f29f706f3171299cacac18c0e54f58b3?d=https%3A//assets.zendesk.com/images/2016/default-avatar-80.png&s=80&r=g', 'isSystemUser': False, 'externalId': None, 'role': 'admin', 'organizations': [{'notes': None, 'id': 360024208172, 'name': 'GenX', 'externalId': None, 'sharedComments': False, 'sharedTickets': False, 'details': None, 'tags': [], 'organizationFields': {}, 'domains': ''}], 'timeZone': {'translatedName': 'Eastern Time (US & Canada)', 'offset': -240, 'ianaName': 'America/New_York', 'name': 'Eastern Time (US & Canada)', 'formattedOffset': 'GMT-04:00'}, 'notes': None, 'email': 'saurabhk666@gmail.com', 'groups': [{'name': 'Support', 'id': 360000289132}], 'details': None, 'tags': [], 'identities': [{'undeliverableCount': 0, 'value': 'saurabhk666@gmail.com', 'deliverableState': 'deliverable', 'id': 360313797932, 'type': 'email', 'userId': 361015800652, 'primary': True, 'verified': True}], 'locale': 'en-US'}, 'currentAccount': 'Enterprise', 'currentUser': {'alias': None, 'name': 'Saurabh K', 'id': 361015800652, 'signature': None, 'avatarUrl': 'https://secure.gravatar.com/avatar/f29f706f3171299cacac18c0e54f58b3?d=https%3A//assets.zendesk.com/images/2016/default-avatar-80.png&s=80&r=g', 'isSystemUser': False, 'externalId': None, 'role': 'admin', 'organizations': [{'notes': None, 'id': 360024208172, 'name': 'GenX', 'externalId': None, 'sharedComments': False, 'sharedTickets': False, 'details': None, 'tags': [], 'organizationFields': {}, 'domains': ''}], 'timeZone': {'translatedName': 'Eastern Time (US & Canada)', 'offset': -240, 'ianaName': 'America/New_York', 'name': 'Eastern Time (US & Canada)', 'formattedOffset': 'GMT-04:00'}, 'notes': None, 'email': 'saurabhk666@gmail.com', 'groups': [{'name': 'Support', 'id': 360000289132}], 'details': None, 'tags': [], 'identities': [{'undeliverableCount': 0, 'value': 'saurabhk666@gmail.com', 'deliverableState': 'deliverable', 'id': 360313797932, 'type': 'email', 'userId': 361015800652, 'primary': True, 'verified': True}], 'locale': 'en-US'}}
+2018-03-14 19:39:14,381 INFO 
+################# Starting Testing Process ################################
+
+2018-03-14 19:39:14,381 INFO [['This', 'is', 'a', 'test', 'ticket.', '.', 'Test', 'ticket', '#1']]
+2018-03-14 19:39:14,442 INFO Predicted Sorted Dictionary : {'Product_Defective ': 0.03, 'Software_bug': 0.06, 'Product_Delivery_Status ': 0.04, 'Affiliate_Issue': 0.03, 'Product_Return ': 0.04, 'Phase_Feedback': 0.03, 'Software_Sales_Billing': 0.02, 'Phase_sla_breach': 0.015, 'Subscription_Renewal ': 0.045, 'Phase_complaint': 0.04, 'Product_Availability ': 0.015, 'Product_Initial_Info': 0.035, 'Intent Name': 0.015, 'Vendor_Issue': 0.005, 'Software_Feature_Request ': 0.03, 'Technical_Issue': 0.045, 'Software_Query': 0.02, 'Order_Cancel_Request': 0.01, 'Phase_Resolution_Wait': 0.025, 'Service_Disruption ': 0.035, 'Order_info ': 0.035, 'Software_Technical_Issue': 0.02, 'Product_Price ': 0.015, 'Service_Cancel_request': 0.045, 'Software_How_To': 0.015, 'Response_to_Diffuse_Situation ': 0.04, 'Subscription_new ': 0.05, 'Product_PreSales': 0.015, 'Product_Refund_Request': 0.06, 'Software_Cancellation ': 0.025, 'Response_to_Angry_situation': 0.065, 'Request_for_Expert ': 0.03}
+2018-03-14 19:39:14,443 INFO Output :[{'comment': 'I’m really sorry you’re experiencing this problem. I understand how frustrating it must be. I’ll work on finding a solution right away!', 'name': 'Response_to_Angry_situation', 'id': 0, 'prob': 6}, {'comment': 'Thanks for reporting this defect in our product. We have started working on it and soon, we will update you on its resolution. ', 'name': 'Software_bug', 'id': 1, 'prob': 6}, {'comment': 'We have received your request for Refund. Here are updates on it. \n[Update on Refund]\nHope this helps. Please let us know, if you need more or specific info.', 'name': 'Product_Refund_Request', 'id': 2, 'prob': 6}, {'comment': 'Thanks for getting in touch in regards subscription to our service.  \nHere are details. \n[Service Subscription Details]\nHope this helps. Please let us know of any other requirement or concerns. ', 'name': 'Subscription_new ', 'id': 3, 'prob': 5}, {'comment': 'Thanks for getting in touch in regards renewal of subscription to our service.  \nHere are details. \n[Service Subscription Details]\nHope this helps. Please let us know of any other requirement or concerns. ', 'name': 'Subscription_Renewal ', 'id': 4, 'prob': 4}]
+2018-03-14 19:47:48,144 INFO 
+################# Preparing Training Data ################################
+
+2018-03-14 19:47:48,144 INFO Tags, Description  =>  Intent Name
+2018-03-14 19:47:48,144 INFO Product Info, Information about Product, Planning to purchase, saurabh  =>  Product_Initial_Info
+2018-03-14 19:47:48,144 INFO Cost, Price, Charges, Tax,   =>  Product_Price 
+2018-03-14 19:47:48,144 INFO Pre-Sale Question, Before purchase, Before Sales, ,   =>  Product_PreSales
+2018-03-14 19:47:48,144 INFO Order Status, Order Info,   =>  Order_info 
+2018-03-14 19:47:48,144 INFO Order Return, Shipping back, ,   =>  Product_Return 
+2018-03-14 19:47:48,144 INFO Shipping/Delivery, Product Delivery,,   =>  Product_Delivery_Status 
+2018-03-14 19:47:48,144 INFO Vendor issue,   =>  Vendor_Issue
+2018-03-14 19:47:48,144 INFO Affiliate issue,   =>  Affiliate_Issue
+2018-03-14 19:47:48,144 INFO Product Availability,   =>  Product_Availability 
+2018-03-14 19:47:48,144 INFO Technical Issue, Not Working, ,   =>  Technical_Issue
+2018-03-14 19:47:48,144 INFO Defective, Broken, Malfunctioning ,   =>  Product_Defective 
+2018-03-14 19:47:48,144 INFO Cancel my order, Cancel product delivery ,   =>  Order_Cancel_Request
+2018-03-14 19:47:48,144 INFO Refund ,   =>  Product_Refund_Request
+2018-03-14 19:47:48,144 INFO Start my subscription, Subscribe me, ,   =>  Subscription_new 
+2018-03-14 19:47:48,144 INFO Subscription Renewal ,   =>  Subscription_Renewal 
+2018-03-14 19:47:48,144 INFO Disruption ,   =>  Service_Disruption 
+2018-03-14 19:47:48,144 INFO Unsubscribe, Cancellation, Discontinue,   =>  Service_Cancel_request
+2018-03-14 19:47:48,144 INFO Bug,   =>  Software_bug
+2018-03-14 19:47:48,144 INFO Feature Request,   =>  Software_Feature_Request 
+2018-03-14 19:47:48,144 INFO Sales Question – Billing ,   =>  Software_Sales_Billing
+2018-03-14 19:47:48,144 INFO How To, Instruction, Manual, Guide, ,   =>  Software_How_To
+2018-03-14 19:47:48,144 INFO Technical Issue, Unable to fix it, Unable to open it, Debug,   =>  Software_Technical_Issue
+2018-03-14 19:47:48,144 INFO Subscription Cancel, Cancellation,   =>  Software_Cancellation 
+2018-03-14 19:47:48,144 INFO Complaint, Issues, ,   =>  Phase_complaint
+2018-03-14 19:47:48,144 INFO Query, Clarifications, Question, Answer, ,   =>  Software_Query
+2018-03-14 19:47:48,144 INFO SME Help, Need technician, Need Expert, Need SME, Need Specialist. ,   =>  Request_for_Expert 
+2018-03-14 19:47:48,144 INFO SLA breach, Longer Response, Have not heard, Pending for long,,   =>  Phase_sla_breach
+2018-03-14 19:47:48,144 INFO Status of my ticket, Any Update, Waiting for resolution, Long time, ,   =>  Phase_Resolution_Wait
+2018-03-14 19:47:48,144 INFO Fuck, Stupid, Bloody hell, Asshole, ,   =>  Response_to_Diffuse_Situation 
+2018-03-14 19:47:48,144 INFO Frustrated, ,   =>  Response_to_Angry_situation
+2018-03-14 19:47:48,144 INFO Worked, Working Now, Thanks for help, Close the Ticket, Close the ticket, It is working, Satisfaction,   =>  Phase_Feedback
+2018-03-14 19:47:48,144 INFO Total Training Examples : 32
+2018-03-14 19:47:48,144 INFO 
+################# Starting Training Processing ################################
+
+2018-03-14 19:47:48,487 INFO Total Training Samples : 32
+2018-03-14 19:47:51,037 INFO 
+################# Starting Testing Process ################################
+
+2018-03-14 19:47:51,037 INFO [['This', 'is', 'a', 'test', 'ticket.', '.', 'Test', 'ticket', '#1']]
+2018-03-14 19:47:51,075 INFO Predicted Sorted Dictionary : {'Product_Initial_Info': 0.015, 'Phase_complaint': 0.04, 'Phase_Resolution_Wait': 0.02, 'Software_Feature_Request ': 0.06, 'Service_Disruption ': 0.025, 'Product_Price ': 0.035, 'Technical_Issue': 0.01, 'Product_Defective ': 0.05, 'Subscription_new ': 0.05, 'Subscription_Renewal ': 0.035, 'Software_Sales_Billing': 0.02, 'Phase_sla_breach': 0.025, 'Response_to_Angry_situation': 0.045, 'Intent Name': 0.04, 'Vendor_Issue': 0.035, 'Response_to_Diffuse_Situation ': 0.02, 'Software_How_To': 0.005, 'Phase_Feedback': 0.065, 'Order_info ': 0.01, 'Software_Query': 0.035, 'Product_Delivery_Status ': 0.01, 'Software_Technical_Issue': 0.015, 'Request_for_Expert ': 0.015, 'Order_Cancel_Request': 0.02, 'Product_Availability ': 0.025, 'Software_Cancellation ': 0.06, 'Software_bug': 0.085, 'Product_PreSales': 0.025, 'Service_Cancel_request': 0.025, 'Product_Refund_Request': 0.025, 'Affiliate_Issue': 0.015, 'Product_Return ': 0.04}
+2018-03-14 19:47:51,076 INFO Output :[{'name': 'Software_bug', 'prob': 8, 'id': 0, 'comment': 'Thanks for reporting this defect in our product. We have started working on it and soon, we will update you on its resolution. '}, {'name': 'Phase_Feedback', 'prob': 6, 'id': 1, 'comment': 'We’re really glad we were able to solve this problem for you. If you feel we were helpful, would you mind leaving [your product/service] a 5-star review? You can leave a review by going to [link to review]. If you don’t feel we deserve a 5-star review, what can we do to better serve you?”'}, {'name': 'Software_Feature_Request ', 'prob': 6, 'id': 2, 'comment': 'Thanks for suggesting us this new feature for our product. We certainly appriciate your effort and soon, we will get back to you with our plan around it. '}, {'name': 'Software_Cancellation ', 'prob': 6, 'id': 3, 'comment': 'Sorry to hear that you want to cancel your subscription. I can certainly do that for you. Would you mind telling me why you’re canceling? If it has to do with product or service quality, we’d like to know because we’re always striving to improve.'}, {'name': 'Product_Defective ', 'prob': 5, 'id': 4, 'comment': 'Sorry ot hear that you received this defective product. We are arranging pick up of this and will get back to you with more status. '}]
+2018-03-14 19:49:04,939 INFO 
+################# Preparing Training Data ################################
+
+2018-03-14 19:49:04,939 INFO Tags, Description  =>  Intent Name
+2018-03-14 19:49:04,939 INFO Product Info, Information about Product, Planning to purchase, saurabh  =>  Product_Initial_Info
+2018-03-14 19:49:04,939 INFO Cost, Price, Charges, Tax,   =>  Product_Price 
+2018-03-14 19:49:04,939 INFO Pre-Sale Question, Before purchase, Before Sales, ,   =>  Product_PreSales
+2018-03-14 19:49:04,939 INFO Order Status, Order Info,   =>  Order_info 
+2018-03-14 19:49:04,939 INFO Order Return, Shipping back, ,   =>  Product_Return 
+2018-03-14 19:49:04,939 INFO Shipping/Delivery, Product Delivery,,   =>  Product_Delivery_Status 
+2018-03-14 19:49:04,939 INFO Vendor issue,   =>  Vendor_Issue
+2018-03-14 19:49:04,939 INFO Affiliate issue,   =>  Affiliate_Issue
+2018-03-14 19:49:04,939 INFO Product Availability,   =>  Product_Availability 
+2018-03-14 19:49:04,939 INFO Technical Issue, Not Working, ,   =>  Technical_Issue
+2018-03-14 19:49:04,939 INFO Defective, Broken, Malfunctioning ,   =>  Product_Defective 
+2018-03-14 19:49:04,939 INFO Cancel my order, Cancel product delivery ,   =>  Order_Cancel_Request
+2018-03-14 19:49:04,939 INFO Refund ,   =>  Product_Refund_Request
+2018-03-14 19:49:04,939 INFO Start my subscription, Subscribe me, ,   =>  Subscription_new 
+2018-03-14 19:49:04,939 INFO Subscription Renewal ,   =>  Subscription_Renewal 
+2018-03-14 19:49:04,939 INFO Disruption ,   =>  Service_Disruption 
+2018-03-14 19:49:04,939 INFO Unsubscribe, Cancellation, Discontinue,   =>  Service_Cancel_request
+2018-03-14 19:49:04,939 INFO Bug,   =>  Software_bug
+2018-03-14 19:49:04,939 INFO Feature Request,   =>  Software_Feature_Request 
+2018-03-14 19:49:04,939 INFO Sales Question – Billing ,   =>  Software_Sales_Billing
+2018-03-14 19:49:04,939 INFO How To, Instruction, Manual, Guide, ,   =>  Software_How_To
+2018-03-14 19:49:04,939 INFO Technical Issue, Unable to fix it, Unable to open it, Debug,   =>  Software_Technical_Issue
+2018-03-14 19:49:04,939 INFO Subscription Cancel, Cancellation,   =>  Software_Cancellation 
+2018-03-14 19:49:04,939 INFO Complaint, Issues, ,   =>  Phase_complaint
+2018-03-14 19:49:04,939 INFO Query, Clarifications, Question, Answer, ,   =>  Software_Query
+2018-03-14 19:49:04,939 INFO SME Help, Need technician, Need Expert, Need SME, Need Specialist. ,   =>  Request_for_Expert 
+2018-03-14 19:49:04,939 INFO SLA breach, Longer Response, Have not heard, Pending for long,,   =>  Phase_sla_breach
+2018-03-14 19:49:04,939 INFO Status of my ticket, Any Update, Waiting for resolution, Long time, ,   =>  Phase_Resolution_Wait
+2018-03-14 19:49:04,939 INFO Fuck, Stupid, Bloody hell, Asshole, ,   =>  Response_to_Diffuse_Situation 
+2018-03-14 19:49:04,939 INFO Frustrated, ,   =>  Response_to_Angry_situation
+2018-03-14 19:49:04,939 INFO Worked, Working Now, Thanks for help, Close the Ticket, Close the ticket, It is working, Satisfaction,   =>  Phase_Feedback
+2018-03-14 19:49:04,939 INFO Total Training Examples : 32
+2018-03-14 19:49:04,939 INFO 
+################# Starting Training Processing ################################
+
+2018-03-14 19:49:05,267 INFO Total Training Samples : 32
+2018-03-14 19:49:09,494 INFO 
+################# Starting Testing Process ################################
+
+2018-03-14 19:49:09,495 INFO [['This', 'is', 'a', 'test', 'ticket.', '.', 'Test', 'ticket', '#1']]
+2018-03-14 19:49:09,533 INFO Predicted Sorted Dictionary : {'Vendor_Issue': 0.06, 'Order_Cancel_Request': 0.02, 'Product_Price ': 0.045, 'Phase_Resolution_Wait': 0.005, 'Technical_Issue': 0.025, 'Subscription_new ': 0.02, 'Response_to_Angry_situation': 0.005, 'Intent Name': 0.035, 'Product_Initial_Info': 0.01, 'Phase_sla_breach': 0.04, 'Order_info ': 0.03, 'Subscription_Renewal ': 0.025, 'Product_Refund_Request': 0.03, 'Software_Query': 0.015, 'Product_PreSales': 0.05, 'Request_for_Expert ': 0.04, 'Product_Defective ': 0.03, 'Affiliate_Issue': 0.045, 'Software_Sales_Billing': 0.025, 'Product_Delivery_Status ': 0.03, 'Product_Return ': 0.005, 'Service_Cancel_request': 0.035, 'Software_bug': 0.095, 'Service_Disruption ': 0.03, 'Response_to_Diffuse_Situation ': 0.025, 'Software_Feature_Request ': 0.03, 'Software_Technical_Issue': 0.03, 'Phase_complaint': 0.045, 'Product_Availability ': 0.04, 'Software_How_To': 0.015, 'Phase_Feedback': 0.035, 'Software_Cancellation ': 0.03}
+2018-03-14 19:49:09,534 INFO Output :[{'prob': 9, 'comment': 'Thanks for reporting this defect in our product. We have started working on it and soon, we will update you on its resolution. ', 'name': 'Software_bug', 'id': 0}, {'prob': 6, 'comment': 'Sorry to hear that you are having issue with our Vendor. We are enquiring about this incidents and will update you shortly. ', 'name': 'Vendor_Issue', 'id': 1}, {'prob': 5, 'comment': 'Thanks for getting in touch in regards to purchase our Product. \nHere are details. \n[Product Sales Info]\nHope this helps. Please let us know, if you need more or specific info. ', 'name': 'Product_PreSales', 'id': 2}, {'prob': 4, 'comment': 'Thanks for getting in touch in regards of Price of our Product/Service. Here are details. \n[Product Cost Info]\nHope this helps. Please let us know, if you need more or specific info. ', 'name': 'Product_Price ', 'id': 3}, {'prob': 4, 'comment': 'Sorry to hear that you are having issue with our Affiliate. We are enquiring about this incidents and will update you shortly. ', 'name': 'Affiliate_Issue', 'id': 4}]
+2018-03-14 19:54:09,845 INFO 
+################# Preparing Training Data ################################
+
+2018-03-14 19:54:09,848 INFO Tags, Description  =>  Intent Name
+2018-03-14 19:54:09,849 INFO Product Info, Information about Product, Planning to purchase, saurabh  =>  Product_Initial_Info
+2018-03-14 19:54:09,849 INFO Cost, Price, Charges, Tax,   =>  Product_Price 
+2018-03-14 19:54:09,849 INFO Pre-Sale Question, Before purchase, Before Sales, ,   =>  Product_PreSales
+2018-03-14 19:54:09,849 INFO Order Status, Order Info,   =>  Order_info 
+2018-03-14 19:54:09,850 INFO Order Return, Shipping back, ,   =>  Product_Return 
+2018-03-14 19:54:09,850 INFO Shipping/Delivery, Product Delivery,,   =>  Product_Delivery_Status 
+2018-03-14 19:54:09,850 INFO Vendor issue,   =>  Vendor_Issue
+2018-03-14 19:54:09,850 INFO Affiliate issue,   =>  Affiliate_Issue
+2018-03-14 19:54:09,851 INFO Product Availability,   =>  Product_Availability 
+2018-03-14 19:54:09,851 INFO Technical Issue, Not Working, ,   =>  Technical_Issue
+2018-03-14 19:54:09,852 INFO Defective, Broken, Malfunctioning ,   =>  Product_Defective 
+2018-03-14 19:54:09,852 INFO Cancel my order, Cancel product delivery ,   =>  Order_Cancel_Request
+2018-03-14 19:54:09,852 INFO Refund ,   =>  Product_Refund_Request
+2018-03-14 19:54:09,853 INFO Start my subscription, Subscribe me, ,   =>  Subscription_new 
+2018-03-14 19:54:09,853 INFO Subscription Renewal ,   =>  Subscription_Renewal 
+2018-03-14 19:54:09,853 INFO Disruption ,   =>  Service_Disruption 
+2018-03-14 19:54:09,853 INFO Unsubscribe, Cancellation, Discontinue,   =>  Service_Cancel_request
+2018-03-14 19:54:09,853 INFO Bug,   =>  Software_bug
+2018-03-14 19:54:09,853 INFO Feature Request,   =>  Software_Feature_Request 
+2018-03-14 19:54:09,854 INFO Sales Question – Billing ,   =>  Software_Sales_Billing
+2018-03-14 19:54:09,854 INFO How To, Instruction, Manual, Guide, ,   =>  Software_How_To
+2018-03-14 19:54:09,854 INFO Technical Issue, Unable to fix it, Unable to open it, Debug,   =>  Software_Technical_Issue
+2018-03-14 19:54:09,854 INFO Subscription Cancel, Cancellation,   =>  Software_Cancellation 
+2018-03-14 19:54:09,854 INFO Complaint, Issues, ,   =>  Phase_complaint
+2018-03-14 19:54:09,854 INFO Query, Clarifications, Question, Answer, ,   =>  Software_Query
+2018-03-14 19:54:09,854 INFO SME Help, Need technician, Need Expert, Need SME, Need Specialist. ,   =>  Request_for_Expert 
+2018-03-14 19:54:09,854 INFO SLA breach, Longer Response, Have not heard, Pending for long,,   =>  Phase_sla_breach
+2018-03-14 19:54:09,855 INFO Status of my ticket, Any Update, Waiting for resolution, Long time, ,   =>  Phase_Resolution_Wait
+2018-03-14 19:54:09,855 INFO Fuck, Stupid, Bloody hell, Asshole, ,   =>  Response_to_Diffuse_Situation 
+2018-03-14 19:54:09,855 INFO Frustrated, ,   =>  Response_to_Angry_situation
+2018-03-14 19:54:09,855 INFO Worked, Working Now, Thanks for help, Close the Ticket, Close the ticket, It is working, Satisfaction,   =>  Phase_Feedback
+2018-03-14 19:54:09,855 INFO Total Training Examples : 32
+2018-03-14 19:54:09,855 INFO 
+################# Starting Training Processing ################################
+
+2018-03-14 19:54:10,259 INFO Total Training Samples : 32
+2018-03-14 19:54:11,204 INFO 
+################# Starting Testing Process ################################
+
+2018-03-14 19:54:11,204 INFO [['This', 'is', 'a', 'test', 'ticket.', '.', 'Test', 'ticket', '#1']]
+2018-03-14 19:54:11,249 INFO Predicted Sorted Dictionary : {'Response_to_Diffuse_Situation ': 0.015, 'Affiliate_Issue': 0.02, 'Vendor_Issue': 0.02, 'Product_Availability ': 0.04, 'Phase_complaint': 0.035, 'Product_Refund_Request': 0.06, 'Response_to_Angry_situation': 0.025, 'Service_Cancel_request': 0.03, 'Software_Feature_Request ': 0.055, 'Software_Query': 0.035, 'Product_Return ': 0.02, 'Software_Sales_Billing': 0.01, 'Subscription_new ': 0.025, 'Order_Cancel_Request': 0.035, 'Product_Defective ': 0.03, 'Phase_sla_breach': 0.015, 'Software_Cancellation ': 0.05, 'Request_for_Expert ': 0.015, 'Product_Delivery_Status ': 0.025, 'Product_PreSales': 0.03, 'Software_Technical_Issue': 0.03, 'Order_info ': 0.065, 'Service_Disruption ': 0.055, 'Software_bug': 0.06, 'Intent Name': 0.02, 'Technical_Issue': 0.025, 'Phase_Feedback': 0.015, 'Product_Initial_Info': 0.01, 'Software_How_To': 0.03, 'Phase_Resolution_Wait': 0.02, 'Subscription_Renewal ': 0.015, 'Product_Price ': 0.065}
+2018-03-14 19:54:11,250 INFO Output :[{'id': 0, 'comment': 'Thanks for getting in touch in regards status of your product order. \nHere are details. \n[Product Order Details]\nHope this helps. Please let us know, if you need more or specific info. ', 'prob': 6, 'name': 'Order_info '}, {'id': 1, 'comment': 'Thanks for getting in touch in regards of Price of our Product/Service. Here are details. \n[Product Cost Info]\nHope this helps. Please let us know, if you need more or specific info. ', 'prob': 6, 'name': 'Product_Price '}, {'id': 2, 'comment': 'We have received your request for Refund. Here are updates on it. \n[Update on Refund]\nHope this helps. Please let us know, if you need more or specific info.', 'prob': 6, 'name': 'Product_Refund_Request'}, {'id': 3, 'comment': 'Thanks for reporting this defect in our product. We have started working on it and soon, we will update you on its resolution. ', 'prob': 6, 'name': 'Software_bug'}, {'id': 4, 'comment': 'Thanks for suggesting us this new feature for our product. We certainly appriciate your effort and soon, we will get back to you with our plan around it. ', 'prob': 5, 'name': 'Software_Feature_Request '}]

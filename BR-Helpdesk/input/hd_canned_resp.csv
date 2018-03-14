@@ -1,46 +1,74 @@
-Intent,Response 
-Request_for_Status,"We have update on the status of your [product/ticket]. 
-[Status of product] 
-Hope this update helps you. "
-Request_for_Info,"Following is the info you requested. 
-Hope this help you getting your work done. "
-Request_for_Expert ,"As you request, We are arranging an Expert [Name] and Phone []. He will soon get in touch with you. "
-Request_for_Refund ,"We have received your request for Refund. 
-[Update on Refund]
-Hope this info help you in getting your work done. "
-Request_for_Return,"We have received your request for Return of Product. 
-[Update on Return]
-We are processing it and will get back to you soon. "
-Request_for_Initial_Info,"Thakns for getting in touch for more info on our product. Following are relevent links to this query. Please let us know, if you need more or specific info. "
-Request_for_Price,"Thanks for getting in touch in regards of Price of our Product/Service. Here are details. 
+Intent Name,Response 
+Product_Initial_Info,"Thanks for getting in touch for more info on our product. 
+Following are relevent links to this query. 
+[Product Info] 
+Hope this helps. Please let us know, if you need more or specific info. "
+Product_Price ,"Thanks for getting in touch in regards of Price of our Product/Service. Here are details. 
 [Product Cost Info]
-Hope this helps in getting your work done. "
-Request_for_Cancellation ,"I’m sorry to hear that you want to cancel your subscription, [their name]. I can certainly do that for you. Would you mind telling me why you’re canceling? If it has to do with product or service quality, we’d like to know because we’re always striving to improve."
-Complaint_for_Service_Issue,"Hello, [their name]. We’re currently having a server issue which has knocked out our service for the time being. We’re aware of the problem and are working hard to solve it. We’ll be posting status updates every [number] minutes on this page: [link]. You can also follow us on Twitter at [link] for real-time updates. Thank you for your patience as we work through this issue!"
+Hope this helps. Please let us know, if you need more or specific info. "
+Product_PreSales,"Thanks for getting in touch in regards to purchase our Product. 
+Here are details. 
+[Product Sales Info]
+Hope this helps. Please let us know, if you need more or specific info. "
+Order_info ,"Thanks for getting in touch in regards status of your product order. 
+Here are details. 
+[Product Order Details]
+Hope this helps. Please let us know, if you need more or specific info. "
+Product_Return ,"Thanks for getting in touch in regards your query on return of product orders. 
+Here are details. 
+[Product Return Details]
+Hope this helps. Please let us know, if you need more or specific info. "
+Product_Delivery_Status ,"Thanks for getting in touch in regards delivery of your Order.  
+Here are details. 
+[Product Delivery Status Details]
+Hope this helps. Please let us know, if you need more or specific info. "
+Vendor_Issue,Sorry to hear that you are having issue with our Vendor. We are enquiring about this incidents and will update you shortly. 
+Affiliate_Issue,Sorry to hear that you are having issue with our Affiliate. We are enquiring about this incidents and will update you shortly. 
+Product_Availability ,"Thanks for getting in touch in regards to availability of this product.  
+Here are details. 
+[Product Availability Details]
+Hope this helps. Please let us know, if you need more or specific info. "
+Technical_Issue,Sorry to hear that your are having this technical issues. We are in process of resolving it and we will get back to you soon. 
+Product_Defective ,Sorry ot hear that you received this defective product. We are arranging pick up of this and will get back to you with more status. 
+Order_Cancel_Request,Sorry to hear that you wish to cancel this order. We are working to cancel the Order. Will update you soon about its status. 
+Product_Refund_Request,"We have received your request for Refund. Here are updates on it. 
+[Update on Refund]
+Hope this helps. Please let us know, if you need more or specific info."
+Subscription_new ,"Thanks for getting in touch in regards subscription to our service.  
+Here are details. 
+[Service Subscription Details]
+Hope this helps. Please let us know of any other requirement or concerns. "
+Subscription_Renewal ,"Thanks for getting in touch in regards renewal of subscription to our service.  
+Here are details. 
+[Service Subscription Details]
+Hope this helps. Please let us know of any other requirement or concerns. "
+Service_Disruption ,Sorry to hear that you are facing service disruption issue. We are working on it and we will get back to with more specific update soon. 
+Service_Cancel_request,"Sorry to hear that you want to cancel your subscription. I can certainly do that for you. Would you mind telling me why you’re canceling? If it has to do with product or service quality, we’d like to know because we’re always striving to improve."
+Software_bug,"Thanks for reporting this defect in our product. We have started working on it and soon, we will update you on its resolution. "
+Software_Feature_Request ,"Thanks for suggesting us this new feature for our product. We certainly appriciate your effort and soon, we will get back to you with our plan around it. "
+Software_Sales_Billing,"Thanks for getting in touch in regards to Product Sales.   
+Here are details. 
+[Product Sales Details]
+Hope this helps. Please let us know, if you need more or specific info. "
+Software_How_To,"Thanks for reaching out with questions about [procedure]!
+Here are the instructions for same:
+[Instructions Details]
+If you have any questions along the way, don’t hesitate to reach out."
+Software_Technical_Issue,"Thanks for reporting this defect in our product. We have started working on it and soon, we will update you on its resolution. "
+Software_Cancellation ,"Sorry to hear that you want to cancel your subscription. I can certainly do that for you. Would you mind telling me why you’re canceling? If it has to do with product or service quality, we’d like to know because we’re always striving to improve."
+Phase_complaint,"Sorry to head that you are facing issue with our product/service. We assure you that we will address your complaint with due attention. Kindly wait for some time, till we work on resolving it. "
+Software_Query,"Thanks for reaching out with questions about our product services. 
+Here are the details for same:
+[Query Resolution Details]
+If you have any questions along the way, don’t hesitate to reach out."
+Request_for_Expert ,"Thanks for reaching out with request to get assistance with our expert technician. Soon, we will be assinging a person and send you his/her contact and schedule details. "
+Phase_sla_breach,We are very sorry that we have breached Service Level Agreement on this issue resolution. Kindly give us some more time and we will get back to you with proper resolution. 
+Phase_Resolution_Wait,We are very sorry that you have to wait for resolution of your issues. Kindly give us some more time and we will get back to you with proper timely resolution. 
 Response_to_Diffuse_Situation ,"Thanks so much for your question about [topic].
 
 I just wanted to let you know that I’m looking into it and will get back to you before the end of week with an answer.
 
 If you need me to get back to you sooner, please let me know!"
-Request_for_instructions ,"Thanks for reaching out with questions about [procedure]!
-We prefer to use [program], and I’ve outlined the process for [project] below:
-[Insert numbered list]
-If you have any questions along the way, don’t hesitate to reach out."
-Response_to_angry_customer,I’m really sorry you’re experiencing this problem. I understand how frustrating it must be. I’ll work on finding a solution right away!
-Response_to_review_product,"Their name], we’re really glad we were able to solve this problem for you. If you feel we were helpful, would you mind leaving [your product/service] a 5-star review? You can leave a review by going to [link to review]. If you don’t feel we deserve a 5-star review, what can we do to better serve you?”"
-Response_of_term_voilation ,"Hello, [their name]. I’m reaching out to you because it seems you’ve violated our terms of use. It’s entirely possible it was done by mistake without you even realizing. According to Section [section number], you [did whatever they did to violate your Terms of Use). As I realize this may have been an accident, I wanted to give you the opportunity to [do something to rectify the situation]. Please comply as soon as possible so there are no interruptions to your service. Thank you for your understanding and prompt reply."
-Response_to_Overdue_Expired,"I hope you’re having a good day so far! I’m just writing to let you know that your account has recently become overdue. If you plan to continue your service, please establish a new form of payment by [date], otherwise your account will deactivate soon (assuming that’s true). If you need to choose a new plan or cancel your account, you may do so at any time by visiting your account page at [link]. Please let me know if you have any questions. Thank you.”"
-Response_for_More_Time ,"Our internal team has also noticed that this tracking number hasn't been updated yet. We're communicating with the merchant for an update, and as soon as we receive an update, we'll keep you informed. I appreciate your patience with this order.
-
-If you have any further questions or concerns, let us know. We are here 24/7 and always happy to help. Thanks for being a loyal [COMPANY NAME] customer."
-Response_to_Resolve_Issue ,"Thanks for taking the time to speak about [ISSUE] today. I've updated your contact record in our system, so your subscription will renew by the end of the day.
-
-Is there anything else I can help you with? Please don't hesitate to reply to this email or call me at [123-456-7891] if you have any other questions."
-Request_for_Satisfaction,"A couple weeks ago, you mentioned that you'd like to try out a new lawn care provider. My records show that you just had your first service with the new pro. How did it go?
-
-Just wanted to make sure you're happy :)"
-Response_of_Service_changes,"I've gone ahead and switched your [SETTING] from weekly to bi-weekly, as requested. Your next service will be on [DATE].
-
-If you need to change your frequency settings again, you can do that online here by navigating to ""Support"" and clicking ""Change Frequency.""
-
-Let me know if there's anything else I can help with!"
+Response_to_Angry_situation,I’m really sorry you’re experiencing this problem. I understand how frustrating it must be. I’ll work on finding a solution right away!
+Phase_Feedback,"We’re really glad we were able to solve this problem for you. If you feel we were helpful, would you mind leaving [your product/service] a 5-star review? You can leave a review by going to [link to review]. If you don’t feel we deserve a 5-star review, what can we do to better serve you?”"
+,

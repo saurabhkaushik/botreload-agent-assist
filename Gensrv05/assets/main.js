@@ -1,7 +1,7 @@
-var ticket_data = {id : 0, description:'', comment:'', currentUser:'', subject:'', assignee:'', requester:'' };
+var ticket_data = {id : 0, description:'', comment:'', currentUser:'', subject:'', assignee:'', requester:'' , currentAccount:''};
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = '13.71.115.220';
+var SERVER_NAME = '35.196.42.207';
 var header = 'Hello ';
 var footer = 'Regards, \n';
 
@@ -18,7 +18,8 @@ function firstData() {
 	  			client.get('currentUser'),
 	  			client.get('ticket.subject'),
 	  			client.get('ticket.assignee.user'),
-	  			client.get('ticket.requester.name')]).then(
+	  			client.get('ticket.requester.name'),
+	  			client.get('currentAccount.planName')]).then(
 				  function fullfilled(contents){
 					  ticket_data.id = contents[0]['ticket.id'];
 					  ticket_data.description = contents[1]['ticket.description'];
@@ -26,6 +27,7 @@ function firstData() {
 					  ticket_data.subject = contents[3]['ticket.subject'];
 					  ticket_data.assignee = contents[4]['ticket.assignee.user'];
 					  ticket_data.requester = contents[5]['ticket.requester.name'];
+					  ticket_data.currentAccount = contents[6]['currentAccount.planName'];
 					  getResponseData(client);
 					  }
 	  );
@@ -33,10 +35,7 @@ function firstData() {
 
 client.on('app.registered', function(appData) {
 		getTicketData();
-		getTagData();
 	});
-
-
 
 function showInfo(data) {
 	console.log('showInfo:');
@@ -63,6 +62,8 @@ function applyComment(event, id) {
 	client.set('comment.text', comment_data);
     client.invoke('notify', 'Comment added to Ticket.');
     showPostApply();
+    var fb_data = {selected_comment_id : id, ticket_description : ticket_data.description };
+    uploadFeedbackData(fb_data);
 };
 
 function showError() {
@@ -79,7 +80,7 @@ function showError() {
 
 function getResponseData(client) {
 	console.log('getResponseData:');
-	var query_data = ticket_data.subject + ' . ' + ticket_data.description;
+	var query_data = ticket_data;
 	var resp_data = '';
 	var settings = {
 	    url: 'http://'+ SERVER_NAME +'/intent',
@@ -126,28 +127,6 @@ function getTicketData(){
 	);
 }
 
-function getTagData(){
-	console.log('getTagData:');
-	var settings = {
-		url: '/api/v2/tags.json',
-	    type: 'GET',
-	    contentType: 'application/json',
-	    dataType: 'json'
-	    	}; 
-
-	client.request(settings).then(
-    function(data) {
-      //console.log(data);
-      uploadTagData(data);
-    },
-    function(response) {
-      var msg = 'Error ' + response.status + ' ' + response.statusText;
-      //client.invoke('notify', msg, 'error');
-      console.log('Error : '+ response);
-    }
-	);
-}
-
 function uploadTicketData(tickets) {
 	console.log('uploadTicketData:');
 	var settings = {
@@ -172,26 +151,26 @@ function uploadTicketData(tickets) {
   );
 }
 
-function uploadTagData(tags) {
-	console.log('uploadTagData:');
+function uploadFeedbackData(fbdata) {
+	console.log('uploadFeedbackData:');
 	var settings = {
-	    url: 'http://'+ SERVER_NAME +'/uploadtags',
+	    url: 'http://'+ SERVER_NAME +'/feedbkloop',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
 	    type: 'POST',
 	    contentType: 'application/json',
-	    data: JSON.stringify(tags),
+	    data: JSON.stringify(fbdata),
 	    dataType: 'json'
 	  }; 
 	client.request(settings).then(
     function(data) {
       //client.invoke('notify', 'Received Ticket Responses.');
       //console.log(data);
-      //console.log('uploadTagData: Success');
+      //console.log('uploadFeedbackData: Success');
     },
     function(response) {
       //var msg = 'Error ' + response.status + ' ' + response.statusText;
       //client.invoke('notify', msg, 'error');
-      console.log('uploadTagData:'+response);
+      console.log('uploadFeedbackData:'+response);
     }
   );
 }

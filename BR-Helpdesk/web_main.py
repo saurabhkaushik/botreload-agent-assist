@@ -8,8 +8,24 @@ from flask import url_for
 import csv
 import json
 import time
+import os
+import logging
 
-app = Flask(__name__)  
+app = Flask(__name__) 
+
+logger = logging.getLogger('br-srv-app')
+hdlr = logging.FileHandler('log/br-app-day.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr) 
+logger.setLevel(logging.INFO) 
+
+loggertrain = logging.getLogger('br-srv-train')
+hdlr = logging.FileHandler('log/br-app-train.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+loggertrain.addHandler(hdlr) 
+loggertrain.setLevel(logging.INFO) 
 
 entityeng = EntityExtractor() 
 intenteng = IntentExtractor()
@@ -18,8 +34,8 @@ intenteng.prepareTrainingData()
 intenteng.startTrainingProcess()
 
 CANNED_RESP_PATH = 'input/hd_canned_resp.csv'
-TICKET_FILE = 'log/ticket_'
-TAG_FILE = 'log/tag_'
+#TICKET_FILE = 'log/ticket_'
+#FEEDBACK_FILE = 'log/feedback.csv'
 
 def format_output(predicted_intent): 
     comments_struct = []    
@@ -34,15 +50,17 @@ def format_output(predicted_intent):
         if (i >= 4):
             break
         i+=1
+    loggertrain.info('format_output : ' + str(comments_struct))
     return comments_struct
 
 @app.route('/intent', methods=['POST'])
 def intent():
-    print('Request : ', request.json)
+    loggertrain.info('intent : ' + str(request.json))
     received_data = request.json
-    predicted_intent = intenteng.getIntentForText(received_data)
+    intent_input = received_data['description'] + '. ' + received_data['comment'] + '. ' + received_data['subject']
+    predicted_intent = intenteng.getIntentForText(intent_input)
     formatted_resp =  format_output(predicted_intent)
-    print ('Output :', formatted_resp)
+    logger.info ('Output :' + str(formatted_resp))
     json_resp = json.dumps(formatted_resp)
     return json_resp
 
@@ -62,27 +80,32 @@ def entity():
 
 @app.route('/uploadtickets', methods=['POST'])
 def uploadtickets():
-    print('Request : ', request.json)
-    received_data = request.json
+    loggertrain.info('uploadtickets : ' + str(request.json))
+    '''received_data = request.json
     with open(TICKET_FILE + str(time.time()) + '.csv', 'w') as outfile:
         json.dump(received_data, outfile)
-    #json_resp = json.dumps(received_data)
-    return None 
+    json_resp = json.dumps(received_data)'''
+    return '200' 
 
-@app.route('/uploadtags', methods=['POST'])
-def uploadtags():
-    print('Request : ', request.json)
-    received_data = request.json
-    with open(TAG_FILE  + str(time.time()) + '.csv', 'w') as outfile:
-        json.dump(received_data, outfile)
+@app.route('/feedbkloop', methods=['POST'])
+def uploadfeedback():
+    loggertrain.info('uploadfeedback : ' + str(request.json))
+    '''received_data = request.json
+    if os.path.exists(FEEDBACK_FILE):
+        append_write = 'a' # append if already exists
+    else:
+        append_write = 'w' # make a new file if not
+
+    with open(FEEDBACK_FILE, append_write) as outfile:
+        json.dump(received_data, outfile)'''
     #json_resp = json.dumps(received_data)
-    return None 
+    return '200'  
 
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 if __name__ == '__main__':
-    #app.run(threaded=True)
-    app.run('0.0.0.0', port=80, threaded=True)
+    app.run(threaded=True)
+    #app.run('0.0.0.0', port=80, threaded=True)
         
