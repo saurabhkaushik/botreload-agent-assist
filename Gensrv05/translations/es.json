@@ -1,0 +1,8 @@
+{
+  "app": {
+    "name": "Agent Assist : Smart Reply",
+    "short_description": "Sugiere agente con las 5 mejores respuestas adecuadas a los tickets de los clientes con poder de AI",
+    "long_description": "AgentAssist es un asistente inteligente para su agente de Helpdesk que utiliza el poder de AI para automatizar el servicio al cliente, de modo que sus agentes puedan gastar más con los clientes que más le importan a su negocio. En función del ticket, genera automáticamente las respuestas más adecuadas que el agente puede aplicar a la respuesta pública al cliente.",
+    "installation_instructions": "Simplemente haga clic en instalar."
+  }
+}

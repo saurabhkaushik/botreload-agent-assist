@@ -1,12 +1,12 @@
 {
-  "name": "iAgent",
+  "name": "Agent Assist : Smart Reply",
   "author": {
-    "name": "Botreload iAgent",
-    "email": "saurabhk666@gmail.com",
+    "name": "Botreload",
+    "email": "botreload@gmail.com",
     "url": "https://www.botreload.com"
   },
   "defaultLocale": "en",
-  "private": true,
+  "private": false,
   "location": {
     "support": {
       "ticket_sidebar": "assets/iframe.html"

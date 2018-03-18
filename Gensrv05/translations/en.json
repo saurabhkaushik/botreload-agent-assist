@@ -1,8 +1,8 @@
 {
   "app": {
-    "name": "Zen Tunes",
-    "short_description": "Play the famous zen tunes in your help desk.",
-    "long_description": "Play the famous zen tunes in your help desk and \n listen to the beats it has to offer.",
+    "name": "Agent Assist : Smart Reply",
+    "short_description": "Suggests agent with top 5 suitable replies to customer tickets with power of AI",
+    "long_description": "AgentAssist is an Intelligent Assistant for your Helpdesk Agent using the Power of AI to automate customer service  so that your agents can spend more with the customers that matter most to your business. Based on ticket, it automatically brings most suitable replies which Agent can Apply to Public Reply to customer.",
     "installation_instructions": "Simply click install."
   }
 }

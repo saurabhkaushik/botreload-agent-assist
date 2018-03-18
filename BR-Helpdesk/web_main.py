@@ -46,7 +46,7 @@ def format_output(predicted_intent):
     y_predict_dic = sorted(predicted_intent.items(), key=lambda x: x[1], reverse=True)
     i = 0
     for ss in y_predict_dic:
-        comments_struct.append({'id': i, 'name' : ss[0], 'comment': resp_dict.get(ss[0].strip(), ''), 'prob': int(ss[1]*100)})
+        comments_struct.append({'id': list(resp_dict.keys()).index(ss[0].strip()), 'name' : ss[0], 'comment': resp_dict.get(ss[0].strip(), ''), 'prob': int(ss[1]*100)})
         if (i >= 4):
             break
         i+=1
@@ -106,6 +106,6 @@ def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 if __name__ == '__main__':
-    app.run(threaded=True)
-    #app.run('0.0.0.0', port=80, threaded=True)
+    #app.run(threaded=True)
+    app.run('0.0.0.0', port=80, threaded=True)
         

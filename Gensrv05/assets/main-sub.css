@@ -1,0 +1,281 @@
+#zendeskGSelect{
+  height: 150px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 5px 7px 5px;
+    margin-bottom: 0;
+    font-size: 10px;
+    line-height: 12px;
+    color: #555;
+    text-align: center;
+    text-shadow: none !important;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #fff1ff;
+    background-image: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: none;
+    white-space: nowrap;
+}
+
+textarea:required:invalid, textarea:focus:invalid, input:required:invalid, input:focus:invalid {
+  /* insert your own styles for invalid form input */
+  box-shadow: inset 0 0 2px 0 red;
+}
+
+textarea:required:valid, input:required:valid, input:focus:valid {
+  /* insert your own styles for valid form input */
+  box-shadow: inset 0 0 2px 0 green;
+}
+
+.control-group {
+  margin-bottom: 15px;
+}
+
+li {
+  list-style-type: none;
+}
+
+p.parent {
+  box-shadow: inset 0 0 5px 0 green;
+}
+
+.ui-autocomplete {
+  max-height: 100px;
+  overflow-y: auto;
+  /* prevent horizontal scrollbar */
+  overflow-x: hidden;
+}
+
+.displayList, .displayForm, .displayMultiCreate, .displayUpdate, .removeTicket {
+  display: none;
+}
+
+.centered {
+  text-align: center;
+}
+
+.navigation-buttons {
+  margin-bottom: 20px;
+}
+
+select {
+  display: block;
+  border: 1px solid #CCC;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.ticket_status_label.open, .sla-policy-metric-action-label.open {
+  background: #E82A2A;
+  color: white;
+}
+
+.ticket_status_label.new, .sla-policy-metric-action-label.new {
+  background: #F5CA00;
+  color: white;
+}
+.ticket_status_label.pending, .sla-policy-metric-action-label.pending {
+  background: #30aabc;
+  color: white;
+}
+.ticket_status_label.solved, .sla-policy-metric-action-label.solved {
+  background: gray;
+  color: white;
+}
+.ticket_status_label.closed, .sla-policy-metric-action-label.closed {
+  background: gray;
+  color: white;
+}
+.ticket_status_label.hold, .sla-policy-metric-action-label.hold {
+  background: #000000;
+  color: white;
+}
+.table {
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+
+.table-condensed th, .table-condensed td {
+  padding: 4px 5px;
+}
+
+.table th, .table td {
+  padding: 8px;
+  line-height: 18px;
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid #ddd;
+}
+
+td, th {
+  margin: 0;
+  border: 0;
+  outline: 0;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+.ticket_status_label.toolbar, .sla-policy-metric-action-label.toolbar {
+  padding: 2px 5px 3px 5px;
+  font-size: 10px;
+  text-transform: none;
+  margin-right: 2px;
+  text-shadow: none;
+  line-height: 0;
+  display: inline;
+  position: relative;
+  top: -1px;
+  letter-spacing: 0;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.ticket_status_label, .sla-policy-metric-action-label {
+  padding: 2px 10px 1px 10px;
+  font-size: 14px;
+  border-radius: 3px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  background: #EEE;
+  color: #A0A0A0;
+  text-transform: lowercase;
+  min-height: 14px;
+  font-weight: 400;
+  display: inline-block;
+  line-height: 16px;
+}
+
+
+td.ticket_status {
+  text-align: right;
+}
+
+a, a:hover {
+  text-decoration: none;
+}
+
+a:link {
+  -webkit-tap-highlight-color: #FF5E99;
+}
+
+a:hover, a:active {
+  outline: none;
+}
+
+a:hover {
+  color: #005580;
+  text-decoration: underline;
+}
+
+a {
+  color: #08c;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+.row-fluid {
+    width: 100%;
+}
+
+.row-fluid [class*="span"]:first-child {
+    margin-left: 0;
+}
+
+.row-fluid .span12 {
+    width: 100.0%;
+}
+
+.row-fluid [class*="span"] {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  margin-left: 2.12766%;
+}
+
+.well {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #eee;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.tooltip-styling{
+  background: #000 !important;
+  color: #fff !important;
+  border: none !important;
+  font-size: 10px;
+  box-shadow: none;
+}
+
+input[type="text"], input[type="email"], textarea, select {
+  width: 100% !important;
+}
+
+.pager {
+  padding-left: 0;
+  margin: 20px 0;
+  text-align: right;
+  list-style: none;
+}
+
+.pager li {
+  display: inline;
+}
+
+.pager li>a, .pager li>span {
+  display: inline-block;
+  padding: 5px 14px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+}
+
+a {
+  color: #337ab7;
+  text-decoration: none;
+}

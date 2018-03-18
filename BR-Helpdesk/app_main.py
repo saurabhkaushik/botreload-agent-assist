@@ -7,7 +7,23 @@ from flask import abort
 from flask import url_for
 import csv
 
-import json
+import json 
+
+import logging 
+
+logger = logging.getLogger('br-srv-app')
+hdlr = logging.FileHandler('log/br-app-day.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr) 
+logger.setLevel(logging.INFO) 
+
+loggertrain = logging.getLogger('br-srv-train')
+hdlr = logging.FileHandler('log/br-app-train.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+loggertrain.addHandler(hdlr) 
+loggertrain.setLevel(logging.INFO) 
 
 CANNED_RESP_PATH = 'input/hd_canned_resp.csv'
 
@@ -21,17 +37,18 @@ def format_output(predicted_intent):
 
     i = 0
     for ss in y_predict_dic:
-        comments_struct.append({'id': i, 'name' : ss[0], 'comment': resp_dict.get(ss[0].strip(), ''), 'prob': int(ss[1]*100)})
+        comments_struct.append({'id': list(resp_dict.keys()).index(ss[0].strip()), 'name' : ss[0], 'comment': resp_dict.get(ss[0].strip(), ''), 'prob': int(ss[1]*100)})
         if (i >= 4):
             break
         i+=1
+    print (comments_struct)
     return comments_struct
 
 intenteng = IntentExtractor()
 
 intenteng.prepareTrainingData()
 intenteng.startTrainingProcess()
-predicted_intent = intenteng.getIntentForText("Saurabh Kaushik is not here. Doing Return on last package, I request return of delivered packages.")
+predicted_intent = intenteng.getIntentForText("I want to product info")
 formatted_resp =  format_output(predicted_intent)
 print ("format_output : ", formatted_resp)
 

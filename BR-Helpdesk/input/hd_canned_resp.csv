@@ -1,12 +1,11 @@
-Intent Name,Response 
-Product_Initial_Info,"Thanks for getting in touch for more info on our product. 
-Following are relevent links to this query. 
+Product_Initial_Info,"Thanks for getting in touch for more info on this product. 
+Following are relevant links to this query. 
 [Product Info] 
 Hope this helps. Please let us know, if you need more or specific info. "
-Product_Price ,"Thanks for getting in touch in regards of Price of our Product/Service. Here are details. 
+Product_Price ,"Thanks for getting in touch in regards to Price of this Product/Service. Here are details. 
 [Product Cost Info]
 Hope this helps. Please let us know, if you need more or specific info. "
-Product_PreSales,"Thanks for getting in touch in regards to purchase our Product. 
+Product_PreSales,"Thanks for getting in touch in regards to purchase this Product. 
 Here are details. 
 [Product Sales Info]
 Hope this helps. Please let us know, if you need more or specific info. "
@@ -28,8 +27,8 @@ Product_Availability ,"Thanks for getting in touch in regards to availability of
 Here are details. 
 [Product Availability Details]
 Hope this helps. Please let us know, if you need more or specific info. "
-Technical_Issue,Sorry to hear that your are having this technical issues. We are in process of resolving it and we will get back to you soon. 
-Product_Defective ,Sorry ot hear that you received this defective product. We are arranging pick up of this and will get back to you with more status. 
+Technical_Issue,Sorry to hear that your are having these technical issues. We are in process of resolving them and we will get back to you shortly.  
+Product_Defective ,Sorry to hear that you received this defective product. We are arranging pick up of this and will get back to you with more status. 
 Order_Cancel_Request,Sorry to hear that you wish to cancel this order. We are working to cancel the Order. Will update you soon about its status. 
 Product_Refund_Request,"We have received your request for Refund. Here are updates on it. 
 [Update on Refund]
@@ -38,14 +37,14 @@ Subscription_new ,"Thanks for getting in touch in regards subscription to our se
 Here are details. 
 [Service Subscription Details]
 Hope this helps. Please let us know of any other requirement or concerns. "
-Subscription_Renewal ,"Thanks for getting in touch in regards renewal of subscription to our service.  
+Subscription_Renewal ,"Thanks for getting in touch in regards renewal of subscription to this service.  
 Here are details. 
 [Service Subscription Details]
-Hope this helps. Please let us know of any other requirement or concerns. "
+Hope this helps. Please let us know of any other requirement."
 Service_Disruption ,Sorry to hear that you are facing service disruption issue. We are working on it and we will get back to with more specific update soon. 
 Service_Cancel_request,"Sorry to hear that you want to cancel your subscription. I can certainly do that for you. Would you mind telling me why you’re canceling? If it has to do with product or service quality, we’d like to know because we’re always striving to improve."
 Software_bug,"Thanks for reporting this defect in our product. We have started working on it and soon, we will update you on its resolution. "
-Software_Feature_Request ,"Thanks for suggesting us this new feature for our product. We certainly appriciate your effort and soon, we will get back to you with our plan around it. "
+Software_Feature_Request ,"Thanks for suggesting us this new feature for our product. We certainly appreciate your effort and soon, we will get back to you with our plan around it. "
 Software_Sales_Billing,"Thanks for getting in touch in regards to Product Sales.   
 Here are details. 
 [Product Sales Details]
@@ -61,7 +60,7 @@ Software_Query,"Thanks for reaching out with questions about our product service
 Here are the details for same:
 [Query Resolution Details]
 If you have any questions along the way, don’t hesitate to reach out."
-Request_for_Expert ,"Thanks for reaching out with request to get assistance with our expert technician. Soon, we will be assinging a person and send you his/her contact and schedule details. "
+Request_for_Expert ,"Thanks for reaching out with request to get assistance with our expert technician. Soon, we will be assigning a person and send you his/her contact and schedule details. "
 Phase_sla_breach,We are very sorry that we have breached Service Level Agreement on this issue resolution. Kindly give us some more time and we will get back to you with proper resolution. 
 Phase_Resolution_Wait,We are very sorry that you have to wait for resolution of your issues. Kindly give us some more time and we will get back to you with proper timely resolution. 
 Response_to_Diffuse_Situation ,"Thanks so much for your question about [topic].
@@ -71,4 +70,3 @@ I just wanted to let you know that I’m looking into it and will get back to you 
 If you need me to get back to you sooner, please let me know!"
 Response_to_Angry_situation,I’m really sorry you’re experiencing this problem. I understand how frustrating it must be. I’ll work on finding a solution right away!
 Phase_Feedback,"We’re really glad we were able to solve this problem for you. If you feel we were helpful, would you mind leaving [your product/service] a 5-star review? You can leave a review by going to [link to review]. If you don’t feel we deserve a 5-star review, what can we do to better serve you?”"
-,

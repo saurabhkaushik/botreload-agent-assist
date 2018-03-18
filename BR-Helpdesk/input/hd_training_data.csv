@@ -1,5 +1,4 @@
-Tags,Description,Intent Name
-"Product Info, Information about Product, Planning to purchase","saurabh",Product_Initial_Info
+"Product Info, Information about Product, Planning to purchase",,Product_Initial_Info
 "Cost, Price, Charges, Tax",,Product_Price 
 "Pre-Sale Question, Before purchase, Before Sales, ",,Product_PreSales
 "Order Status, Order Info",,Order_info 
@@ -16,9 +15,9 @@ Refund ,,Product_Refund_Request
 Subscription Renewal ,,Subscription_Renewal 
 Disruption ,,Service_Disruption 
 "Unsubscribe, Cancellation, Discontinue",,Service_Cancel_request
-Bug,,Software_bug
-Feature Request,,Software_Feature_Request 
-Sales Question – Billing ,,Software_Sales_Billing
+"Bug, Issue, ",,Software_bug
+"Feature Request, New Feature, ",,Software_Feature_Request 
+"sale, sales, discount, ",,Software_Sales_Billing
 "How To, Instruction, Manual, Guide, ",,Software_How_To
 "Technical Issue, Unable to fix it, Unable to open it, Debug",,Software_Technical_Issue
 "Subscription Cancel, Cancellation",,Software_Cancellation 
