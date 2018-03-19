@@ -1,8 +1,6 @@
 from gensim.models.word2vec import Word2Vec
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
-from sklearn.feature_extraction.text import TfidfTransformer
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.pipeline import Pipeline
 import re 
 import numpy as np
@@ -10,7 +8,6 @@ from pandas_ml import ConfusionMatrix
 from sklearn.metrics import  f1_score, precision_score, recall_score
 import csv
 from collections import defaultdict
-from sklearn.naive_bayes import MultinomialNB
 
 import logging
 
@@ -50,16 +47,16 @@ class IntentExtractor(object):
         logger.info("\n"+"################# Preparing Training Data ################################"+"\n")
         self.X, self.y = [], []
         # Read CSV for Input and Output Columns 
-        with open(TRAIN_SET_PATH, 'r') as f:
+        with open(TRAIN_SET_PATH, 'r', encoding='windows-1252') as f:
             reader = csv.reader(f)
             train_list = list(reader)
             
         for linestm in train_list:
-            linestm[1] = re.sub('["].,', '', linestm[1])    
-            logger.info (linestm[0] + ', ' + linestm[1] + "  =>  " + linestm[2].lower())
+            linestm[1] = re.sub('["]', '', linestm[1])    
+            logger.info (linestm[0] + ', ' + linestm[1] + "  =>  " + linestm[2])
         
-        self.X = [(item[0].lower().strip().replace(',', '') + ' ' + item[1].lower().strip().replace(',', '')) for item in train_list]
-        self.y = [item[2].strip().replace(',', '') for item in train_list]
+        self.X = [(item[0] + ', ' + item[1]).split() for item in train_list]
+        self.y = [item[2] for item in train_list]
         
         self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
         logger.info ("Total Training Examples : %s" % len(self.y))
@@ -68,7 +65,7 @@ class IntentExtractor(object):
         logger.info("\n"+"################# Preparing Testing Data ################################"+"\n")
         self.test_X, self.test_y = [], []
         # Read CSV for Input and Output Columns 
-        with open(TEST_SET_PATH, 'r') as f:
+        with open(TEST_SET_PATH, 'r', encoding='windows-1252') as f:
             reader = csv.reader(f)
             self.train_list = list(reader)
             
@@ -76,7 +73,7 @@ class IntentExtractor(object):
             linestm[1] = re.sub('["]', '', linestm[1])    
             logger.info (linestm[0], "  =>  " + linestm[1])
         
-        self.test_X = [item[0] for item in self.train_list]
+        self.test_X = [item[0].split() for item in self.train_list]
         self.test_y = [item[1] for item in self.train_list]
         
         self.X, self.y = np.array(self.X), np.array(self.y)
@@ -84,10 +81,11 @@ class IntentExtractor(object):
     
     def startTrainingProcess(self):
         logger.info("\n"+"################# Starting Training Processing ################################"+"\n")
-        '''self.model = Word2Vec(self.X, size=100, window=5, min_count=1, workers=2)
+        self.model = Word2Vec(self.X, size=100, window=5, min_count=1, workers=2)
         self.model.wv.index2word
-        w2v = {w: vec for w, vec in zip(self.model.wv.index2word, self.model.wv.syn0)}'''
-        self.etree_w2v_tfidf = Pipeline([('vect', CountVectorizer()), ('tfidf', TfidfTransformer()), ('clf', MultinomialNB())])
+        w2v = {w: vec for w, vec in zip(self.model.wv.index2word, self.model.wv.syn0)}
+        self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", TfidfEmbeddingVectorizer(w2v)), 
+                        ("extra trees", ExtraTreesClassifier(n_estimators=200))])
         self.etree_w2v_tfidf.fit(self.X, self.y)
         logger.info ("Total Training Samples : %s" % len(self.y))
 
@@ -100,7 +98,7 @@ class IntentExtractor(object):
     def getIntentForText(self, textinput): 
         logger.info("\n"+"################# Starting Testing Process ################################"+"\n")
         self.test_X = []
-        self.test_X.append(textinput)
+        self.test_X.append(textinput.split())
         logger.info(self.test_X)
         self.predicted = self.etree_w2v_tfidf.predict(self.test_X) 
         self.predicted_prob = self.etree_w2v_tfidf.predict_proba(self.test_X)  

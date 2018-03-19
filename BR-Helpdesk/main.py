@@ -10,7 +10,7 @@ import json
 import time
 import os
 import logging 
-
+ 
 app = Flask(__name__) 
 
 logger = logging.getLogger('br-srv-app')
