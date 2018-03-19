@@ -4,7 +4,7 @@ var response_data = {server_response : ''};
 
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = '104.196.175.24';
+var SERVER_NAME = 'https://sl-helpdesk.appspot.com'; //'http://104.196.175.24'
 var header = 'Hi ';
 var footer = '<br><br>Thanks, <br> - ';
 
@@ -88,7 +88,7 @@ function getResponseData(client) {
 	//console.log(ticket_data);
 	var resp_data = '';
 	var settings = {
-	    url: 'http://'+ SERVER_NAME +'/intent',
+	    url: SERVER_NAME +'/intent',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
 	    type: 'POST',
 	    contentType: 'application/json',
@@ -136,7 +136,7 @@ function getTicketData(){
 function uploadTicketData(tickets) {
 	console.log('uploadTicketData:');
 	var settings = {
-	    url: 'http://'+ SERVER_NAME +'/uploadtickets',
+	    url: SERVER_NAME +'/uploadtickets',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
 	    type: 'POST',
 	    contentType: 'application/json',
@@ -160,7 +160,7 @@ function uploadTicketData(tickets) {
 function uploadFeedbackData() {
 	console.log('uploadFeedbackData:');
 	var settings = {
-	    url: 'http://'+ SERVER_NAME +'/feedbkloop',
+	    url: SERVER_NAME +'/feedbkloop',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
 	    type: 'POST',
 	    contentType: 'application/json',
