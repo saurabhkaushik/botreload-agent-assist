@@ -37,18 +37,17 @@ def format_output(predicted_intent):
 
     i = 0
     for ss in y_predict_dic:
-        comments_struct.append({'id': list(resp_dict.keys()).index(ss[0].strip()), 'name' : ss[0], 'comment': resp_dict.get(ss[0].strip(), ''), 'prob': int(ss[1]*100)})
+        comments_struct.append({'id': i, 'name' : ss[0], 'comment': resp_dict.get(ss[0].strip(), ''), 'prob': int(ss[1]*100)})
         if (i >= 4):
             break
         i+=1
-    print (comments_struct)
     return comments_struct
 
 intenteng = IntentExtractor()
 
 intenteng.prepareTrainingData()
 intenteng.startTrainingProcess()
-predicted_intent = intenteng.getIntentForText("I want to product info")
+predicted_intent = intenteng.getIntentForText("Thanks for getting in touch for more info on our product. ")
 formatted_resp =  format_output(predicted_intent)
 print ("format_output : ", formatted_resp)
 
