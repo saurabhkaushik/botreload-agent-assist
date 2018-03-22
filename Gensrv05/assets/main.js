@@ -4,7 +4,9 @@ var response_data = {server_response : ''};
 
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = 'https://sl-helpdesk.appspot.com'; //'http://104.196.175.24'
+var SERVER_NAME = 'https://sl-helpdesk.appspot.com'; 
+//var SERVER_NAME = 'https://br-helpdesk-test.appspot.com'; 
+//var SERVER_NAME = 'http://104.196.175.24';
 var header = 'Hi ';
 var footer = '<br><br>Thanks, <br> - ';
 
