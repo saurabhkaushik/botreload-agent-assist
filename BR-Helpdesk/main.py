@@ -1,5 +1,7 @@
 from src.EntityExtractor import EntityExtractor
 from src.IntentExtractor import IntentExtractor
+from src.dsConnector import dsConnector
+
 from flask import Flask, jsonify
 from flask import request
 from flask import make_response
@@ -10,7 +12,7 @@ import json
 import time
 import os
 import logging 
- 
+
 app = Flask(__name__) 
 
 logger = logging.getLogger('br-srv-app')
@@ -29,13 +31,12 @@ loggertrain.setLevel(logging.INFO)
 
 entityeng = EntityExtractor() 
 intenteng = IntentExtractor()
+dsConnect = dsConnector()
 
 intenteng.prepareTrainingData()
 intenteng.startTrainingProcess()
 
 CANNED_RESP_PATH = 'input/hd_canned_resp.csv'
-#TICKET_FILE = 'log/ticket_'
-#FEEDBACK_FILE = 'log/feedback.csv'
 
 def format_output(predicted_intent): 
     comments_struct = []    
@@ -46,22 +47,25 @@ def format_output(predicted_intent):
     y_predict_dic = sorted(predicted_intent.items(), key=lambda x: x[1], reverse=True)
     i = 0
     for ss in y_predict_dic:
-        comments_struct.append({'id': i, 'name' : ss[0], 'comment': resp_dict.get(ss[0].strip(), ''), 'prob': int(ss[1]*100)})
+        comments_struct.append({'id': list(resp_dict.keys()).index(ss[0].strip()), 'name' : ss[0], 'comment': resp_dict.get(ss[0].strip(), ''), 'prob': int(ss[1]*100)})
         if (i >= 4):
             break
         i+=1
-    loggertrain.info('format_output : ' + str(comments_struct))
     return comments_struct
 
 @app.route('/intent', methods=['POST'])
 def intent():
     loggertrain.info('intent : ' + str(request.json))
+    dsConnect.add_logs('intent', str(request.json))
+ 
     received_data = request.json
     intent_input = received_data['description'] + '. ' + received_data['comment'] + '. ' + received_data['subject']
     predicted_intent = intenteng.getIntentForText(intent_input)
     formatted_resp =  format_output(predicted_intent)
-    logger.info ('Output :' + str(formatted_resp))
     json_resp = json.dumps(formatted_resp)
+    
+    logger.info('response : ' + str(json_resp))
+    dsConnect.add_logs('response', str(json_resp))
     return json_resp
 
 @app.route('/entity', methods=['POST'])
@@ -80,25 +84,14 @@ def entity():
 
 @app.route('/uploadtickets', methods=['POST'])
 def uploadtickets():
-    loggertrain.info('uploadtickets : ' + str(request.json))
-    '''received_data = request.json
-    with open(TICKET_FILE + str(time.time()) + '.csv', 'w') as outfile:
-        json.dump(received_data, outfile)
-    json_resp = json.dumps(received_data)'''
+    loggertrain.info('tickets : ' + str(request.json))
+    dsConnect.add_logs('tickets', str(request.json))
     return '200' 
 
 @app.route('/feedbkloop', methods=['POST'])
 def uploadfeedback():
-    loggertrain.info('uploadfeedback : ' + str(request.json))
-    '''received_data = request.json
-    if os.path.exists(FEEDBACK_FILE):
-        append_write = 'a' # append if already exists
-    else:
-        append_write = 'w' # make a new file if not
-
-    with open(FEEDBACK_FILE, append_write) as outfile:
-        json.dump(received_data, outfile)'''
-    #json_resp = json.dumps(received_data)
+    loggertrain.info('feedback : ' + str(request.json))
+    dsConnect.add_logs('feedback', str(request.json))
     return '200'  
 
 @app.errorhandler(404)
