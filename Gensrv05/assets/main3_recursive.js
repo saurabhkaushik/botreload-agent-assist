@@ -134,9 +134,39 @@ function getTicketData(){
     }
 	);
 }
+var ticket_json_data = [];
+function getTicketDataRecurssive(url2){
+	console.log('getTicketData:');
+	var settings = {
+		url: url2,
+	    type: 'GET',
+	    contentType: 'application/json',
+	    dataType: 'json'
+	    	}; 
+	client.request(settings).then(
+    function(data) {
+        if (data['next_page'] != null) {
+        	ticket_json_data.push(data);
+        	getTicketDataRecurssive(data['next_page']);
+        	return;
+        }
+    	uploadTicketData(ticket_json_data); 
+    },
+    function(response) {
+      var msg = 'Error ' + response.status + ' ' + response.statusText;
+      //client.invoke('notify', msg, 'error');
+      console.log('Error : '+ msg);
+    }
+	);
+}
+
+function getTicketData(){
+	var url = '/api/v2/tickets.json?per_page=1';
+	getTicketDataRecurssive(url);
+}
 
 function uploadTicketData(tickets) {
-	//console.log('uploadTicketData:');
+	console.log('uploadTicketData:');
 	var settings = {
 	    url: SERVER_NAME +'/uploadtickets',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
@@ -149,7 +179,7 @@ function uploadTicketData(tickets) {
     function(data) {
       //client.invoke('notify', 'Received Ticket Responses.');
       //console.log(data);
-      console.log('uploadTicketData: Success');
+      console.log('uploadTicketData: Success' );
     },
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;
