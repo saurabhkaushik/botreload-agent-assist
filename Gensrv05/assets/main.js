@@ -113,7 +113,13 @@ function getResponseData(client) {
 	);
 }
 
+var called_flag = false;
 function getTicketData(){
+	if (called_flag == false) {
+		called_flag = true;
+	} else {
+		return;
+	}
 	console.log('getTicketData:');
 	var settings = {
 		url: '/api/v2/tickets.json',

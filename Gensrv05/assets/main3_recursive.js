@@ -113,27 +113,7 @@ function getResponseData(client) {
 	);
 }
 
-function getTicketData(){
-	console.log('getTicketData:');
-	var settings = {
-		url: '/api/v2/tickets.json',
-	    type: 'GET',
-	    contentType: 'application/json',
-	    dataType: 'json'
-	    	}; 
 
-	client.request(settings).then(
-    function(data) {
-        //console.log(data);
-    	uploadTicketData(data); 
-    },
-    function(response) {
-      var msg = 'Error ' + response.status + ' ' + response.statusText;
-      //client.invoke('notify', msg, 'error');
-      console.log('Error : '+ msg);
-    }
-	);
-}
 var ticket_json_data = [];
 function getTicketDataRecurssive(url2){
 	console.log('getTicketData:');
@@ -160,7 +140,13 @@ function getTicketDataRecurssive(url2){
 	);
 }
 
+var called_flag = false;
 function getTicketData(){
+	if (called_flag == false) {
+		called_flag = true;
+	} else {
+		return;
+	}
 	var url = '/api/v2/tickets.json?per_page=1';
 	getTicketDataRecurssive(url);
 }
