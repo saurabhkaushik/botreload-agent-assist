@@ -69,7 +69,7 @@ function applyComment(event, id, kid) {
     showPostApply();
     feedback_data.selected_response_id = id;
     feedback_data.ticket_data = ticket_data;
-    uploadFeedbackData(feedback_data);
+    syncFeedbackData(feedback_data);
 };
 
 function showError() {
@@ -131,7 +131,7 @@ function getTicketData(){
 	client.request(settings).then(
     function(data) {
         //console.log(data);
-    	uploadTicketData(data); 
+    	syncTicketData(data); 
     },
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;
@@ -141,8 +141,8 @@ function getTicketData(){
 	);
 }
 
-function uploadTicketData(tickets) {
-	//console.log('uploadTicketData:');
+function syncTicketData(tickets) {
+	//console.log('syncTicketData:');
 	var settings = {
 	    url: SERVER_NAME +'/uploadtickets',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
@@ -155,18 +155,18 @@ function uploadTicketData(tickets) {
     function(data) {
       //client.invoke('notify', 'Received Ticket Responses.');
       //console.log(data);
-      console.log('uploadTicketData: Success');
+      console.log('syncTicketData: Success');
     },
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;
       //client.invoke('notify', msg, 'error');
-      console.log('uploadTicketData:' + msg);
+      console.log('syncTicketData:' + msg);
     }
   );
 }
 
-function uploadFeedbackData() {
-	//console.log('uploadFeedbackData:');
+function syncFeedbackData() {
+	//console.log('syncFeedbackData:');
 	var settings = {
 	    url: SERVER_NAME +'/feedbkloop',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
@@ -179,12 +179,12 @@ function uploadFeedbackData() {
     function(data) {
       //client.invoke('notify', 'Received Ticket Responses.');
       //console.log(data);
-      console.log('uploadFeedbackData: Success');
+      console.log('syncFeedbackData: Success');
     },
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;
       //client.invoke('notify', msg, 'error');
-      console.log('uploadFeedbackData:' + msg);
+      console.log('syncFeedbackData:' + msg);
     }
   );
 }
