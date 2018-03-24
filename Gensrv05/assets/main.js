@@ -4,7 +4,9 @@ var response_data = {server_response : ''};
 
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = '104.196.175.24';
+var SERVER_NAME = 'https://sl-helpdesk.appspot.com'; 
+//var SERVER_NAME = 'https://br-helpdesk-test.appspot.com'; 
+//var SERVER_NAME = 'http://104.196.175.24';
 var header = 'Hi ';
 var footer = '<br><br>Thanks, <br> - ';
 
@@ -15,7 +17,7 @@ $(function() {
 });
 
 function firstData() {
-	console.log('firstData:');
+	//console.log('firstData:');
 	Promise.all([client.get('ticket.id'),
 	  			client.get('ticket.description'), 
 	  			client.get('currentUser'),
@@ -67,7 +69,7 @@ function applyComment(event, id, kid) {
     showPostApply();
     feedback_data.selected_response_id = id;
     feedback_data.ticket_data = ticket_data;
-    uploadFeedbackData(feedback_data);
+    syncFeedbackData(feedback_data);
 };
 
 function showError() {
@@ -88,7 +90,7 @@ function getResponseData(client) {
 	//console.log(ticket_data);
 	var resp_data = '';
 	var settings = {
-	    url: 'http://'+ SERVER_NAME +'/intent',
+	    url: SERVER_NAME +'/intent',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
 	    type: 'POST',
 	    contentType: 'application/json',
@@ -105,13 +107,19 @@ function getResponseData(client) {
 	    function(response) {
 	      var msg = 'Error ' + response.status + ' ' + response.statusText;
 	      client.invoke('notify', msg, 'error');
-	      console.log('getResponseData:'+response);
+	      console.log('getResponseData:' + msg);
 	      showError()
 	    }
 	);
 }
 
+var called_flag = false;
 function getTicketData(){
+	if (called_flag == false) {
+		called_flag = true;
+	} else {
+		return;
+	}
 	console.log('getTicketData:');
 	var settings = {
 		url: '/api/v2/tickets.json',
@@ -122,21 +130,21 @@ function getTicketData(){
 
 	client.request(settings).then(
     function(data) {
-      //console.log(data);
-    	uploadTicketData(data); 
+        //console.log(data);
+    	syncTicketData(data); 
     },
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;
       //client.invoke('notify', msg, 'error');
-      console.log('Error : '+ response);
+      console.log('Error : '+ msg);
     }
 	);
 }
 
-function uploadTicketData(tickets) {
-	console.log('uploadTicketData:');
+function syncTicketData(tickets) {
+	//console.log('syncTicketData:');
 	var settings = {
-	    url: 'http://'+ SERVER_NAME +'/uploadtickets',
+	    url: SERVER_NAME +'/uploadtickets',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
 	    type: 'POST',
 	    contentType: 'application/json',
@@ -147,20 +155,20 @@ function uploadTicketData(tickets) {
     function(data) {
       //client.invoke('notify', 'Received Ticket Responses.');
       //console.log(data);
-      //console.log('uploadTicketData: Success');
+      console.log('syncTicketData: Success');
     },
     function(response) {
-      //var msg = 'Error ' + response.status + ' ' + response.statusText;
+      var msg = 'Error ' + response.status + ' ' + response.statusText;
       //client.invoke('notify', msg, 'error');
-      console.log('uploadTicketData:'+response);
+      console.log('syncTicketData:' + msg);
     }
   );
 }
 
-function uploadFeedbackData() {
-	console.log('uploadFeedbackData:');
+function syncFeedbackData() {
+	//console.log('syncFeedbackData:');
 	var settings = {
-	    url: 'http://'+ SERVER_NAME +'/feedbkloop',
+	    url: SERVER_NAME +'/feedbkloop',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
 	    type: 'POST',
 	    contentType: 'application/json',
@@ -171,12 +179,12 @@ function uploadFeedbackData() {
     function(data) {
       //client.invoke('notify', 'Received Ticket Responses.');
       //console.log(data);
-      //console.log('uploadFeedbackData: Success');
+      console.log('syncFeedbackData: Success');
     },
     function(response) {
-      //var msg = 'Error ' + response.status + ' ' + response.statusText;
+      var msg = 'Error ' + response.status + ' ' + response.statusText;
       //client.invoke('notify', msg, 'error');
-      console.log('uploadFeedbackData:'+response);
+      console.log('syncFeedbackData:' + msg);
     }
   );
 }
