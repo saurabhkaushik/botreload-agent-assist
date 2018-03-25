@@ -1,4 +1,4 @@
-from gensim.models.word2vec import Word2Vec
+from gensim.models.word2vec import Word2Vec 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.pipeline import Pipeline

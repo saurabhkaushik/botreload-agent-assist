@@ -1,4 +1,4 @@
-#import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt 
 from gensim.models.word2vec import Word2Vec
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import ExtraTreesClassifier
