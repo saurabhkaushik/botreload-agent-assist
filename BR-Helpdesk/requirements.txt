@@ -7,3 +7,4 @@ pandas_ml>=0.0
 nltk>=0.0
 gensim>=2.1
 google-cloud-datastore==1.6.0
+  
