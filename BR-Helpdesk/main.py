@@ -15,21 +15,7 @@ import logging
 
 app = Flask(__name__) 
 
-logger = logging.getLogger('br-srv-app')
-hdlr = logging.FileHandler('log/br-app-day.log')
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-hdlr.setFormatter(formatter)
-logger.addHandler(hdlr) 
-logger.setLevel(logging.INFO) 
-
-loggertrain = logging.getLogger('br-srv-train')
-hdlr = logging.FileHandler('log/br-app-train.log')
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-hdlr.setFormatter(formatter)
-loggertrain.addHandler(hdlr) 
-loggertrain.setLevel(logging.INFO) 
-
-entityeng = EntityExtractor() 
+entityeng = EntityExtractor()
 intenteng = IntentExtractor()
 dsConnect = dsConnector()
 
@@ -55,7 +41,7 @@ def format_output(predicted_intent):
 
 @app.route('/intent', methods=['POST'])
 def intent():
-    loggertrain.info('intent : ' + str(request.json))
+    logging.info('intent : ')
     dsConnect.add_logs('intent', str(request.json))
  
     received_data = request.json
@@ -64,7 +50,7 @@ def intent():
     formatted_resp =  format_output(predicted_intent)
     json_resp = json.dumps(formatted_resp)
     
-    logger.info('response : ' + str(json_resp))
+    logging.info('response : ' )
     dsConnect.add_logs('response', str(json_resp))
     return json_resp
 
@@ -84,13 +70,13 @@ def entity():
 
 @app.route('/uploadtickets', methods=['POST'])
 def uploadtickets():
-    loggertrain.info('tickets : ' + str(request.json))
+    logging.info('tickets : ')
     dsConnect.add_logs('tickets', str(request.json))
     return '200' 
 
 @app.route('/feedbkloop', methods=['POST'])
 def uploadfeedback():
-    loggertrain.info('feedback : ' + str(request.json))
+    logging.info('feedback : ')
     dsConnect.add_logs('feedback', str(request.json))
     return '200'  
 
