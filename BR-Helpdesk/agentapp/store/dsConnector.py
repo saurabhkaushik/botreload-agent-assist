@@ -41,11 +41,18 @@ class dsConnector(object):
             task['done'] = True
     
             self.client.put(task)
-    # [END update_entity]
-    
+    # [END update_entity]    
     
     # [START retrieve_entities]
-    def list_tasks(self):
+    def list_logs(self):
+        query = self.client.query(kind='Task')
+        query.order = ['created']
+    
+        return list(query.fetch())
+    # [END retrieve_entities]
+    
+    # [START retrieve_entities]
+    def list_logs_byType(self, l_type):
         query = self.client.query(kind='Task')
         query.order = ['created']
     
@@ -54,14 +61,14 @@ class dsConnector(object):
     
     
     # [START delete_entity]
-    def delete_task(self, task_id):
+    def delete_logs(self, task_id):
         key = self.client.key('Task', task_id)
         self.client.delete(key)
     # [END delete_entity]
     
     
     # [START format_results]
-    def format_tasks(self, tasks):
+    def format_logs(self, tasks):
         lines = []
         for task in tasks:
             if task['done']:
@@ -75,7 +82,7 @@ class dsConnector(object):
         return '\n'.join(lines)
     # [END format_results]
     
-    
+'''
     def new_command(self, args):
         """Adds a task with description <description>."""
         task_key = self.add_task(self, self.client, args.description)
@@ -93,12 +100,12 @@ class dsConnector(object):
         print(self.format_tasks(self.list_tasks(self.client)))
     
     
-    def delete_command(self, args):
+    def delete_command(self, task_id):
         """Deletes a task."""
-        self.delete_task(self.client, args.task_id)
-        print('Task {} deleted.'.format(args.task_id))
+        self.delete_task(self.client, task_id)
+        print('Task {} deleted.'.format(task_id))
 
-'''
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers()
