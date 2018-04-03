@@ -62,7 +62,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         json_resp = json.dumps(formatted_resp)
         
         logging.info('response : ' )
-        get_model().create('response', str(request.json))
+        get_model().create('response', str(json_resp))
         return json_resp
 
     @app.route('/entity', methods=['POST'])
@@ -89,6 +89,12 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     def uploadfeedback():
         logging.info('feedback : ')
         get_model().create('feedback', str(request.json))
+        return '200'  
+    
+    @app.route('/training', methods=['GET'])
+    def startTraining():
+        logging.info('startTraining : ')
+        get_model().create('startTraining', str(request.json))        
         return '200'  
     
     @app.errorhandler(404)
