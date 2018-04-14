@@ -4,7 +4,7 @@ var response_data = {server_response : ''};
 
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = 'https://sl-helpdesk.appspot.com'; 
+var SERVER_NAME = 'https://br-aa-srv-dev.appspot.com'; 
 //var SERVER_NAME = 'https://br-helpdesk-test.appspot.com'; 
 //var SERVER_NAME = 'http://104.196.175.24';
 var header = 'Hi ';
@@ -84,7 +84,7 @@ function showError() {
 	$("#content").html(html);
 }
 
-function getResponseData(client) {
+function getResponseData(client) { 
 	console.log('getResponseData:');
 	var query_data = ticket_data;
 	//console.log(ticket_data);

@@ -1,5 +1,7 @@
 from agentapp.EntityExtractor import EntityExtractor
 from agentapp.IntentExtractor import IntentExtractor
+from agentapp.tickets_learner import tickets_learner
+from agentapp.model_select import get_model, getTrainingModel
 
 from flask import current_app, redirect
 from flask import Flask, jsonify
@@ -15,6 +17,8 @@ import os
 import logging 
 
 CANNED_RESP_PATH = 'input/hd_canned_resp.csv'
+entityeng = EntityExtractor()
+intenteng = IntentExtractor()
 
 def create_app(config, debug=False, testing=False, config_overrides=None):
     app = Flask(__name__)
@@ -34,16 +38,15 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     with app.app_context():
         model = get_model()
         model.init_app(app)
+        ticketLearner = tickets_learner()
+        ticketLearner.import_trainingdata()
+        ticketLearner.import_responsedata()
+        intenteng.prepareTrainingData_ds()
+        intenteng.startTrainingProcess()
 
     # Register the Bookshelf CRUD blueprint.
     from .crud import crud
     app.register_blueprint(crud, url_prefix='/books')
-
-    entityeng = EntityExtractor()
-    intenteng = IntentExtractor()
-    
-    intenteng.prepareTrainingData()
-    intenteng.startTrainingProcess()
     
     # Add a default root route.
     @app.route("/")
@@ -53,16 +56,15 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     @app.route('/intent', methods=['POST'])
     def intent():
         logging.info('intent : ')
-        get_model().create('intent', str(request.json))
+        get_model().create('intent', json.dumps(request.json))
         
         received_data = request.json
         intent_input = received_data['description'] + '. ' + received_data['comment'] + '. ' + received_data['subject']
         predicted_intent = intenteng.getIntentForText(intent_input)
-        formatted_resp =  format_output(predicted_intent)
+        formatted_resp =  format_output_ds(predicted_intent)
+        print ('formatted_resp: ', formatted_resp)
         json_resp = json.dumps(formatted_resp)
-        
-        logging.info('response : ' )
-        get_model().create('response', str(json_resp))
+        get_model().create('response', json_resp)
         return json_resp
 
     @app.route('/entity', methods=['POST'])
@@ -82,28 +84,46 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     @app.route('/uploadtickets', methods=['POST'])
     def uploadtickets():
         logging.info('tickets : ')
-        get_model().create('tickets', str(request.json))
+        get_model().create('tickets', json.dumps(request.json))
         return '200' 
     
     @app.route('/feedbkloop', methods=['POST'])
     def uploadfeedback():
         logging.info('feedback : ')
-        get_model().create('feedback', str(request.json))
+        get_model().create('feedback', json.dumps(request.json))
+        return '200'  
+    
+    @app.route('/importdata', methods=['GET'])
+    def startDataImport():
+        logging.info('startDataImport : ')
+        ticketLearner = tickets_learner() 
+        ticketLearner.import_trainingdata()  
+        ticketLearner.import_responsedata() 
+        return '200'  
+    
+    @app.route('/preparedata', methods=['GET'])
+    def prepareTrainingData():
+        logging.info('prepareTrainingData : ')
+        ticketLearner = tickets_learner() 
+        ticketLearner.extract_save_data() 
         return '200'  
     
     @app.route('/training', methods=['GET'])
-    def startTraining():
-        logging.info('startTraining : ')
-        get_model().create('startTraining', str(request.json))        
-        return '200'  
+    def doFunctionTesting():
+        logging.info('doFunctionTesting : ')
+        intenteng2 = IntentExtractor()
+        intenteng2.prepareTrainingData_ds()
+        intenteng2.startTrainingProcess()
+        predictedint = intenteng2.getIntentForText('I have received this defective product. It has been malfunctioning from day one. Kindly replace it asap.')
+        print(predictedint)
+        #ticketLearner = tickets_learner()
+        #ticketLearner.get_response_mapping('Software_Sales_Billing')
+        return '200'
     
     @app.errorhandler(404)
     def not_found(error):
         return make_response(jsonify({'error': 'Not found'}), 404)
 
-    # Add an error handler. This is useful for debugging the live application,
-    # however, you should disable the output of the exception for production
-    # applications.
     @app.errorhandler(500)
     def server_error(e):
         return """
@@ -113,24 +133,13 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
 
     return app
 
-
-def get_model():
-    model_backend = current_app.config['DATA_BACKEND']
-    if model_backend == 'cloudsql':
-        from . import model_cloudsql
-        model = model_cloudsql
-    elif model_backend == 'datastore':
-        from . import model_datastore
-        model = model_datastore
-    elif model_backend == 'mongodb':
-        from . import model_mongodb
-        model = model_mongodb
-    else:
-        raise ValueError(
-            "No appropriate databackend configured. "
-            "Please specify datastore, cloudsql, or mongodb")
-
-    return model
+def startModel():
+    print ('--- Initializing Models and Training Process ----- ')
+    ticketLearner = tickets_learner() 
+    ticketLearner.import_trainingdata()  
+    ticketLearner.import_responsedata()
+    intenteng.prepareTrainingData_ds()
+    intenteng.startTrainingProcess()
 
 def format_output(predicted_intent): 
     comments_struct = []    
@@ -142,6 +151,20 @@ def format_output(predicted_intent):
     i = 0
     for ss in y_predict_dic:
         comments_struct.append({'id': list(resp_dict.keys()).index(ss[0].strip()), 'name' : ss[0], 'comment': resp_dict.get(ss[0].strip(), ''), 'prob': int(ss[1]*100)})
+        if (i >= 4):
+            break
+        i+=1
+    return comments_struct
+
+def format_output_ds(predicted_intent): 
+    tickets_learn = tickets_learner()
+    comments_struct = []    
+    y_predict_dic = sorted(predicted_intent.items(), key=lambda x: x[1], reverse=True)
+    i = 0
+    for ss in y_predict_dic:
+        response_data = tickets_learn.get_response_mapping(ss[0].strip())
+        if response_data != None: 
+            comments_struct.append({'id': response_data['id'], 'name' : response_data['resp_name'], 'comment': response_data['response_text'], 'prob': int(ss[1]*100)})
         if (i >= 4):
             break
         i+=1

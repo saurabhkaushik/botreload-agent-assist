@@ -8,6 +8,8 @@ from pandas_ml import ConfusionMatrix
 from sklearn.metrics import  f1_score, precision_score, recall_score
 import csv
 from collections import defaultdict
+from agentapp.model_select import get_model, getTrainingModel, getResponseModel
+from agentapp.tickets_learner import tickets_learner
 
 import logging
 
@@ -55,6 +57,34 @@ class IntentExtractor(object):
         
         self.X = [(item[0] + ', ' + item[1]).split() for item in train_list]
         self.y = [item[2] for item in train_list]
+        
+        self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
+        logging.info ("Total Training Examples : %s" % len(self.y))
+        
+    def prepareTrainingData_ds(self):
+        logging.info("\n"+"################# Preparing Training Data ################################"+"\n")
+        self.X, self.y = [], []
+        
+        tickets_learn = tickets_learner()
+        ticket_data = tickets_learn.getTrainingData()
+        #print ('ticket_data : ', ticket_data)
+    
+        # Read CSV for Input and Output Columns 
+        '''with open(TRAIN_SET_PATH, 'r', encoding='windows-1252') as f:
+            reader = csv.reader(f)
+            train_list = list(reader)
+           ''' 
+        xX = []
+        yY = []
+        for linestms in ticket_data:           
+            for linestm in linestms:
+                #linestm[1] = re.sub('["]', '', linestm[1]) 
+                logging.info (linestm['tags'] + " =>  " + linestm['response'])
+                xX.append(linestm['tags'].split())
+                yY.append(linestm['response'])
+        #print (xX, yY)
+        self.X = xX
+        self.y = yY
         
         self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
         logging.info ("Total Training Examples : %s" % len(self.y))

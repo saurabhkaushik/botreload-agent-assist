@@ -12,7 +12,7 @@ def list():
     if token:
         token = token.encode('utf-8')
 
-    books, next_page_token = get_model().list(cursor=token)
+    books, next_page_token = get_model().list('tickets', cursor=token)
 
     return render_template(
         "list.html",

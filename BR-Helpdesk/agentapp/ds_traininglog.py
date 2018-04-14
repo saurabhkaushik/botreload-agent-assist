@@ -34,10 +34,12 @@ def from_datastore(entity):
 
 
 # [START list]
-def list(limit=10, cursor=None):
+def list(log_type, limit=10, cursor=None):
     ds = get_client()
 
-    query = ds.query(kind='TrainingData') #, order=['type'])
+    query = ds.query(kind='TrainingLog', order=['type'])
+    if log_type: 
+        query.add_filter('type', '=', log_type)
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)
 
@@ -52,31 +54,28 @@ def list(limit=10, cursor=None):
 
 def read(id):
     ds = get_client()
-    key = ds.key('TrainingData', int(id))
+    key = ds.key('TrainingLog', int(id))
     results = ds.get(key)
     return from_datastore(results)
 
 
 # [START update]
-def update(tags, query, response, id=None):
+def update(req_type, data, id=None):
     ds = get_client()
     
     if id:
-        key = ds.key('TrainingData', int(id))
+        key = ds.key('TrainingLog', int(id))
     else:
-        key = ds.key('TrainingData')
+        key = ds.key('TrainingLog')
 
     entity = datastore.Entity(
         key=key,
-        exclude_from_indexes=['query', 'response'])
+        exclude_from_indexes=['json_data'])
     
     entity.update({
-            'tags': tags,
-            'query' : query,
-            'query_category' : '', #query_category,
-            'response' : response,
-            'resp_category': '',  #resp_category,
+            'type': req_type,
             'created': datetime.datetime.utcnow(),
+            'json_data': data,
             'done': False
         })
     
@@ -91,5 +90,5 @@ create = update
 
 def delete(id):
     ds = get_client()
-    key = ds.key('TrainingData', int(id))
+    key = ds.key('TrainingLog', int(id))
     ds.delete(key)
