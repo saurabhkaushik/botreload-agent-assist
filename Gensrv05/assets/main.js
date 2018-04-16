@@ -1,12 +1,10 @@
-var ticket_data = {id : 0, description:'', comment:'', currentUser:'', subject:'', assignee:'', requester:'' , currentAccount:''};
+var ticket_data = {id : 0, description:'', comment:'', comments: '', currentUser:'', subject:'', assignee:'', requester:'' , currentAccount:''};
 var feedback_data = {selected_response_id : 0, ticket_data : ''};
 var response_data = {server_response : ''};
 
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = 'https://br-aa-srv-dev.appspot.com'; 
-//var SERVER_NAME = 'https://br-helpdesk-test.appspot.com'; 
-//var SERVER_NAME = 'http://104.196.175.24';
+var SERVER_NAME = 'https://br-aa-srv-prod.appspot.com'; 
 var header = 'Hi ';
 var footer = '<br><br>Thanks, <br> - ';
 
@@ -18,24 +16,24 @@ $(function() {
 
 function firstData() {
 	//console.log('firstData:');
-	Promise.all([client.get('ticket.id'),
-	  			client.get('ticket.description'), 
+	Promise.all([client.get('ticket'),
 	  			client.get('currentUser'),
-	  			client.get('ticket.subject'),
-	  			client.get('ticket.assignee.user'),
-	  			client.get('ticket.requester.name'),
 	  			client.get('currentAccount')]).then(
 				  function fullfilled(contents){
-					  ticket_data.id = contents[0]['ticket.id'];
-					  ticket_data.description = contents[1]['ticket.description'];
-					  ticket_data.currentUser = contents[2]['currentUser'];
-					  ticket_data.subject = contents[3]['ticket.subject'];
-					  ticket_data.assignee = contents[4]['ticket.assignee.user'];
-					  ticket_data.requester = contents[5]['ticket.requester.name'];
-					  ticket_data.currentAccount = contents[6]['currentAccount'];
+					  ticket_data.id = contents[0]['ticket']['id'];
+					  ticket_data.description = contents[0]['ticket']['description'];
+					  ticket_data.subject = contents[0]['ticket']['subject'];
+					  ticket_data.assignee = contents[0]['ticket']['assignee']['user'];
+					  ticket_data.requester = contents[0]['ticket']['requester'];
+					  ticket_data.comments = contents[0]['ticket']['comments'];
+					  ticket_data.currentUser = contents[1]['currentUser']['name'];
+					  ticket_data.currentAccount = contents[2]['currentAccount'];
+					  //console.log ('ticket_data : ' + JSON.stringify(ticket_data));
 					  getResponseData(client);
 					  }
-	  );
+	  ).catch(function(error) {
+		  console.log(error.toString()); 
+	  });
 }
 
 client.on('app.registered', function(appData) {
@@ -43,7 +41,7 @@ client.on('app.registered', function(appData) {
 	});
 
 function showInfo(data) {
-	console.log('showInfo:');
+	//console.log('showInfo:');
 	var source = $("#add_task-hdbs").html();
 	var template = Handlebars.compile(source);
 	context = {comments: data};
@@ -52,7 +50,7 @@ function showInfo(data) {
 }
 
 function showPostApply(data) {	
-	console.log('showPostApply:');
+	//console.log('showPostApply:');
 	var source = $("#post-apply-template").html();
 	var template = Handlebars.compile(source);
 	context = {comments: data};
@@ -61,9 +59,8 @@ function showPostApply(data) {
 }
 
 function applyComment(event, id, kid) {
-	console.log('applyComment:');
-	var comment_data = header + ticket_data.requester + ', <br><br>' + context.comments[kid].comment + footer + ticket_data.currentUser['name'];
-	//console.log(comment_data);
+	//console.log('applyComment:');
+	var comment_data = header + ticket_data.requester['name'] + ', <br><br>' + context.comments[kid].comment + footer + ticket_data.currentUser;
 	client.invoke('comment.appendHtml', comment_data);
     client.invoke('notify', 'Comment added to Ticket.');
     showPostApply();
@@ -73,7 +70,7 @@ function applyComment(event, id, kid) {
 };
 
 function showError() {
-	console.log('showError:');
+	//console.log('showError:');
 	var error_data = {
 			'status': 404,
 			'statusText': 'Not found'
@@ -84,10 +81,9 @@ function showError() {
 	$("#content").html(html);
 }
 
-function getResponseData(client) { 
-	console.log('getResponseData:');
+function getResponseData() { 
+	//console.log('getResponseData:');
 	var query_data = ticket_data;
-	//console.log(ticket_data);
 	var resp_data = '';
 	var settings = {
 	    url: SERVER_NAME +'/intent',
@@ -120,7 +116,6 @@ function getTicketData(){
 	} else {
 		return;
 	}
-	console.log('getTicketData:');
 	var settings = {
 		url: '/api/v2/tickets.json',
 	    type: 'GET',
@@ -155,7 +150,7 @@ function syncTicketData(tickets) {
     function(data) {
       //client.invoke('notify', 'Received Ticket Responses.');
       //console.log(data);
-      console.log('syncTicketData: Success');
+      //console.log('syncTicketData: Success');
     },
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;
@@ -168,7 +163,7 @@ function syncTicketData(tickets) {
 function syncFeedbackData() {
 	//console.log('syncFeedbackData:');
 	var settings = {
-	    url: SERVER_NAME +'/feedbkloop',
+	    url: SERVER_NAME +'/uploadfeedback',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
 	    type: 'POST',
 	    contentType: 'application/json',
@@ -179,7 +174,7 @@ function syncFeedbackData() {
     function(data) {
       //client.invoke('notify', 'Received Ticket Responses.');
       //console.log(data);
-      console.log('syncFeedbackData: Success');
+      //console.log('syncFeedbackData: Success');
     },
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;

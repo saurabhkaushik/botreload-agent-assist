@@ -59,10 +59,16 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         get_model().create('intent', json.dumps(request.json))
         
         received_data = request.json
-        intent_input = received_data['description'] + '. ' + received_data['comment'] + '. ' + received_data['subject']
+        intent_input = ''
+        if (received_data['requester']['email'] == received_data['comments'][0]['author']['email']):
+            intent_input = received_data['comments'][0]['value'];
+        else:
+            intent_input = received_data['description'] + '. ' + received_data['subject']
+            
+        #intent_input = received_data['description'] + '. ' + received_data['comments'] + '. ' + received_data['subject']
         predicted_intent = intenteng.getIntentForText(intent_input)
         formatted_resp =  format_output_ds(predicted_intent)
-        print ('formatted_resp: ', formatted_resp)
+        #print ('formatted_resp: ', formatted_resp)
         json_resp = json.dumps(formatted_resp)
         get_model().create('response', json_resp)
         return json_resp
@@ -73,7 +79,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         Email_Content = ""
         if 'query' in Received:
             Email_Content = Received['query']
-        #email_input = 'Subject: Customer Payment. Customer Payment 76543 for Horus Financials to be applied.'
         predicted_entity = entityeng.POS_Tagging(Email_Content)
         
         resp = {}
@@ -87,7 +92,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         get_model().create('tickets', json.dumps(request.json))
         return '200' 
     
-    @app.route('/feedbkloop', methods=['POST'])
+    @app.route('/uploadfeedback', methods=['POST'])
     def uploadfeedback():
         logging.info('feedback : ')
         get_model().create('feedback', json.dumps(request.json))
@@ -108,16 +113,9 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         ticketLearner.extract_save_data() 
         return '200'  
     
-    @app.route('/training', methods=['GET'])
+    @app.route('/testingservice', methods=['GET'])
     def doFunctionTesting():
         logging.info('doFunctionTesting : ')
-        intenteng2 = IntentExtractor()
-        intenteng2.prepareTrainingData_ds()
-        intenteng2.startTrainingProcess()
-        predictedint = intenteng2.getIntentForText('I have received this defective product. It has been malfunctioning from day one. Kindly replace it asap.')
-        print(predictedint)
-        #ticketLearner = tickets_learner()
-        #ticketLearner.get_response_mapping('Software_Sales_Billing')
         return '200'
     
     @app.errorhandler(404)
@@ -132,14 +130,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         """.format(e), 500
 
     return app
-
-def startModel():
-    print ('--- Initializing Models and Training Process ----- ')
-    ticketLearner = tickets_learner() 
-    ticketLearner.import_trainingdata()  
-    ticketLearner.import_responsedata()
-    intenteng.prepareTrainingData_ds()
-    intenteng.startTrainingProcess()
 
 def format_output(predicted_intent): 
     comments_struct = []    
