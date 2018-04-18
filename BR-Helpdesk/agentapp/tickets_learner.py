@@ -45,9 +45,10 @@ class tickets_learner(object):
         with open(TRAIN_SET_PATH, 'r', encoding='windows-1252') as f:
             reader = csv.reader(f)
             train_list = list(reader)
-            
+        rid = 100
         for linestm in train_list:
-            getTrainingModel().create(linestm[0], linestm[1], '', linestm[2], 'true')
+            getTrainingModel().create(linestm[0].strip(), linestm[1].strip(), '', linestm[2].strip(), 'true', id=rid)
+            rid += 1
             
     def import_responsedata(self): 
         with open(CANNED_RESP_PATH, 'r', encoding='windows-1252') as f:
@@ -55,7 +56,7 @@ class tickets_learner(object):
             train_list = list(reader)
         rid = 100
         for linestm in train_list:
-            getResponseModel().create(linestm[0], linestm[0], linestm[1], id=rid)
+            getResponseModel().create(linestm[0].strip(), linestm[0].strip(), linestm[1].strip(), id=rid)
             rid += 1
             
     def get_response_mapping(self, response):
