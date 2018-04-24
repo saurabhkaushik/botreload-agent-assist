@@ -4,7 +4,7 @@ var response_data = {server_response : ''};
 
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = 'https://br-aa-srv-prod.appspot.com'; 
+var SERVER_NAME = 'https://br-aa-srv-prod.appspot.com';
 var header = 'Hi ';
 var footer = '<br><br>Thanks, <br> - ';
 
@@ -32,7 +32,7 @@ function firstData() {
 					  getResponseData(client);
 					  }
 	  ).catch(function(error) {
-		  console.log(error.toString()); 
+		  console.log(error.toString());
 	  });
 }
 
@@ -49,7 +49,7 @@ function showInfo(data) {
 	$("#content").html(html);
 }
 
-function showPostApply(data) {	
+function showPostApply(data) {
 	//console.log('showPostApply:');
 	var source = $("#post-apply-template").html();
 	var template = Handlebars.compile(source);
@@ -81,7 +81,7 @@ function showError() {
 	$("#content").html(html);
 }
 
-function getResponseData() { 
+function getResponseData() {
 	//console.log('getResponseData:');
 	var query_data = ticket_data;
 	var resp_data = '';
@@ -92,13 +92,13 @@ function getResponseData() {
 	    contentType: 'application/json',
 	    data: JSON.stringify(query_data),
 	    dataType: 'json'
-	  }; 
+	  };
 
 	client.request(settings).then(
 	    function(data) {
 	      client.invoke('notify', 'Received Ticket Responses.');
 	      response_data.server_response = data;
-	      showInfo(data);	      
+	      showInfo(data);
 	    },
 	    function(response) {
 	      var msg = 'Error ' + response.status + ' ' + response.statusText;
@@ -121,12 +121,12 @@ function getTicketData(){
 	    type: 'GET',
 	    contentType: 'application/json',
 	    dataType: 'json'
-	    	}; 
+	    	};
 
 	client.request(settings).then(
     function(data) {
         //console.log(data);
-    	syncTicketData(data); 
+    	syncTicketData(data);
     },
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;
@@ -145,7 +145,7 @@ function syncTicketData(tickets) {
 	    contentType: 'application/json',
 	    data: JSON.stringify(tickets),
 	    dataType: 'json'
-	  }; 
+	  };
 	client.request(settings).then(
     function(data) {
       //client.invoke('notify', 'Received Ticket Responses.');
@@ -169,7 +169,7 @@ function syncFeedbackData() {
 	    contentType: 'application/json',
 	    data: JSON.stringify(feedback_data),
 	    dataType: 'json'
-	  }; 
+	  };
 	client.request(settings).then(
     function(data) {
       //client.invoke('notify', 'Received Ticket Responses.');
