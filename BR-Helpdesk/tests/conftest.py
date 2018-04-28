@@ -14,7 +14,7 @@
 
 """conftest.py is used to define common test fixtures for pytest."""
 
-import bookshelf
+import agentapp
 import config
 from google.cloud.exceptions import ServiceUnavailable
 from oauth2client.client import HttpAccessTokenRefreshError

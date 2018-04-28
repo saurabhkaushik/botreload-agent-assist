@@ -23,23 +23,23 @@
 <form method="POST" enctype="multipart/form-data">
 
   <div class="form-group">
-    <label for="title">Title</label>
-    <input type="text" name="title" id="title" value="{{book.title}}" class="form-control"/>
+    <label for="title">res_category</label>
+    <input type="text" name="res_category" id="res_category" value="{{book.res_category}}" class="form-control"/>
   </div>
 
   <div class="form-group">
-    <label for="author">Author</label>
-    <input type="text" name="author" id="author" value="{{book.author}}" class="form-control"/>
+    <label for="author">resp_name</label>
+    <input type="text" name="resp_name" id="resp_name" value="{{book.resp_name}}" class="form-control"/>
   </div>
 
   <div class="form-group">
-    <label for="publishedDate">Date Published</label>
-    <input type="text" name="publishedDate" id="publishedDate" value="{{book.publishedDate}}" class="form-control"/>
+    <label for="publishedDate">created</label>
+    <input type="text" name="created" id="created" value="{{book.created}}" class="form-control"/>
   </div>
 
   <div class="form-group">
-    <label for="description">Description</label>
-    <textarea name="description" id="description" class="form-control">{{book.description}}</textarea>
+    <label for="description">response_text</label>
+    <textarea name="response_text" id="response_text" class="form-control">{{book.response_text}}</textarea>
   </div>
 
   <button type="submit" class="btn btn-success">Save</button>

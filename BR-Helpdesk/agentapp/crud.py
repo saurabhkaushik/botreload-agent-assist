@@ -1,4 +1,4 @@
-from agentapp import get_model
+from agentapp.model_select import getResponseModel
 from flask import Blueprint, redirect, render_template, request, url_for
 
 
@@ -12,7 +12,7 @@ def list():
     if token:
         token = token.encode('utf-8')
 
-    books, next_page_token = get_model().list('tickets', cursor=token)
+    books, next_page_token = getResponseModel().list(cursor=token)
 
     return render_template(
         "list.html",
@@ -23,7 +23,7 @@ def list():
 
 @crud.route('/<id>')
 def view(id):
-    book = get_model().read(id)
+    book = getResponseModel().read(id)
     return render_template("view.html", book=book)
 
 
@@ -33,7 +33,7 @@ def add():
     if request.method == 'POST':
         data = request.form.to_dict(flat=True)
 
-        book = get_model().create(data)
+        book = getResponseModel().create(data['res_category'], data['res_category'], data['response_text'])
 
         return redirect(url_for('.view', id=book['id']))
 
@@ -43,7 +43,7 @@ def add():
 
 @crud.route('/<id>/edit', methods=['GET', 'POST'])
 def edit(id):
-    book = get_model().read(id)
+    book = getResponseModelmodel().read(id)
 
     if request.method == 'POST':
         data = request.form.to_dict(flat=True)
@@ -57,5 +57,5 @@ def edit(id):
 
 @crud.route('/<id>/delete')
 def delete(id):
-    get_model().delete(id)
+    getResponseModel().delete(id)
     return redirect(url_for('.list'))

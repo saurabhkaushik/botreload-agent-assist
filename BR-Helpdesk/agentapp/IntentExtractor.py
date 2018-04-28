@@ -10,12 +10,15 @@ import csv
 from collections import defaultdict
 from agentapp.model_select import get_model, getTrainingModel, getResponseModel
 from agentapp.tickets_learner import tickets_learner
-
+from flask import current_app
 import logging
+#from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import SVC
+import nltk
+nltk.download('stopwords')
+from nltk.tokenize import RegexpTokenizer
+from nltk.corpus import stopwords
 
-TRAIN_SET_PATH = 'input/hd_training_data.csv'
-TEST_SET_PATH = 'input/hd_training_data.csv'
-txt_modelfile = 'input/hd_trained.model.bin'
 
 class TfidfEmbeddingVectorizer(object):
     def __init__(self, word2vec):
@@ -47,16 +50,16 @@ class IntentExtractor(object):
         logging.info("\n"+"################# Preparing Training Data ################################"+"\n")
         self.X, self.y = [], []
         # Read CSV for Input and Output Columns 
-        with open(TRAIN_SET_PATH, 'r', encoding='windows-1252') as f:
+        with open(current_app.config['TRAIN_SET_PATH'], 'r', encoding='windows-1252') as f:
             reader = csv.reader(f)
             train_list = list(reader)
             
         for linestm in train_list:
             linestm[1] = re.sub('["]', '', linestm[1])    
-            logging.info (linestm[0] + ', ' + linestm[1] + "  =>  " + linestm[2])
+            logging.debug (linestm[0] + ', ' + linestm[1] + "  =>  " + linestm[2])
         
-        self.X = [(item[0] + ', ' + item[1]).split() for item in train_list]
-        self.y = [item[2] for item in train_list]
+        self.X = [(preprocess(item[0]).strip() + ' ' + preprocess(item[1]).strip()).split() for item in train_list]
+        self.y = [item[2].strip() for item in train_list]
         
         self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
         logging.info ("Total Training Examples : %s" % len(self.y))
@@ -67,46 +70,20 @@ class IntentExtractor(object):
         
         tickets_learn = tickets_learner()
         ticket_data = tickets_learn.getTrainingData()
-        #print ('ticket_data : ', ticket_data)
     
-        # Read CSV for Input and Output Columns 
-        '''with open(TRAIN_SET_PATH, 'r', encoding='windows-1252') as f:
-            reader = csv.reader(f)
-            train_list = list(reader)
-           ''' 
         xX = []
         yY = []
         for linestms in ticket_data:           
             for linestm in linestms:
-                #linestm[1] = re.sub('["]', '', linestm[1]) 
-                logging.info (linestm['tags'] + " =>  " + linestm['response'])
-                xX.append(linestm['tags'].split())
-                yY.append(linestm['response'])
-        #print (xX, yY)
+                logging.debug (linestm['tags'] + " =>  " + linestm['response'])
+                xX.append(preprocess(linestm['tags']).strip().split())
+                yY.append(linestm['response'].strip())
         self.X = xX
         self.y = yY
         
         self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
         logging.info ("Total Training Examples : %s" % len(self.y))
-        
-    def prepareTestingData(self):
-        logging.info("\n"+"################# Preparing Testing Data ################################"+"\n")
-        self.test_X, self.test_y = [], []
-        # Read CSV for Input and Output Columns 
-        with open(TEST_SET_PATH, 'r', encoding='windows-1252') as f:
-            reader = csv.reader(f)
-            self.train_list = list(reader)
             
-        for linestm in self.train_list:
-            linestm[1] = re.sub('["]', '', linestm[1])    
-            logging.info (linestm[0], "  =>  " + linestm[1])
-        
-        self.test_X = [item[0].split() for item in self.train_list]
-        self.test_y = [item[1] for item in self.train_list]
-        
-        self.X, self.y = np.array(self.X), np.array(self.y)
-        logging.info ("Total Testing Examples : %s" % len(self.y))
-    
     def startTrainingProcess(self):
         logging.info("\n"+"################# Starting Training Processing ################################"+"\n")
         self.model = Word2Vec(self.X, size=100, window=5, min_count=1, workers=2)
@@ -114,34 +91,87 @@ class IntentExtractor(object):
         w2v = {w: vec for w, vec in zip(self.model.wv.index2word, self.model.wv.syn0)}
         self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", TfidfEmbeddingVectorizer(w2v)), 
                         ("extra trees", ExtraTreesClassifier(n_estimators=200))])
+        '''self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", TfidfEmbeddingVectorizer(w2v)), 
+                        ("MultinomialNB", MultinomialNB())])
+        self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", TfidfEmbeddingVectorizer(w2v)), 
+                        ("SVC", SVC(kernel='linear', probability=True))])'''
         self.etree_w2v_tfidf.fit(self.X, self.y)
         logging.info ("Total Training Samples : %s" % len(self.y))
-
-    def startTestingProcess(self): 
-        logging.info("\n"+"################# Starting Testing Process ################################"+"\n")
-        self.predicted = self.etree_w2v_tfidf.predict(self.test_X)
-        for input_data, output_data in zip(self.train_list, self.predicted) :
-            logging.info (input_data[0] + "  =>  " + output_data)
-            
+        
     def getIntentForText(self, textinput): 
-        logging.info("\n"+"################# Starting Testing Process ################################"+"\n")
+        logging.info("\n"+"################# Starting Prediction Process ################################"+"\n")
         self.test_X = []
-        self.test_X.append(textinput.split())
-        logging.info(self.test_X)
+        self.test_X.append(preprocess(textinput).split())
         self.predicted = self.etree_w2v_tfidf.predict(self.test_X) 
         self.predicted_prob = self.etree_w2v_tfidf.predict_proba(self.test_X)  
         self.y_predict_dic = dict(zip(self.etree_w2v_tfidf.classes_, self.predicted_prob[0]))
-        logging.info('Predicted Sorted Dictionary : ' + str(self.y_predict_dic))
         return self.y_predict_dic
+
+    def prepareTestingData(self):
+        logging.info("\n"+"################# Preparing Testing Data ################################"+"\n")
+        self.test_X, self.test_y = [], []
+        with open(current_app.config['TEST_SET_PATH'], 'r', encoding='windows-1252') as f:
+            reader = csv.reader(f)
+            train_list = list(reader)
+            
+        for linestm in train_list:
+            #linestm[1] = re.sub('["]', '', linestm[1])    
+            logging.debug (linestm[0] + ', ' + linestm[1] + "  =>  " + linestm[2])
+        
+        self.test_X = [(preprocess(item[0]).strip() + ' ' + preprocess(item[1]).strip()).split() for item in train_list]
+        self.test_y = [item[2].strip() for item in train_list]
+        self.test_X, self.test_y = np.array(self.test_X, dtype=object), np.array(self.test_y, dtype=object)
+        for testx, testy in zip (self.test_X, self.test_y):
+            logging.debug (str(testx) + ' >> ' + str(testy))
+        logging.info ("Total Testing Examples : %s" % len(self.test_y)) 
+        
+    def prepareTestingData_ds(self):
+        logging.info("\n"+"################# Preparing Testing Data ################################"+"\n")
+        self.test_X, self.test_y = [], []
+        
+        tickets_learn = tickets_learner()
+        ticket_data = tickets_learn.getTrainingData()
     
+        xX = []
+        yY = []
+        for linestms in ticket_data:           
+            for linestm in linestms:
+                logging.debug (linestm['tags'] + " =>  " + linestm['response'])
+                xX.append(preprocess(linestm['tags']).strip().split())
+                yY.append(linestm['response'].strip()) 
+        self.test_X = xX
+        self.test_y = yY
+       
+        self.test_X, self.test_y = np.array(self.test_X, dtype=object), np.array(self.test_y, dtype=object)
+        logging.info (dict(zip(self.test_X), (self.test_y)))
+        logging.info ("Total Testing Examples : %s" % len(self.test_y))
+
+    def startTestingProcess(self): 
+        logging.info("\n"+"################# Starting Testing Process ################################"+"\n")
+        '''for intm in self.test_X:
+            if (intm.isna()):'''
+        self.predicted = self.etree_w2v_tfidf.predict(self.test_X)
+        for input_data, output_data in zip(self.test_X, self.predicted) :
+            logging.debug (str(input_data) + "  =>  " + str(output_data))
+        logging.info ("Total Predicted Testing Examples : %s" % len(self.predicted))
+        
     def createConfusionMatrix(self):
         logging.info("\n"+"################# Evaluating Model Performance ################################"+"\n")
-        logging.info("Mean: \n" + np.mean(self.test_y == self.predicted))
+        for y_value_a, y_value_p in zip(self.test_y, self.predicted): 
+            logging.info ('\'' + y_value_a + '\' >> \'' + y_value_p + '\'' )
+        logging.info("Mean: \n" + str(np.mean(self.test_y == self.predicted)))
         
         cm = ConfusionMatrix(self.test_y, self.predicted)
-        logging.info("Confusion Matrix: \n" , cm)
-        cm.plot()
+        #logging.info("Confusion Matrix: \n" , cm)
+        #cm.plot()
         
-        logging.info("f1_score : " + f1_score(self.test_y, self.predicted, average="macro"))
-        logging.info("precision_score : " + precision_score(self.test_y, self.predicted, average="macro"))
-        logging.info("recall_score : " + recall_score(self.test_y, self.predicted, average="macro")) 
+        logging.info("f1_score : " + str(f1_score(self.test_y, self.predicted, average="macro", labels=np.unique(self.predicted))))
+        logging.info("precision_score : " + str(precision_score(self.test_y, self.predicted, average="macro", labels=np.unique(self.predicted))))
+        logging.info("recall_score : " + str(recall_score(self.test_y, self.predicted, average="macro")))
+
+def preprocess(sentence):
+    sentence = sentence.lower()
+    tokenizer = RegexpTokenizer(r'\w+')
+    tokens = tokenizer.tokenize(sentence)
+    filtered_words = [w for w in tokens if not w in stopwords.words('english')]
+    return " ".join(filtered_words)

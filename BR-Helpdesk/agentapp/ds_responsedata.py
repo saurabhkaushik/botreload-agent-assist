@@ -33,7 +33,7 @@ def from_datastore(entity):
 # [END from_datastore]
 
 # [START list]
-def list(value_name, limit=10, cursor=None):
+def list(value_name=None, limit=999, cursor=None):
     ds = get_client()
 
     query = ds.query(kind='ResponseData') #, order=['type'])

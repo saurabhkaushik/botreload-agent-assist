@@ -19,7 +19,11 @@ DATA_BACKEND = 'datastore'
 
 # Google Cloud Project ID. This can be found on the 'Overview' page at
 # https://console.developers.google.com
-PROJECT_ID = 'br-aa-srv-dev'
+PROJECT_ID = 'br-aa-srv-prod'
+
+TRAIN_SET_PATH = 'input/hd_training_data.csv'
+CANNED_RESP_PATH = 'input/hd_canned_resp.csv'
+TEST_SET_PATH = 'input/hd_testing_data.csv'
 
 # CloudSQL & SQLAlchemy configuration
 # Replace the following values the respective values of your Cloud SQL

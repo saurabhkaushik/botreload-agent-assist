@@ -37,11 +37,11 @@
   </div>
   <div class="media-body">
     <h4 class="book-title">
-      {{book.title}}
-      <small>{{book.publishedDate}}</small>
+      {{book.res_category}}
+      <small>{{book.created}}</small>
     </h4>
-    <h5 class="book-author">By {{book.author|default('Unknown', True)}}</h5>
-    <p class="book-description">{{book.description}}</p>
+    <h5 class="book-author">By {{book.res_category}}</h5>
+    <p class="book-description">{{book.response_text}}</p>
   </div>
 </div>
 

@@ -10,15 +10,16 @@ from flask import make_response
 from flask import abort
 from flask import url_for
 
+import re
 import csv
 import json
 import time
 import os
 import logging 
 
-CANNED_RESP_PATH = 'input/hd_canned_resp.csv'
 entityeng = EntityExtractor()
 intenteng = IntentExtractor()
+ticketLearner = tickets_learner()
 
 def create_app(config, debug=False, testing=False, config_overrides=None):
     app = Flask(__name__)
@@ -37,12 +38,14 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     # Setup the data model.
     with app.app_context():
         model = get_model()
-        model.init_app(app)
-        ticketLearner = tickets_learner()
-        ticketLearner.import_trainingdata()
+        model.init_app(app)        
+        #ticketLearner.import_trainingdata()
         ticketLearner.import_responsedata()
-        intenteng.prepareTrainingData_ds()
+        intenteng.prepareTrainingData_ds() 
         intenteng.startTrainingProcess()
+        #intenteng.prepareTestingData()
+        #intenteng.startTestingProcess()
+        #intenteng.createConfusionMatrix()
 
     # Register the Bookshelf CRUD blueprint.
     from .crud import crud
@@ -61,14 +64,14 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         received_data = request.json
         intent_input = ''
         if (received_data['requester']['email'] == received_data['comments'][0]['author']['email']):
-            intent_input = received_data['comments'][0]['value'];
+            intent_input = cleanhtml(received_data['comments'][0]['value'])
         else:
-            intent_input = received_data['description'] + '. ' + received_data['subject']
+            intent_input = cleanhtml(received_data['description'] + '. ' + received_data['subject'])
             
         #intent_input = received_data['description'] + '. ' + received_data['comments'] + '. ' + received_data['subject']
         predicted_intent = intenteng.getIntentForText(intent_input)
-        formatted_resp =  format_output_ds(predicted_intent)
-        #print ('formatted_resp: ', formatted_resp)
+        formatted_resp = ticketLearner.format_output_ds(predicted_intent) 
+        logging.info('\'' + str(intent_input) + '\' >> ' + str(formatted_resp))
         json_resp = json.dumps(formatted_resp)
         get_model().create('response', json_resp)
         return json_resp
@@ -131,31 +134,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
 
     return app
 
-def format_output(predicted_intent): 
-    comments_struct = []    
-    with open(CANNED_RESP_PATH, 'r', encoding='windows-1252') as f:
-        reader = csv.reader(f)
-        resp_list = list(reader)
-    resp_dict = {rows[0].strip() : rows[1] for rows in resp_list}
-    y_predict_dic = sorted(predicted_intent.items(), key=lambda x: x[1], reverse=True)
-    i = 0
-    for ss in y_predict_dic:
-        comments_struct.append({'id': list(resp_dict.keys()).index(ss[0].strip()), 'name' : ss[0], 'comment': resp_dict.get(ss[0].strip(), ''), 'prob': int(ss[1]*100)})
-        if (i >= 4):
-            break
-        i+=1
-    return comments_struct
-
-def format_output_ds(predicted_intent): 
-    tickets_learn = tickets_learner()
-    comments_struct = []    
-    y_predict_dic = sorted(predicted_intent.items(), key=lambda x: x[1], reverse=True)
-    i = 0
-    for ss in y_predict_dic:
-        response_data = tickets_learn.get_response_mapping(ss[0].strip())
-        if response_data != None: 
-            comments_struct.append({'id': response_data['id'], 'name' : response_data['resp_name'], 'comment': response_data['response_text'], 'prob': int(ss[1]*100)})
-        if (i >= 4):
-            break
-        i+=1
-    return comments_struct
+def cleanhtml(raw_html):
+  cleanr = re.compile('<.*?>')
+  cleantext = re.sub(cleanr, '', raw_html)
+  return cleantext
