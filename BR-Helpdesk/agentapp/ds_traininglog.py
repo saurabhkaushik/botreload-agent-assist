@@ -34,10 +34,10 @@ def from_datastore(entity):
 
 
 # [START list]
-def list(log_type, limit=10, cursor=None):
+def list(log_type, limit=10, cursor=None, cust_id=''):
     ds = get_client()
 
-    query = ds.query(kind='TrainingLog', order=['type'])
+    query = ds.query(kind= cust_id +'TrainingLog', order=['type'])
     if log_type: 
         query.add_filter('type', '=', log_type)
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
@@ -52,21 +52,21 @@ def list(log_type, limit=10, cursor=None):
 # [END list]
 
 
-def read(id):
+def read(id, cust_id=''):
     ds = get_client()
-    key = ds.key('TrainingLog', int(id))
+    key = ds.key(cust_id +'TrainingLog', int(id))
     results = ds.get(key)
     return from_datastore(results)
 
 
 # [START update]
-def update(req_type, data, id=None):
+def update(req_type, data, id=None, cust_id=''):
     ds = get_client()
     
     if id:
-        key = ds.key('TrainingLog', int(id))
+        key = ds.key(cust_id +'TrainingLog', int(id))
     else:
-        key = ds.key('TrainingLog')
+        key = ds.key(cust_id +'TrainingLog')
 
     entity = datastore.Entity(
         key=key,
@@ -88,7 +88,7 @@ create = update
 # [END update]
 
 
-def delete(id):
+def delete(id, cust_id=''):
     ds = get_client()
-    key = ds.key('TrainingLog', int(id))
+    key = ds.key(cust_id +'TrainingLog', int(id))
     ds.delete(key)

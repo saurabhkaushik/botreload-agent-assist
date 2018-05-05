@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form id="form_id" name="myform" action="/smartreply/auth">
+<table>
+<tr><td><label>Zendesk Subdomain Name :</label></td><td>
+<input type="text" name="cust_id" id="cust_id"/></td></tr>
+<tr><td><label>User Name              :</label></td><td>
+<input type="text" name="username" id="username"/></td></tr>
+<tr><td><label>Password               :</label></td><td>
+<input type="password" name="password" id="password"/></td></tr>
+</table>
+<br><input type="submit" value="Login" id="submit" />
+</form>
+<br><br>
+<b>Having trouble with login </b>. Please connect with <a href='mailto:botreload@gmail.com'>botreload@gmail.com</a> . 
+
+{% endblock %}

@@ -34,10 +34,10 @@ def from_datastore(entity):
 
 
 # [START list]
-def list(limit=10, cursor=None):
+def list(limit=10, cursor=None, cust_id=''):
     ds = get_client()
 
-    query = ds.query(kind='TrainingData') #, order=['type'])
+    query = ds.query(kind= cust_id +'TrainingData') #, order=['type'])
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)
 
@@ -50,10 +50,10 @@ def list(limit=10, cursor=None):
 # [END list]
 
 # [START list]
-def list_all(limit=999, cursor=None):
+def list_all(limit=999, cursor=None, cust_id=''):
     ds = get_client() 
 
-    query = ds.query(kind='TrainingData') #, order=['type'])
+    query = ds.query(kind= cust_id +'TrainingData') #, order=['type'])
     query.add_filter('done', '=', 'true')
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)
@@ -65,21 +65,21 @@ def list_all(limit=999, cursor=None):
 
     return entities, next_cursor
 
-def read(id):
+def read(id, cust_id=''):
     ds = get_client()
-    key = ds.key('TrainingData', int(id))
+    key = ds.key(cust_id +'TrainingData', int(id))
     results = ds.get(key)
     return from_datastore(results)
 
 
 # [START update]
-def update(tags, query, subject, response, done, id=None):
+def update(tags, query, response, done, query_category='', resp_category='', id=None, cust_id=''):
     ds = get_client()
     
     if id:
-        key = ds.key('TrainingData', int(id))
+        key = ds.key(cust_id +'TrainingData', int(id))
     else:
-        key = ds.key('TrainingData')
+        key = ds.key(cust_id +'TrainingData')
 
     entity = datastore.Entity(
         key=key,
@@ -88,9 +88,9 @@ def update(tags, query, subject, response, done, id=None):
     entity.update({
             'tags': tags,
             'query' : query,
-            'query_category' : '', #query_category,
+            'query_category' : query_category, 
             'response' : response,
-            'resp_category': '',  #resp_category,
+            'resp_category': resp_category,  
             'created': datetime.datetime.utcnow(),
             'done': done
         })
@@ -104,7 +104,7 @@ create = update
 # [END update]
 
 
-def delete(id):
+def delete(id, cust_id=''):
     ds = get_client()
-    key = ds.key('TrainingData', int(id))
+    key = ds.key(cust_id +'TrainingData', int(id))
     ds.delete(key)

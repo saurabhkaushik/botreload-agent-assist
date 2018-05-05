@@ -24,7 +24,25 @@ from agentapp.TfidfVectorizer import TfidfEmbeddingVectorizer, MeanEmbeddingVect
 
 class IntentExtractor(object): 
     
-    def prepareTrainingData(self, cust_id):
+    def prepareTrainingData(self):
+        logging.info("\n"+"################# Preparing Training Data ################################"+"\n")
+        self.X, self.y = [], []
+        # Read CSV for Input and Output Columns 
+        with open(current_app.config['TRAIN_SET_PATH'], 'r', encoding='windows-1252') as f:
+            reader = csv.reader(f)
+            train_list = list(reader)
+            
+        for linestm in train_list:
+            linestm[1] = re.sub('["]', '', linestm[1])    
+            logging.debug (linestm[0] + ', ' + linestm[1] + "  =>  " + linestm[2])
+        
+        self.X = [(preprocess(item[0]).strip() + ' ' + preprocess(item[1]).strip()).split() for item in train_list]
+        self.y = [item[2].strip() for item in train_list]
+        
+        self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
+        logging.info ("Total Training Examples : %s" % len(self.y))
+        
+    def prepareTrainingData_ds(self, cust_id):
         logging.info("\n"+"################# Preparing Training Data ################################"+"\n")
         self.X, self.y = [], []
         
@@ -90,6 +108,24 @@ class IntentExtractor(object):
         return self.predicted
     
     def prepareTestingData(self, cust_id):
+        logging.info("\n"+"################# Preparing Testing Data ################################"+"\n")
+        self.test_X, self.test_y = [], []
+        with open(current_app.config['TEST_SET_PATH'], 'r', encoding='windows-1252') as f:
+            reader = csv.reader(f)
+            train_list = list(reader)
+            
+        for linestm in train_list:
+            #linestm[1] = re.sub('["]', '', linestm[1])    
+            logging.debug (linestm[0] + ', ' + linestm[1] + "  =>  " + linestm[2])
+        
+        self.test_X = [(preprocess(item[0]).strip() + ' ' + preprocess(item[1]).strip()).split() for item in train_list]
+        self.test_y = [item[2].strip() for item in train_list]
+        self.test_X, self.test_y = np.array(self.test_X, dtype=object), np.array(self.test_y, dtype=object)
+        for testx, testy in zip (self.test_X, self.test_y):
+            logging.debug (str(testx) + ' >> ' + str(testy))
+        logging.info ("Total Testing Examples : %s" % len(self.test_y)) 
+        
+    def prepareTestingData_ds(self, cust_id):
         logging.info("\n"+"################# Preparing Testing Data ################################"+"\n")
         
         self.test_X, self.test_y = [], []

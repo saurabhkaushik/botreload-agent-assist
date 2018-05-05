@@ -82,8 +82,24 @@ class tickets_learner(object):
                 return resp[0]
         return None
     
-    def formatOutput(self, predicted_intent, cust_id): 
-        logging.info ('formatOutput : ')
+    def format_output(self, predicted_intent): 
+        logging.info ('format_output : ')
+        comments_struct = []    
+        with open(current_app.config['CANNED_RESP_PATH'], 'r', encoding='windows-1252') as f:
+            reader = csv.reader(f)
+            resp_list = list(reader)
+        resp_dict = {rows[0].strip() : rows[1] for rows in resp_list}
+        y_predict_dic = sorted(predicted_intent.items(), key=lambda x: x[1], reverse=True)
+        i = 0
+        for ss in y_predict_dic:
+            comments_struct.append({'id': list(resp_dict.keys()).index(ss[0].strip()), 'name' : ss[0], 'comment': resp_dict.get(ss[0].strip(), ''), 'prob': int(ss[1]*100)})
+            if (i >= 4):
+                break
+            i+=1
+        return comments_struct
+    
+    def format_output_ds(self, predicted_intent, cust_id): 
+        logging.info ('format_output_ds : ')
         tickets_learn = tickets_learner()
         comments_struct = []  
         df_intent = pd.DataFrame(list(predicted_intent.items()), columns=['Resp_Class', 'Resp_Prob'])

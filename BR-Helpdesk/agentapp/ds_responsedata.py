@@ -33,10 +33,10 @@ def from_datastore(entity):
 # [END from_datastore]
 
 # [START list]
-def list(value_name=None, limit=999, cursor=None):
+def list(value_name=None, limit=999, cursor=None, cust_id=''):
     ds = get_client()
 
-    query = ds.query(kind='ResponseData') #, order=['type'])
+    query = ds.query(kind=cust_id + 'ResponseData') #, order=['type'])
     if value_name: 
         query.add_filter('res_category', '=', value_name)
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
@@ -51,21 +51,21 @@ def list(value_name=None, limit=999, cursor=None):
 # [END list]
 
 
-def read(id):
+def read(id, cust_id=''):
     ds = get_client()
-    key = ds.key('ResponseData', int(id))
+    key = ds.key(cust_id + 'ResponseData', int(id))
     results = ds.get(key)
     return from_datastore(results)
 
 
 # [START update]
-def update(cat_name, res_category, response_text, id=None):
+def update(cat_name, res_category, response_text, tags, id=None, cust_id=''):
     ds = get_client()
     
     if id:
-        key = ds.key('ResponseData', int(id))
+        key = ds.key(cust_id + 'ResponseData', int(id))
     else:
-        key = ds.key('ResponseData')
+        key = ds.key(cust_id + 'ResponseData')
 
     entity = datastore.Entity(
         key=key,
@@ -75,6 +75,7 @@ def update(cat_name, res_category, response_text, id=None):
             'resp_name': cat_name,
             'res_category': res_category,
             'response_text' : response_text,
+            'tags' : tags,
             'created': datetime.datetime.utcnow(),
             'done': False
         })
@@ -88,7 +89,7 @@ create = update
 # [END update]
 
 
-def delete(id):
+def delete(id, cust_id=''):
     ds = get_client()
-    key = ds.key('ResponseData', int(id))
+    key = ds.key(cust_id + 'ResponseData', int(id))
     ds.delete(key)
