@@ -76,7 +76,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         cust_id = get_validcust(t_cust_id) 
         logging.info('Customer Id : ' + str(cust_id))
         
-        get_model().create('intent', json.dumps(request.json), cust_id=cust_id)
+        get_model().create('intent', json.dumps(request.json), done=True, cust_id=cust_id)
         if (received_data['requester']['email'] == received_data['comments'][0]['author']['email']):
             intent_input = cleanhtml(received_data['comments'][0]['value'])
         else:
@@ -87,7 +87,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         formatted_resp = ticketLearner.formatOutput(predicted_intent, cust_id) 
         logging.info('\'' + str(intent_input) + '\' >> ' + str(formatted_resp))
         json_resp = json.dumps(formatted_resp)
-        get_model().create('response', json_resp, cust_id=cust_id)
+        get_model().create('response', json_resp, done=True, cust_id=cust_id)
         return json_resp
 
     @app.route('/entity', methods=['POST'])
@@ -116,7 +116,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         cust_id = get_validcust(t_cust_id) 
         logging.info('Customer Id : ' + str(cust_id))
         
-        get_model().create('tickets', json.dumps(request.json), cust_id=get_validcust(cust_id))
+        get_model().create('tickets', json.dumps(request.json), done=True, cust_id=get_validcust(cust_id))
         return '200' 
     
     @app.route('/uploadfeedback', methods=['POST'])
@@ -132,13 +132,12 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         cust_id = get_validcust(t_cust_id) 
         logging.info('Customer Id : ' + str(cust_id))
         
-        get_model().create('feedback', json.dumps(request.json), cust_id=get_validcust(cust_id))
+        get_model().create('feedback', json.dumps(request.json), done=True, cust_id=get_validcust(cust_id))
         return '200'  
     
     @app.route('/importdata', methods=['GET'])
     def startDataImport():
         logging.info('startDataImport : ')
-        ticketLearner = tickets_learner() 
         for cust_id_x in cust_list:
             ticketLearner.import_trainingdata(cust_id_x)  
             ticketLearner.import_responsedata(cust_id_x) 
@@ -147,7 +146,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     @app.route('/starttraining', methods=['GET'])
     def startTrainingModels():
         logging.info('startTrainingModels : ')
-        ticketLearner = tickets_learner() 
         for cust_id_x in cust_list:
             intenteng.prepareTrainingData(cust_id_x) 
             intenteng.startTrainingProcess(cust_id_x)
@@ -158,6 +156,10 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         logging.info('prepareTrainingData : ')
         for cust_id_x in cust_list:
             ticketLearner.extractTrainingData(cust_id_x)
+        ticket_logs, next_page_token = get_model().list('tickets', cust_id='', done=True)
+        #token = next_page_token        
+        for ticket_log in ticket_logs: 
+            get_model().delete(ticket_log['id'], cust_id=cust_id) 
         return '200'  
     
     @app.route('/testingservice', methods=['GET'])
@@ -168,6 +170,21 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             intenteng.createConfusionMatrix(cust_id_x)
         logging.info('doFunctionTesting : ')
         return '200'
+
+    @app.route('/addcustomer', methods=['GET'])
+    def addcustomer():
+        logging.info('addcustomer : ')
+        cust_id = request.args.get('cust_id')
+        
+        if cust_id == None or cust_id == '': 
+            logging.info('Could not create customer' + cust_id)
+            return '200'
+        ticketLearner.import_trainingdata(cust_id)  
+        ticketLearner.import_responsedata(cust_id) 
+        intenteng.prepareTrainingData(cust_id) 
+        intenteng.startTrainingProcess(cust_id)
+        logging.info('Created new Customer : ' + cust_id)
+        return '200'  
     
     @app.errorhandler(404)
     def not_found(error):

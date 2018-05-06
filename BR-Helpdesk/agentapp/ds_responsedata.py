@@ -33,12 +33,14 @@ def from_datastore(entity):
 # [END from_datastore]
 
 # [START list]
-def list(value_name=None, limit=999, cursor=None, cust_id=''):
+def list(res_category=None, limit=999, cursor=None, cust_id='', done=None):
     ds = get_client()
 
     query = ds.query(kind=cust_id + 'ResponseData') #, order=['type'])
-    if value_name: 
-        query.add_filter('res_category', '=', value_name)
+    if res_category: 
+        query.add_filter('res_category', '=', res_category)
+    if done: 
+        query.add_filter('done', '=', done)
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)
 
@@ -59,7 +61,7 @@ def read(id, cust_id=''):
 
 
 # [START update]
-def update(cat_name, res_category, response_text, tags, id=None, cust_id=''):
+def update(cat_name, res_category, response_text, tags, done=False, id=None, cust_id=''):
     ds = get_client()
     
     if id:
@@ -77,7 +79,7 @@ def update(cat_name, res_category, response_text, tags, id=None, cust_id=''):
             'response_text' : response_text,
             'tags' : tags,
             'created': datetime.datetime.utcnow(),
-            'done': False
+            'done': done
         })
     
     #entity.update(data)
@@ -92,4 +94,7 @@ create = update
 def delete(id, cust_id=''):
     ds = get_client()
     key = ds.key(cust_id + 'ResponseData', int(id))
-    ds.delete(key)
+    data = read(id, cust_id=cust_id)
+    if data != None:
+        update(data['resp_name'], data['res_category'], data['response_text'], data['tags'], id=data['id'], done=False, cust_id=cust_id) 
+    #ds.delete(key)

@@ -25,7 +25,7 @@ class tickets_learner(object):
         from agentapp.IntentExtractor import IntentExtractor
         intenteng = IntentExtractor()
         while next_page_token != None:             
-            ticket_logs, next_page_token = get_model().list('tickets', cursor=token, cust_id='')
+            ticket_logs, next_page_token = get_model().list('tickets', cursor=token, cust_id='', done=True)
             token = next_page_token
             for ticket_log in ticket_logs: 
                 tickets_data = ticket_log["json_data"] 
@@ -38,15 +38,15 @@ class tickets_learner(object):
                     predicted = intenteng.getPredictedIntent(str(subject + ' . ' + description + ' . ' + tags) , cust_id)  
                     if len(predicted) < 1: 
                         predicted = ['Default']
-                    getTrainingModel().create(tags, str(subject + ' . ' + description), '', 'true', '', resp_category=predicted[0], cust_id=cust_id)
-    
+                    getTrainingModel().create(tags, str(subject + ' . ' + description), '', '', done=True, resp_category=predicted[0], cust_id=cust_id)
+
     def getTrainingData(self, cust_id):   
         logging.info ('getTrainingData : ')
         ticket_data = []
         next_page_token = 0
         token = None
         while next_page_token != None:             
-            ticket_logs, next_page_token = getTrainingModel().list_all(cursor=token, cust_id=cust_id)
+            ticket_logs, next_page_token = getTrainingModel().list_all(cursor=token, cust_id=cust_id, done=True)
             token = next_page_token
             ticket_data.append(ticket_logs)
         return ticket_data 
@@ -59,7 +59,7 @@ class tickets_learner(object):
         rid = 100
         while rid < 200: 
             for linestm in train_list:
-                getTrainingModel().create(linestm[0].strip(), linestm[1].strip(), '', 'true', resp_category=linestm[2].strip(), id=rid, cust_id=cust_id)
+                getTrainingModel().create(linestm[0].strip(), linestm[1].strip(), '', resp_category=linestm[2].strip(), done=True, id=rid, cust_id=cust_id)
                 rid += 1
             
     def import_responsedata(self, cust_id): 
@@ -69,12 +69,12 @@ class tickets_learner(object):
             train_list = list(reader)
         rid = 100
         for linestm in train_list:
-            getResponseModel().create(linestm[0].strip(), linestm[0].strip(), linestm[1].strip(), linestm[2].strip(), id=rid, cust_id=cust_id)
+            getResponseModel().create(linestm[0].strip(), linestm[0].strip(), linestm[1].strip(), linestm[2].strip(), done=True, id=rid, cust_id=cust_id)
             rid += 1
             
     def get_response_mapping(self, response, cust_id):
         logging.info ('get_response_mapping : ')
-        ds_response = getResponseModel().list(cust_id=cust_id)
+        ds_response = getResponseModel().list(cust_id=cust_id, done=True)
         print ( 'ds_response : '+str(ds_response)) 
         
         for resp in ds_response: 
@@ -89,7 +89,7 @@ class tickets_learner(object):
         df_intent = pd.DataFrame(list(predicted_intent.items()), columns=['Resp_Class', 'Resp_Prob'])
         df_intent = df_intent.sort_values(['Resp_Prob'], ascending=[False])
         df_intent['Comment'] = 'NA'
-        ds_response = getResponseModel().list(cust_id=cust_id) 
+        ds_response = getResponseModel().list(cust_id=cust_id, done=True) 
         i = 0
         for index, row in df_intent.iterrows():
             for resp_list in ds_response: 

@@ -1,8 +1,11 @@
-from agentapp.model_select import getResponseModel
+from agentapp.model_select import getResponseModel, getTrainingModel
 from agentapp import authenticate_cust
 from flask import Blueprint, redirect, render_template, request, url_for
 import logging 
 crud = Blueprint('crud', __name__)
+
+from agentapp.IntentExtractor import IntentExtractor
+intenteng = IntentExtractor()
 
 # [START list]
 @crud.route("/")
@@ -32,7 +35,7 @@ def list():
     if token:
         token = token.encode('utf-8')
 
-    books, next_page_token = getResponseModel().list(cursor=token, cust_id=cust_id)
+    books, next_page_token = getResponseModel().list(cursor=token, cust_id=cust_id, done=True)
 
     return render_template(
         "list.html", cust_id=cust_id,
@@ -59,8 +62,8 @@ def add():
     if request.method == 'POST':
         data = request.form.to_dict(flat=True)
 
-        book = getResponseModel().create(data['resp_name'], data['resp_name'], data['response_text'], data['tags'], id=None, cust_id=cust_id)
-
+        book = getResponseModel().create(data['resp_name'], data['resp_name'], data['response_text'], data['tags'], done=True, id=None, cust_id=cust_id)
+        traindata = getTrainingModel().create(data['tags'], data['response_text'], '', query_category='', resp_category=data['resp_name'], done=True, id=None, cust_id=cust_id)
         return redirect(url_for('.view', cust_id=cust_id, id=book['id']))
 
     return render_template("form.html", cust_id=cust_id, action="Add", book={})
@@ -76,9 +79,14 @@ def edit(id):
 
     if request.method == 'POST':
         data = request.form.to_dict(flat=True)
-
-        book = getResponseModel().update(data['resp_name'], data['resp_name'], data['response_text'], data['tags'], id=id, cust_id=cust_id)
-
+        orgdata = getResponseModel().read(id, cust_id=cust_id)
+        book = getResponseModel().update(data['resp_name'], data['resp_name'], data['response_text'], data['tags'], done=True, id=id, cust_id=cust_id)
+        print (orgdata['resp_name'])
+        trainlist = getTrainingModel().list_by_respcategory(orgdata['resp_name'], cust_id=cust_id)
+        for resp in trainlist: 
+            if (resp != None) and (len(resp) > 0) :
+                for resp_item in resp: 
+                    getTrainingModel().update(data['tags'], resp_item['query'], resp_item['response'], resp_item['query_category'], resp_category=data['resp_name'], done=True, id=resp_item['id'], cust_id=cust_id)
         return redirect(url_for('.view', cust_id=cust_id, id=book['id']))
 
     return render_template("form.html", cust_id=cust_id, action="Edit", book=book)
@@ -89,5 +97,14 @@ def delete(id):
     cust_id = request.args.get('cust_id', None).strip()
     if cust_id == None: 
         cust_id = ''
+    
+    dataitm = getResponseModel().read(id, cust_id)
+    
+    trainlist = getTrainingModel().list_by_respcategory(dataitm['resp_name'], cust_id=cust_id, done=True)
+    for resp in trainlist: 
+        if (resp != None) and (len(resp) > 0) :
+            for resp_item in resp: 
+                getTrainingModel().delete(resp_item['id'], cust_id=cust_id)
+                    
     getResponseModel().delete(id, cust_id)
     return redirect(url_for('.list', cust_id=cust_id))

@@ -34,7 +34,7 @@ def from_datastore(entity):
 
 
 # [START list]
-def list(limit=10, cursor=None, cust_id=''):
+def list(limit=10, cursor=None, cust_id='', done=None):
     ds = get_client()
 
     query = ds.query(kind= cust_id +'TrainingData') #, order=['type'])
@@ -50,11 +50,30 @@ def list(limit=10, cursor=None, cust_id=''):
 # [END list]
 
 # [START list]
-def list_all(limit=999, cursor=None, cust_id=''):
+def list_all(limit=999, cursor=None, cust_id='', done=None):
     ds = get_client() 
 
     query = ds.query(kind= cust_id +'TrainingData') #, order=['type'])
-    query.add_filter('done', '=', 'true')
+    if done: 
+        query.add_filter('done', '=', done)
+    query_iterator = query.fetch(limit=limit, start_cursor=cursor)
+    page = next(query_iterator.pages)
+
+    entities = builtin_list(map(from_datastore, page))
+    next_cursor = (
+        query_iterator.next_page_token.decode('utf-8')
+        if query_iterator.next_page_token else None)
+
+    return entities, next_cursor
+
+# [START list]
+def list_by_respcategory(resp_category, limit=999, cursor=None, cust_id='', done=None):
+    ds = get_client() 
+
+    query = ds.query(kind= cust_id +'TrainingData') #, order=['type'])
+    query.add_filter('resp_category', '=', resp_category)
+    if done: 
+        query.add_filter('done', '=', done)
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)
 
@@ -73,7 +92,7 @@ def read(id, cust_id=''):
 
 
 # [START update]
-def update(tags, query, response, done, query_category='', resp_category='', id=None, cust_id=''):
+def update(tags, query, response, query_category='', resp_category='', done=False, id=None, cust_id=''):
     ds = get_client()
     
     if id:
@@ -107,4 +126,7 @@ create = update
 def delete(id, cust_id=''):
     ds = get_client()
     key = ds.key(cust_id +'TrainingData', int(id))
-    ds.delete(key)
+    data = read(id, cust_id=cust_id)
+    if data != None:
+        update(data['tags'], data['query'], data['response'], query_category=data['query_category'], resp_category=data['resp_category'], id=data['id'], done=False, cust_id=cust_id)
+    #ds.delete(key)

@@ -34,12 +34,14 @@ def from_datastore(entity):
 
 
 # [START list]
-def list(log_type, limit=10, cursor=None, cust_id=''):
+def list(log_type, limit=10, cursor=None, cust_id='', done=None):
     ds = get_client()
 
     query = ds.query(kind= cust_id +'TrainingLog', order=['type'])
     if log_type: 
         query.add_filter('type', '=', log_type)
+    if done: 
+        query.add_filter('done', '=', done)
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)
 
@@ -60,7 +62,7 @@ def read(id, cust_id=''):
 
 
 # [START update]
-def update(req_type, data, id=None, cust_id=''):
+def update(req_type, data, done=False, id=None, cust_id=''):
     ds = get_client()
     
     if id:
@@ -76,7 +78,7 @@ def update(req_type, data, id=None, cust_id=''):
             'type': req_type,
             'created': datetime.datetime.utcnow(),
             'json_data': data,
-            'done': False
+            'done': done
         })
     
     #entity.update(data)
@@ -91,4 +93,7 @@ create = update
 def delete(id, cust_id=''):
     ds = get_client()
     key = ds.key(cust_id +'TrainingLog', int(id))
-    ds.delete(key)
+    data = read(id, cust_id=cust_id)
+    if data != None:
+        update(data['type'], data['json_data'], id=data['id'], done=False, cust_id=cust_id)
+    #ds.delete(key)
