@@ -210,7 +210,7 @@ def authenticate_cust(cust_id_x):
     cust_id_x = cust_id_x.strip()
     if cust_id_x != None and cust_id_x != '':
         for x in cust_list:
-            if x == cust_id_x:
+            if x.lower() == cust_id_x.lower():
                 t_cust_id = x                 
     return t_cust_id
 
@@ -220,6 +220,6 @@ def get_validcust(cust_id_x):
     cust_id_x = cust_id_x.strip()
     if cust_id_x != None:
         for x in cust_list:
-            if x == cust_id_x:
+            if x.lower() == cust_id_x.lower():
                 t_cust_id = x                 
     return t_cust_id

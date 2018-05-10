@@ -17,7 +17,7 @@ SECRET_KEY = 'secret'
 # 'datastore' as it does not require any additional configuration.
 DATA_BACKEND = 'datastore'
 STORAGE_BUCKET = 'botreload-999'
-CUSTOMER_LIST = ['', 'd3v-genxhelp', 'lodgify', 'telelink', 'qless', 'onpay1', 'adviserlogic', 'plastiq', 'ampleorganics', 'boonstraparts']
+CUSTOMER_LIST = ['', 'd3v-genxhelp', 'lodgify', 'telelink', 'qless', 'onpay1', 'adviserlogic', 'plastiq', 'ampleorganics', 'boonstraparts', 'mymuesli-it', 'sapphireretail', 'ChelseaReservations']
 # Google Cloud Project ID. This can be found on the 'Overview' page at
 # https://console.developers.google.com
 PROJECT_ID = 'br-aa-srv-prod'
