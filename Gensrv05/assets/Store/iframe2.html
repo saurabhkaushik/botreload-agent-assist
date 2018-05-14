@@ -5,30 +5,22 @@
   <link href="https://cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
   <link href="main.css" rel="stylesheet">
   <link href="main-sub.css" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  
 </head>
 <body>
   <div id="content"></div>
   <script id="add_task-hdbs" type="text/x-handlebars-template">
   <form id="task-form">
-	<h6><b>Here are Suggested Replies. Press 'Apply' for 'Public Reply'.</b></h6>
-	<div class="panel-group" id="accordion">
+	<h6><b>Here are top 5 suggested replies. Please press 'Apply' for 'Public Reply'.</b></h6>
 	{{#each comments}}
-	<div class="panel panel-default">
-      <div class="panel-heading">        
-          <table style="width:100%"><tr><td><font size=2> <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{id}}"><b>{{name}}</b></a></td>
-		  <td align="right"><b>Score</b>:{{prob}}%</font></td></tr></table>
-      </div>
-      <div id="collapse{{id}}" class="panel-collapse collapse">
-        <div class="panel-body"><font size=2>{{comment}}</font></div>
-		<div align="right"><button id="add-btn" onclick="applyComment(event, {{id}}, {{@key}})" class='btn'>Apply</button> </div>
-      </div>
-    </div>
+		<b>Type:</b> {{name}}    <b>Confidence Score</b> : {{prob}}%
+	    <table class="table table-condensed">
+          <tbody><tr>
+			<td><textarea name="comment_{{id}}" id="comment_{{id}}" rows="2" cols="40" > {{comment}} </textarea></td>
+	    	<td><button id="add-btn" onclick="applyComment(event, {{id}}, {{@key}})" class='btn'>Apply</button></td>
+		  </tr></tbody>
+		</table>
 	{{/each}}
-	</div> 
   </form>
   <button id="add-btn" onclick="sendPortal(event)" class='btn'>Edit Smart Reply Response</button>
   <br><a href='https://www.botreload.com' target="_">BotReload.com</a> | <a href='mailto:botreload@gmail.com'>Report a bug.</a>

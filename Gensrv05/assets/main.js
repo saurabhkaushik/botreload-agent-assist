@@ -1,12 +1,14 @@
 var ticket_data = {id : 0, description:'', comment:'', comments: '', currentUser:'', subject:'', assignee:'', requester:'' , currentAccount:''};
 var feedback_data = {selected_response_id : 0, ticket_data : ''};
 var response_data = {server_response : ''};
+var pastticket_data = {upload_ticket_data :'', ticket_data : ''};
 
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = 'https://br-aa-srv-prod.appspot.com';
+var SERVER_NAME = 'https://br-assist-dev.appspot.com';
 var header = 'Hi ';
 var footer = '<br><br>Thanks, <br> - ';
+var called_flag = false;
 
 $(function() {
   client = ZAFClient.init();
@@ -37,7 +39,13 @@ function firstData() {
 }
 
 client.on('app.registered', function(appData) {
-		getTicketData();
+		//getTicketData();
+		if (called_flag == false) {
+			called_flag = true;
+			syncAllTicketData(ticket_url);
+		} else {
+			return;
+		}		
 	});
 
 function showInfo(data) {
@@ -46,6 +54,18 @@ function showInfo(data) {
 	var template = Handlebars.compile(source);
 	context = {comments: data};
 	var html = template(context);
+	$("#content").html(html);
+}
+
+function showError() {
+	//console.log('showError:');
+	var error_data = {
+			'status': 404,
+			'statusText': 'Not found'
+	};
+	var source = $("#error-template").html();
+	var template = Handlebars.compile(source);
+	var html = template(error_data);
 	$("#content").html(html);
 }
 
@@ -69,28 +89,20 @@ function applyComment(event, id, kid) {
     syncFeedbackData(feedback_data);
 };
 
-function showError() {
-	//console.log('showError:');
-	var error_data = {
-			'status': 404,
-			'statusText': 'Not found'
-	};
-	var source = $("#error-template").html();
-	var template = Handlebars.compile(source);
-	var html = template(error_data);
-	$("#content").html(html);
-}
+function sendPortal(event) {
+	//console.log('applyComment:');
+	url = SERVER_NAME + '/smartreply/route?cust_id=' + ticket_data.currentAccount.subdomain;
+	window.open(url,'_blank');
+};
 
 function getResponseData() {
-	//console.log('getResponseData:');
-	var query_data = ticket_data;
-	var resp_data = '';
+	//console.log('getResponseData:', ticket_data); //JSON.stringify(ticket_data));
 	var settings = {
 	    url: SERVER_NAME +'/intent',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
 	    type: 'POST',
 	    contentType: 'application/json',
-	    data: JSON.stringify(query_data),
+	    data: JSON.stringify(ticket_data),
 	    dataType: 'json'
 	  };
 
@@ -109,41 +121,16 @@ function getResponseData() {
 	);
 }
 
-var called_flag = false;
-function getTicketData(){
-	if (called_flag == false) {
-		called_flag = true;
-	} else {
-		return;
-	}
-	var settings = {
-		url: '/api/v2/tickets.json',
-	    type: 'GET',
-	    contentType: 'application/json',
-	    dataType: 'json'
-	    	};
+function syncTicketData() {	
+	console.log('syncTicketData:', ticket_json_data); //JSON.stringify(ticket_json_data));
 
-	client.request(settings).then(
-    function(data) {
-        //console.log(data);
-    	syncTicketData(data);
-    },
-    function(response) {
-      var msg = 'Error ' + response.status + ' ' + response.statusText;
-      //client.invoke('notify', msg, 'error');
-      console.log('Error : '+ msg);
-    }
-	);
-}
-
-function syncTicketData(tickets) {
-	//console.log('syncTicketData:');
 	var settings = {
 	    url: SERVER_NAME +'/uploadtickets',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
 	    type: 'POST',
 	    contentType: 'application/json',
-	    data: JSON.stringify(tickets),
+	    //data: JSON.stringify(pastticket_data),
+	    data: JSON.stringify(ticket_json_data),
 	    dataType: 'json'
 	  };
 	client.request(settings).then(
@@ -161,7 +148,7 @@ function syncTicketData(tickets) {
 }
 
 function syncFeedbackData() {
-	//console.log('syncFeedbackData:');
+	console.log('syncFeedbackData:', feedback_data); // JSON.stringify(feedback_data));
 	var settings = {
 	    url: SERVER_NAME +'/uploadfeedback',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
@@ -182,4 +169,67 @@ function syncFeedbackData() {
       console.log('syncFeedbackData:' + msg);
     }
   );
+}
+var iter = 0;
+var ticket_url = "/api/v2/tickets.json";// +"?per_page=10";
+var ticket_json_data = {upload_ticket_data : [], upload_comment_data : [], ticket_data : ''};
+var ticket_list = [];
+var comment_list = [];
+var max_tickets = 10;
+var timeout_comment = 5000;
+function syncAllTicketData(ticket_url){
+	//console.log('syncAllTicketData:');
+	var settings = {
+		url: ticket_url,
+	    type: 'GET',
+	    contentType: 'application/json',
+	    dataType: 'json'
+	    	}; 
+	client.request(settings).then(
+    function(data) {
+    	for (i = 0; i < data.tickets.length; i++) {
+    		ticket_list.push(data.tickets[i]);
+    	   	getCommentData(data.tickets[i]);    	
+    	}
+    	if (data['next_page'] != null && iter++ < max_tickets ) {        	
+    		syncAllTicketData(data['next_page']); 
+    		return;
+        }
+        ticket_json_data.upload_ticket_data = ticket_list;
+        ticket_json_data.ticket_data = ticket_data;
+        ticket_json_data.upload_comment_data = comment_list;
+        setTimeout( function() {
+        	syncTicketData();
+        	}, timeout_comment);
+         return;
+    },
+    function(response) {
+      var msg = 'Error ' + response.status + ' ' + response.statusText;
+      //client.invoke('notify', msg, 'error');
+      console.log('Error : '+ msg);
+    }
+	);
+}
+
+function getCommentData(tickets_x) {
+	//console.log ('getCommentData : ');
+	var settings = {
+		url: '/api/v2/tickets/'+ tickets_x.id + '/comments.json',
+	    type: 'GET',
+	    contentType: 'application/json',
+	    dataType: 'json',
+	    tick_id : tickets_x.id
+	}; 		
+	client.request(settings).then(
+    function(data) {
+    	var comment_struct = {id: tickets_x.id, comments : data.comments}
+    	comment_list.push(comment_struct);
+    	return;
+    },
+    function(response) {
+      var msg = 'Error ' + response.status + ' ' + response.statusText;
+      //client.invoke('notify', msg, 'error');
+      console.log('Error : '+ msg);
+    }
+	);
 }
