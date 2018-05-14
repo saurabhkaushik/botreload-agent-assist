@@ -33,14 +33,16 @@ def from_datastore(entity):
 # [END from_datastore]
 
 # [START list]
-def list(res_category=None, limit=999, cursor=None, cust_id='', done=None):
+def list(cust_name=None, newflag=None, limit=999, cursor=None, done=None):
     ds = get_client()
 
-    query = ds.query(kind=cust_id + 'ResponseData') #, order=['type'])
-    if res_category != None: 
-        query.add_filter('res_category', '=', res_category)
+    query = ds.query(kind='CustomerData')     
     if done != None: 
         query.add_filter('done', '=', done)
+    if newflag != None: 
+        query.add_filter('newflag', '=', newflag)
+    if cust_name != None: 
+        query.add_filter('cust_name', '=', cust_name)
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)
 
@@ -53,31 +55,39 @@ def list(res_category=None, limit=999, cursor=None, cust_id='', done=None):
 # [END list]
 
 
-def read(id, cust_id=''):
+def read(id):
     ds = get_client()
-    key = ds.key(cust_id + 'ResponseData', int(id))
+    key = ds.key('CustomerData', int(id))
     results = ds.get(key)
     return from_datastore(results)
 
+def authenticate(cust_id_x, newflag=None): 
+    cust_list = list(cust_name=cust_id_x.strip().lower(), newflag=newflag)    
+    if len(cust_list[0]) > 0 : 
+        return cust_list[0][0]
+    return None 
 
 # [START update]
-def update(cat_name, res_category, response_text, tags, done=False, id=None, cust_id=''):
+def update(cust_name, language='en', intent_threshold=100, organization='', 
+    email_id='', password ='', newflag=False, done=False, id=None):
     ds = get_client()
     
     if id:
-        key = ds.key(cust_id + 'ResponseData', int(id))
+        key = ds.key('CustomerData', int(id))
     else:
-        key = ds.key(cust_id + 'ResponseData')
+        key = ds.key('CustomerData')
 
     entity = datastore.Entity(
-        key=key,
-        exclude_from_indexes=['response_text'])
+        key=key)
     
     entity.update({
-            'resp_name': cat_name,
-            'res_category': res_category,
-            'response_text' : response_text,
-            'tags' : tags,
+            'cust_name': cust_name,
+            'language': language,
+            'intent_threshold': intent_threshold,
+            'organization' : organization,
+            'email_id' : email_id,
+            'password' : password,
+            'newflag' : newflag,
             'created': datetime.datetime.utcnow(),
             'done': done
         })
@@ -91,10 +101,10 @@ create = update
 # [END update]
 
 
-def delete(id, cust_id=''):
+def delete(id):
     ds = get_client()
-    key = ds.key(cust_id + 'ResponseData', int(id))
-    data = read(id, cust_id=cust_id)
+    key = ds.key('CustomerData', int(id))
+    data = read(id)
     if data != None:
-        update(data['resp_name'], data['res_category'], data['response_text'], data['tags'], id=data['id'], done=False, cust_id=cust_id) 
+        update(data['cust_name'], intent_threshold = data['intent_threshold'], organization = data['organization'], email_id = data['email_id'], id=data['id'], done=False) 
     #ds.delete(key)

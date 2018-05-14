@@ -38,9 +38,9 @@ def list(log_type, limit=10, cursor=None, cust_id='', done=None):
     ds = get_client()
 
     query = ds.query(kind= cust_id +'TrainingLog', order=['type'])
-    if log_type: 
+    if log_type != None: 
         query.add_filter('type', '=', log_type)
-    if done: 
+    if done != None: 
         query.add_filter('done', '=', done)
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)

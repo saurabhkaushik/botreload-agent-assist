@@ -1,7 +1,7 @@
 from agentapp.EntityExtractor import EntityExtractor
 from agentapp.IntentExtractor import IntentExtractor
 from agentapp.tickets_learner import tickets_learner
-from agentapp.model_select import get_model, getTrainingModel
+from agentapp.model_select import get_model, getTrainingModel, getCustomerModel
 
 from flask import current_app, redirect
 from flask import Flask, jsonify
@@ -20,8 +20,8 @@ import logging
 #entityeng = EntityExtractor()
 intenteng = IntentExtractor()
 ticketLearner = tickets_learner()
-cust_id = ''
-cust_list = []
+#cust_id = ''
+#cust_list = []
 
 def create_app(config, debug=False, testing=False, config_overrides=None):
     app = Flask(__name__)
@@ -48,10 +48,10 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         #intenteng.prepareTestingData(cust_id)
         #intenteng.startTestingProcess(cust_id)
         #intenteng.createConfusionMatrix(cust_id)
-        cust_list = current_app.config['CUSTOMER_LIST']
+        #cust_list = current_app.config['CUSTOMER_LIST']
         ticketLearner.create_bucket()
         
-    logging.info('Current Customers : '+ str(cust_list))
+    #logging.info('Current Customers : '+ str(cust_list))
 
     # Register the Bookshelf CRUD blueprint.
     from .crud import crud
@@ -66,14 +66,22 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     def intent():
         logging.info('intent : ') 
         intent_input = ''
+        cust_id = ''
         
-        received_data = request.json
-        t_cust_id = ''
+        received_data = request.json        
         try: 
-            t_cust_id = received_data['currentAccount']['subdomain']
+            cust_id = received_data['currentAccount']['subdomain']
         except KeyError as err:
             logging.error(err)
-        cust_id = get_validcust(t_cust_id) 
+            cust_id = 'default'
+        
+        cust = getCustomerModel().authenticate(cust_id.strip().lower(), newflag=False)
+        
+        if cust == None:
+            cust_id = 'default'
+        else: 
+            cust_id = cust['cust_name']
+
         logging.info('Customer Id : ' + str(cust_id))
         
         get_model().create('intent', json.dumps(request.json), done=True, cust_id=cust_id)
@@ -82,7 +90,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         else:
             intent_input = cleanhtml(received_data['description'] + '. ' + received_data['subject'])
             
-        #intent_input = received_data['description'] + '. ' + received_data['comments'] + '. ' + received_data['subject']
         predicted_intent = intenteng.getIntentForText(intent_input, cust_id) 
         formatted_resp = ticketLearner.formatOutput(predicted_intent, cust_id) 
         logging.info('\'' + str(intent_input) + '\' >> ' + str(formatted_resp))
@@ -106,17 +113,24 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     @app.route('/uploadtickets', methods=['POST'])
     def uploadtickets():
         logging.info('tickets : ')
-        
+        cust_id = ''
         received_data = request.json
-        t_cust_id = '' 
+        #print (received_data)
         try: 
-            t_cust_id = received_data['currentAccount']['subdomain']
+            cust_id = received_data['ticket_data']['currentAccount']['subdomain']
         except KeyError as err:
             logging.error(err)
-        cust_id = get_validcust(t_cust_id) 
+            cust_id = 'default'
+        
+        cust = getCustomerModel().authenticate(cust_id.strip().lower(), newflag=False)
+        if cust == None:
+            cust_id = 'default'
+        else: 
+            cust_id = cust['cust_name']
+
         logging.info('Customer Id : ' + str(cust_id))
         
-        get_model().create('tickets', json.dumps(request.json), done=True, cust_id=get_validcust(cust_id))
+        get_model().create('tickets', json.dumps(request.json), done=True, cust_id=cust_id)
         return '200' 
     
     @app.route('/uploadfeedback', methods=['POST'])
@@ -124,66 +138,103 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         logging.info('feedback : ')
         
         received_data = request.json
-        t_cust_id = ''
+        cust_id = ''
         try: 
-            t_cust_id = received_data['ticket_data']['currentAccount']['subdomain']
+            cust_id = received_data['ticket_data']['currentAccount']['subdomain']                        
         except KeyError as err:
             logging.info(err)
-        cust_id = get_validcust(t_cust_id) 
+            cust_id = 'default'
+        
+        cust = getCustomerModel().authenticate(cust_id.strip().lower(), newflag=False)
+        if cust == None:
+            cust_id = 'default'
+        else: 
+            cust_id = cust['cust_name']
+
         logging.info('Customer Id : ' + str(cust_id))
         
-        get_model().create('feedback', json.dumps(request.json), done=True, cust_id=get_validcust(cust_id))
+        get_model().create('feedback', json.dumps(request.json), done=True, cust_id=cust_id)
         return '200'  
     
     @app.route('/importdata', methods=['GET'])
     def startDataImport():
         logging.info('startDataImport : ')
+        ticketLearner.import_customerdata()
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        #print (cust_list) 
         for cust_id_x in cust_list:
-            ticketLearner.import_trainingdata(cust_id_x)  
-            ticketLearner.import_responsedata(cust_id_x) 
+            ticketLearner.import_trainingdata(cust_id_x['cust_name'], cust_id_x['language'])  
+            ticketLearner.import_responsedata(cust_id_x['cust_name'], cust_id_x['language'])         
         return '200'  
     
     @app.route('/starttraining', methods=['GET'])
     def startTrainingModels():
         logging.info('startTrainingModels : ')
+        cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
-            intenteng.prepareTrainingData(cust_id_x) 
-            intenteng.startTrainingProcess(cust_id_x)
+            intenteng.prepareTrainingData(cust_id_x['cust_name']) 
+            intenteng.startTrainingProcess(cust_id_x['cust_name'])
+        return '200'  
+    
+    @app.route('/preparedata_old', methods=['GET'])
+    def prepareTrainingData_old():
+        logging.info('prepareTrainingData_old : ')
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        for cust_id_x in cust_list:
+            ticketLearner.extractTrainingData_old(cust_id_x['cust_name'])
+        cust_id = 'default'
+        ticket_logs, next_page_token = get_model().list('tickets', cust_id=cust_id, done=True)
+        for ticket_log in ticket_logs: 
+            get_model().delete(ticket_log['id'], cust_id=cust_id) 
         return '200'  
     
     @app.route('/preparedata', methods=['GET'])
     def prepareTrainingData():
         logging.info('prepareTrainingData : ')
+        cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
-            ticketLearner.extractTrainingData(cust_id_x)
-        ticket_logs, next_page_token = get_model().list('tickets', cust_id='', done=True)
-        #token = next_page_token        
-        for ticket_log in ticket_logs: 
-            get_model().delete(ticket_log['id'], cust_id=cust_id) 
+            ticketLearner.extractTrainingData(cust_id_x['cust_name'])
+            ticket_logs, next_page_token = get_model().list('tickets', cust_id=cust_id_x['cust_name'], done=True)
+            for ticket_log in ticket_logs: 
+                get_model().delete(ticket_log['id'], cust_id=cust_id_x['cust_name']) 
         return '200'  
     
     @app.route('/testingservice', methods=['GET'])
     def startTestingModels():
+        logging.info('startTestingModels : ')
+        cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
-            intenteng.prepareTestingData(cust_id_x)
-            intenteng.startTestingProcess(cust_id_x)
-            intenteng.createConfusionMatrix(cust_id_x)
-        logging.info('doFunctionTesting : ')
+            intenteng.prepareTestingData(cust_id_x['cust_name'])
+            intenteng.startTestingProcess(cust_id_x['cust_name'])
+            intenteng.createConfusionMatrix(cust_id_x['cust_name'])
+        return '200'
+        
+    @app.route('/processnewcustomer', methods=['GET'])
+    def processnewcustomer():
+        logging.info('processnewcustomer : ')
+        ticketLearner.processNewCustomer()
         return '200'
 
     @app.route('/addcustomer', methods=['GET'])
     def addcustomer():
         logging.info('addcustomer : ')
         cust_id = request.args.get('cust_id')
-        
-        if cust_id == None or cust_id == '': 
-            logging.info('Could not create customer' + cust_id)
+        lang_type = request.args.get('lang_type')
+        if cust_id == None or cust_id == '' or lang_type==None or lang_type=='': 
+            logging.info('Could not create new customer' + cust_id)
             return '200'
-        ticketLearner.import_trainingdata(cust_id)  
-        ticketLearner.import_responsedata(cust_id) 
-        intenteng.prepareTrainingData(cust_id) 
-        intenteng.startTrainingProcess(cust_id)
-        logging.info('Created new Customer : ' + cust_id)
+        getCustomerModel().create(cust_id.strip().lower(), done=True, id=rid)
+        cust_id_x = getCustomerModel().authenticate(cust_id.strip().lower())
+        if cust_id_x:
+            ticketLearner.import_trainingdata(cust_id_x['cust_name'], cust_id_x['language'])  
+            ticketLearner.import_responsedata(cust_id_x['cust_name'], cust_id_x['language']) 
+            intenteng.prepareTrainingData(cust_id_x['cust_name']) 
+            intenteng.startTrainingProcess(cust_id_x['cust_name'])
+            logging.info('Created new Customer : ' + cust_id_x['cust_name'])
+        else: 
+            logging.info('Could not create new customer' + cust_id)
+            return '200'
+        logging.info('Created new customer' + cust_id)
         return '200'  
     
     @app.errorhandler(404)
@@ -203,23 +254,3 @@ def cleanhtml(raw_html):
   cleanr = re.compile('<.*?>')
   cleantext = re.sub(cleanr, '', raw_html)
   return cleantext
-
-def authenticate_cust(cust_id_x): 
-    t_cust_id = None
-    cust_list = current_app.config['CUSTOMER_LIST']
-    cust_id_x = cust_id_x.strip()
-    if cust_id_x != None and cust_id_x != '':
-        for x in cust_list:
-            if x.lower() == cust_id_x.lower():
-                t_cust_id = x                 
-    return t_cust_id
-
-def get_validcust(cust_id_x): 
-    t_cust_id = ''
-    cust_list = current_app.config['CUSTOMER_LIST']
-    cust_id_x = cust_id_x.strip()
-    if cust_id_x != None:
-        for x in cust_list:
-            if x.lower() == cust_id_x.lower():
-                t_cust_id = x                 
-    return t_cust_id

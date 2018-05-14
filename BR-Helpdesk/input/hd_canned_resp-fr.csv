@@ -1,0 +1,72 @@
+Product_Initial_Info,"Merci de prendre contact pour plus d'informations sur ce produit.
+Voici des liens pertinents à cette requête.
+[Information sur le produit]
+J'espère que cela t'aides. S'il vous plaît laissez-nous savoir, si vous avez besoin d'informations plus ou spécifiques.","Informations sur le produit, l'information sur le produit, la planification d'achat"
+Product_Price,"Merci pour entrer en contact en ce qui concerne le prix de ce produit / service. Voici les détails.
+[Infos Coût du produit]
+J'espère que cela t'aides. S'il vous plaît laissez-nous savoir, si vous avez besoin d'informations plus ou spécifiques.","Le coût, le prix, frais, taxe"
+Product_PreSales,"Merci pour entrer en contact en ce qui concerne l'achat de ce produit.
+Voici les détails.
+[Infos ventes Produit]
+J'espère que cela t'aides. S'il vous plaît laissez-nous savoir, si vous avez besoin d'informations plus ou spécifiques.","Question pré-vente, avant l'achat, avant la vente,"
+Order_info,"Merci de prendre contact à l'état REGARDS de votre commande de produit.
+Voici les détails.
+[Produit Détails de la commande]
+J'espère que cela t'aides. S'il vous plaît laissez-nous savoir, si vous avez besoin d'informations plus ou spécifiques.","Statut, ordre Infos"
+Product_Return,"Merci pour entrer en contact en ce qui concerne votre question sur le retour des commandes de produits.
+Voici les détails.
+[Produit Retour Détails]
+J'espère que cela t'aides. S'il vous plaît laissez-nous savoir, si vous avez besoin d'informations plus ou spécifiques.","Ordonner le retour, Livraison de retour,"
+Product_Delivery_Status,"Merci pour entrer en contact en ce qui concerne la livraison de votre commande.
+Voici les détails.
+[Livraison produit Statut Détails]
+J'espère que cela t'aides. S'il vous plaît laissez-nous savoir, si vous avez besoin d'informations plus ou spécifiques.","Expédition / livraison, Livraison des produits,"
+Vendor_Issue,Désolé d'entendre que vous avez problème avec notre fournisseur. Nous enquêtons sur ce incidents et vous mettre à jour sous peu.,question du vendeur
+Affiliate_Issue,Désolé d'apprendre que vous rencontrez problème avec notre partenaire. Nous enquêtons sur ce incidents et vous mettre à jour sous peu.,numéro d'affiliation
+Product_Availability,"Merci pour entrer en contact en ce qui concerne la disponibilité de ce produit.
+Voici les détails.
+[Disponibilité du produit Détails]
+J'espère que cela t'aides. S'il vous plaît laissez-nous savoir, si vous avez besoin d'informations plus ou spécifiques.",La disponibilité des produits
+Technical_Issue,Désolé d'entendre que vous êtes ayant ces problèmes techniques. Nous sommes en train de les résoudre et nous vous répondrons sous peu.,"Problème technique, ne fonctionne pas,"
+Product_Defective,Désolé d'entendre que vous avez reçu ce produit défectueux. Nous organisons ramasser de cela et vous revenir avec plus de statut.,"Défectueux, cassé, Dysfonctionnement"
+Order_Cancel_Request,Désolé d'entendre que vous souhaitez annuler cette commande. Nous travaillons à annuler la commande. Vous bientôt mise à jour sur son état.,"Annuler ma commande, Annuler la livraison des produits"
+Product_Refund_Request,"Nous avons reçu votre demande de remboursement. Voici les mises à jour à ce sujet.
+[Mise à jour sur le remboursement]
+J'espère que cela t'aides. S'il vous plaît laissez-nous savoir, si vous avez besoin d'informations plus ou spécifiques.",Rembourser
+Subscription_new,"Merci pour entrer en contact en ce qui concerne l'abonnement à notre service.
+Voici les détails.
+[Service d'abonnement Détails]
+J'espère que cela t'aides. S'il vous plaît laissez-nous savoir de toute autre exigence ou préoccupations.","Démarrer mon abonnement, me abonner,"
+Subscription_Renewal,"Merci pour entrer en contact en ce qui concerne le renouvellement de l'abonnement à ce service.
+Voici les détails.
+[Service d'abonnement Détails]
+J'espère que cela t'aides. S'il vous plaît laissez-nous savoir de toute autre exigence.",Renouvellement d'abonnement
+Service_Disruption,Désolé d'entendre que vous êtes face à problème d'interruption de service. Nous travaillons là-dessus et nous vous recontacterons avec mise à jour plus précis bientôt.,Perturbation
+Service_Cancel_request,"Désolé d'entendre que vous souhaitez annuler votre abonnement. Je peux certainement le faire pour vous. Pourriez-vous me dire pourquoi vous annuler? Si elle doit le faire avec le produit ou la qualité du service, nous aimerions savoir parce que nous nous efforçons toujours d'améliorer.","Se désabonner, annulation, Cesser"
+Software_bug,"Merci d'avoir signalé ce défaut de notre produit. Nous avons commencé à travailler dessus et bientôt, nous vous mettre à jour sur sa résolution.","Bug, numéro,"
+Software_Feature_Request,"Merci de nous suggérer cette nouvelle fonctionnalité pour notre produit. Nous apprécions vos efforts et bientôt, nous reviendrons à vous avec notre plan autour d'elle.","Demande métrage, Nouvelle-métrage,"
+Software_Sales_Billing,"Merci pour entrer en contact en ce qui concerne la vente de produits.
+Voici les détails.
+[Détails du produit des ventes]
+J'espère que cela t'aides. S'il vous plaît laissez-nous savoir, si vous avez besoin d'informations plus ou spécifiques.","vente, la vente, discount,"
+Software_How_To,"Merci de nous avoir des questions sur [procédure]!
+Voici les instructions pour même:
+[Instructions Détails]
+Si vous avez des questions sur le chemin, ne pas hésiter à tendre la main.","Comment, instruction, manuel, guide,"
+Software_Technical_Issue,"Merci d'avoir signalé ce défaut de notre produit. Nous avons commencé à travailler dessus et bientôt, nous vous mettre à jour sur sa résolution.","Problème technique, Impossible de le réparer, Impossible de l'ouvrir, de débogage"
+Software_Cancellation,"Désolé d'entendre que vous souhaitez annuler votre abonnement. Je peux certainement le faire pour vous. Pourriez-vous me dire pourquoi vous annuler? Si elle doit le faire avec le produit ou la qualité du service, nous aimerions savoir parce que nous nous efforçons toujours d'améliorer.","Souscription Annuler, annulation"
+Phase_complaint,"Désolé de tête que vous êtes face à problème avec notre produit / service. Nous vous assurons que nous traiterons votre plainte avec l'attention voulue. Veuillez attendre pendant un certain temps, jusqu'à ce que nous travaillons à résoudre.","Plainte, Questions,"
+Software_Query,"Merci de nous avoir des questions sur nos services de produits.
+Voici les détails de même:
+[Question Détails de la résolution]
+Si vous avez des questions sur le chemin, ne pas hésiter à tendre la main.","Requête, Clarifications, question, réponse,"
+Request_for_Expert,"Merci de nous avoir avec demande d'obtenir de l'aide avec notre technicien expert. Bientôt, nous allons attribuons une personne et vous envoyer son / ses coordonnées et les détails horaires.","PME Aide, Besoin d'un technicien, Besoin d'experts, Besoin PME, besoin d'un spécialiste."
+Phase_sla_breach,Nous sommes désolés que nous avons violé Accord de niveau de service sur cette résolution des problèmes. Veuillez nous donner un peu plus de temps et nous reviendrons vers vous avec une résolution appropriée.,"SLA violation, plus longue réponse, n'avez pas entendu, en attente depuis longtemps,"
+Phase_Resolution_Wait,Nous sommes désolés que vous devez attendre la résolution de vos problèmes. Veuillez nous donner un peu plus de temps et nous reviendrons vers vous avec une résolution appropriée en temps opportun.,"Statut de mon billet, une mise à jour, En attente de temps longue,"
+Response_to_Diffuse_Situation,"Merci beaucoup pour votre question sur [sujet].
+
+Je voulais juste vous faire savoir que je suis à la recherche dans et récupérerez vous avant la fin de la semaine avec une réponse.
+
+Si vous avez besoin de moi pour vous revenir plus tôt, s'il vous plaît laissez-moi savoir!","Putain, Stupid, Putain, connard,"
+Response_to_Angry_situation,Je suis vraiment désolé que vous rencontrez ce problème. Je comprends la frustration doit être. Je vais travailler à trouver une solution tout de suite!,"Frustré,"
+Phase_Feedback,"Nous sommes vraiment heureux que nous avons pu résoudre ce problème pour vous. Si vous pensez que nous avons été utiles, cela vous dérangerait de quitter [votre produit / service] un examen 5 étoiles? Vous pouvez laisser un commentaire en allant à [lien pour examiner]. Si vous ne vous sentez pas que nous méritons un examen 5 étoiles, que pouvons-nous faire pour mieux vous servir? »","A travaillé, Travailler Maintenant, Merci pour l'aide, fermez le billet, fermez le billet, il travaille, la satisfaction"

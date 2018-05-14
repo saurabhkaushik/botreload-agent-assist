@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Registration Page :</h3><br>
+<b><font size="2" color="red">{{error_msg}}</font></b>
+<form id="form_id" name="myform" action="/smartreply/doregister">
+<table>
+<tr><td><label>Zendesk Subdomain Name :</label></td><td>
+<input type="text" name="cust_id" id="cust_id"/>.zendesk.com</td></tr>
+<tr><td><label>Language :</label></td><td>
+<!--- <input type="text" name="lang_type" id="lang_type"/></td></tr> -->
+<select name="lang_type" id="lang_type">
+  <option value="en" selected>English</option>
+  <option value="de">German</option>
+  <option value="fr">French</option>
+  <option value="pt" >Portugies</option>
+</select></td></tr>
+<tr><td><label>Username (Email):</label></td><td>
+<input type="text" name="email_id" id="email_id"/></td></tr>
+<tr><td><label>Password               :</label></td><td>
+<input type="password" name="password" id="password"/></td></tr>
+</table>
+<br><input type="submit" value="Register" id="submit" />
+</form>
+<br><p><b>If you are registered already</b>, please <a href="/smartreply/login">Login</a>. </p>
+<p><b>Having trouble with Registration</b>, please connect with <a href='mailto:botreload@gmail.com'>botreload@gmail.com</a>. </p>
+
+{% endblock %}

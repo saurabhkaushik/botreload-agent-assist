@@ -1,0 +1,31 @@
+"La información del producto, información sobre productos, planificación para la compra",,Product_Initial_Info
+"Coste, precio, cargos, impuestos",,Product_Price
+"Pre-Venta de preguntas, antes de la compra, antes de la venta,",,Product_PreSales
+"Estado del pedido, orden de Información",,Order_info
+"Pedido de devolución, el envío de vuelta,",,Product_Return
+"Envío / Entrega del producto,",,Product_Delivery_Status
+cuestión proveedor,,Vendor_Issue
+cuestión de afiliados,,Affiliate_Issue
+Disponibilidad de producto,,Product_Availability
+"Problema técnico, que no trabaja,",,Technical_Issue
+"Defectuoso, roto, mal funcionamiento",,Product_Defective
+"Cancelar mi pedido, cancelar la entrega del producto",,Order_Cancel_Request
+Reembolso,,Product_Refund_Request
+"Comienza mi suscripción, Suscribirme,",,Subscription_new
+Renovación de la suscripción,,Subscription_Renewal
+Ruptura,,Service_Disruption
+"Darse de baja, cancelación, Suspender",,Service_Cancel_request
+"Bug, Emisión,",,Software_bug
+"Pedido de funciones, Nueva función,",,Software_Feature_Request
+"venta, venta, descuento,",,Software_Sales_Billing
+"Cómo, instrucciones, manual, guía,",,Software_How_To
+"Problema técnico, incapaz de solucionarlo, no se puede abrir, depurarla",,Software_Technical_Issue
+"Cancelar suscripción, cancelación",,Software_Cancellation
+"Quejas, Problemas,",,Phase_complaint
+"Consulta, aclaraciones, preguntas, respuestas,",,Software_Query
+"SME ayuda, necesidad del técnico, Necesidad de expertos, Need SME, Need especialista.",,Request_for_Expert
+"SLA incumplimiento, más largo de respuesta, no ha oído, a la espera por mucho tiempo,",,Phase_sla_breach
+"Estado de mi boleto, cualquier actualización, la espera de la resolución, el tiempo largo,",,Phase_Resolution_Wait
+"Joder, Stupid, Maldita, capullo,",,Response_to_Diffuse_Situation
+"Frustrado,",,Response_to_Angry_situation
+"Trabajado, Trabajar Ahora, gracias por la ayuda, Cerrar el billete, el billete Cierre, se está trabajando, Satisfacción",,Phase_Feedback

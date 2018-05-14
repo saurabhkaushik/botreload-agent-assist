@@ -54,7 +54,7 @@ def list_all(limit=999, cursor=None, cust_id='', done=None):
     ds = get_client() 
 
     query = ds.query(kind= cust_id +'TrainingData') #, order=['type'])
-    if done: 
+    if done != None: 
         query.add_filter('done', '=', done)
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)
@@ -72,7 +72,7 @@ def list_by_respcategory(resp_category, limit=999, cursor=None, cust_id='', done
 
     query = ds.query(kind= cust_id +'TrainingData') #, order=['type'])
     query.add_filter('resp_category', '=', resp_category)
-    if done: 
+    if done != None: 
         query.add_filter('done', '=', done)
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)

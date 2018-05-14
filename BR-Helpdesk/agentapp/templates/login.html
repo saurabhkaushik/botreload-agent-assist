@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h3>Login Page :</h3><br>
+<b><font size="2" color="red">{{error_msg}}</font></b>
 <form id="form_id" name="myform" action="/smartreply/auth">
 <table>
 <tr><td><label>Zendesk Subdomain Name :</label></td><td>
-<input type="text" name="cust_id" id="cust_id"/></td></tr>
+<input type="text" name="cust_id" id="cust_id"/>.zendesk.com</td></tr>
 <tr><td><label>User Name              :</label></td><td>
 <input type="text" name="username" id="username"/></td></tr>
 <tr><td><label>Password               :</label></td><td>
@@ -12,7 +14,7 @@
 </table>
 <br><input type="submit" value="Login" id="submit" />
 </form>
-<br><br>
-<b>Having trouble with login </b>. Please connect with <a href='mailto:botreload@gmail.com'>botreload@gmail.com</a> . 
+<br><p><b>If you are new User</b>, please <a href="/smartreply/register">Register</a>. </p>
+<p><b>Having trouble with Login</b>, please connect with <a href='mailto:botreload@gmail.com'>botreload@gmail.com</a>. </p>
 
 {% endblock %}

@@ -16,15 +16,16 @@ SECRET_KEY = 'secret'
 # You do not have to configure the other data backends. If unsure, choose
 # 'datastore' as it does not require any additional configuration.
 DATA_BACKEND = 'datastore'
-STORAGE_BUCKET = 'botreload-999'
+STORAGE_BUCKET = 'botreload-009'
 CUSTOMER_LIST = ['', 'd3v-genxhelp', 'lodgify', 'telelink', 'qless', 'onpay1', 'adviserlogic', 'plastiq', 'ampleorganics', 'boonstraparts', 'mymuesli-it', 'sapphireretail', 'ChelseaReservations']
 # Google Cloud Project ID. This can be found on the 'Overview' page at
 # https://console.developers.google.com
-PROJECT_ID = 'br-aa-srv-prod'
+PROJECT_ID = 'br-assist-dev'
 
-TRAIN_SET_PATH = 'input/hd_training_data.csv'
-CANNED_RESP_PATH = 'input/hd_canned_resp.csv'
-TEST_SET_PATH = 'input/hd_testing_data.csv'
+TRAIN_SET_PATH = 'input/hd_training_data'
+CANNED_RESP_PATH = 'input/hd_canned_resp'
+TEST_SET_PATH = 'input/hd_testing_data'
+CUST_SET_PATH = 'input/hd_customer_data.csv'
 
 # CloudSQL & SQLAlchemy configuration
 # Replace the following values the respective values of your Cloud SQL

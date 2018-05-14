@@ -1,0 +1,31 @@
+"Informations sur le produit, l'information sur le produit, la planification d'achat",,Product_Initial_Info
+"Le coût, le prix, frais, taxe",,Product_Price
+"Question pré-vente, avant l'achat, avant la vente,",,Product_PreSales
+"Statut, ordre Infos",,Order_info
+"Ordonner le retour, Livraison de retour,",,Product_Return
+"Expédition / livraison, Livraison des produits,",,Product_Delivery_Status
+question du vendeur,,Vendor_Issue
+numéro d'affiliation,,Affiliate_Issue
+La disponibilité des produits,,Product_Availability
+"Problème technique, ne fonctionne pas,",,Technical_Issue
+"Défectueux, cassé, Dysfonctionnement",,Product_Defective
+"Annuler ma commande, Annuler la livraison des produits",,Order_Cancel_Request
+Rembourser,,Product_Refund_Request
+"Démarrer mon abonnement, me abonner,",,Subscription_new
+Renouvellement d'abonnement,,Subscription_Renewal
+Perturbation,,Service_Disruption
+"Se désabonner, annulation, Cesser",,Service_Cancel_request
+"Bug, numéro,",,Software_bug
+"Demande métrage, Nouvelle-métrage,",,Software_Feature_Request
+"vente, la vente, discount,",,Software_Sales_Billing
+"Comment, instruction, manuel, guide,",,Software_How_To
+"Problème technique, Impossible de le réparer, Impossible de l'ouvrir, de débogage",,Software_Technical_Issue
+"Souscription Annuler, annulation",,Software_Cancellation
+"Plainte, Questions,",,Phase_complaint
+"Requête, Clarifications, question, réponse,",,Software_Query
+"PME Aide, Besoin d'un technicien, Besoin d'experts, Besoin PME, besoin d'un spécialiste.",,Request_for_Expert
+"SLA violation, plus longue réponse, n'avez pas entendu, en attente depuis longtemps,",,Phase_sla_breach
+"Statut de mon billet, une mise à jour, En attente de temps longue,",,Phase_Resolution_Wait
+"Putain, Stupid, Putain, connard,",,Response_to_Diffuse_Situation
+"Frustré,",,Response_to_Angry_situation
+"A travaillé, Travailler Maintenant, Merci pour l'aide, fermez le billet, fermez le billet, il travaille, la satisfaction",,Phase_Feedback

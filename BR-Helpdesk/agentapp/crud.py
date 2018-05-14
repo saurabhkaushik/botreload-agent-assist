@@ -1,5 +1,5 @@
-from agentapp.model_select import getResponseModel, getTrainingModel
-from agentapp import authenticate_cust
+from agentapp.model_select import getResponseModel, getTrainingModel, getCustomerModel
+from agentapp.tickets_learner import tickets_learner
 from flask import Blueprint, redirect, render_template, request, url_for
 import logging 
 crud = Blueprint('crud', __name__)
@@ -7,30 +7,85 @@ crud = Blueprint('crud', __name__)
 from agentapp.IntentExtractor import IntentExtractor
 intenteng = IntentExtractor()
 
-# [START list]
+# [START login]
 @crud.route("/")
 def login():    
     return render_template("login.html") 
 # [END list]
 
+# [START register]
+@crud.route("/register")
+def register():    
+    return render_template("register.html") 
+# [END register]
+
+# [START route]
+@crud.route("/route")
+def route():    
+    cust_id = request.args.get('cust_id', None)
+    if cust_id == None or cust_id == '': 
+        return render_template("register.html", error_msg='Error: Invalid User Organization')
+    cust_id = cust_id.strip().lower()
+
+    cust = getCustomerModel().authenticate(cust_id)
+    if cust == None:            
+        return render_template("register.html", error_msg='Error: Invalid User Organization')
+    return redirect(url_for('.list', cust_id=cust_id))
+# [END list]
+
 # [START auth]
 @crud.route("/auth")
 def auth():    
-    t_cust_id = request.args.get('cust_id', None)
-    cust_id = authenticate_cust(t_cust_id)
-    if cust_id == None: 
-        logging.error('\'' + t_cust_id + '\' is invalid customer Organization. ')
-        return render_template("login.html")
+    cust_id = request.args.get('cust_id', None)
+    if cust_id == None or cust_id == '': 
+        return render_template("login.html", error_msg='Error: Invalid User Organization')
+    cust_id = cust_id.strip().lower()
+    cust = getCustomerModel().authenticate(cust_id)
+    if cust == None:            
+        logging.error('\'' + cust_id + '\' is invalid customer Organization. ')
+        return render_template("login.html", error_msg='Error: Invalid User Organization')        
     return redirect(url_for('.list', cust_id=cust_id))
 # [END auth]
+
+# [START doregister]
+@crud.route("/doregister", methods=['GET', 'POST'])
+def doregister():    
+    cust_id = request.args.get('cust_id', None)
+    lang_type = request.args.get('lang_type', None)
+    email_id = request.args.get('email_id', None)
+    password_ = request.args.get('password', None)
+    
+    if cust_id == None or cust_id == '': 
+        logging.error('\'' + cust_id + '\' is invalid customer subdomain. ')
+        return render_template("register.html", error_msg='Error: Invalid User Organization')
+    cust_id = cust_id.strip().lower()
+
+    cust = getCustomerModel().authenticate(cust_id)
+    if cust == None: 
+        cust = getCustomerModel().create(cust_id, language=lang_type, 
+            email_id=email_id, password = password_, newflag=True, done=True) 
+        if cust:
+            tickets_learner().import_responsedata(cust['cust_name'], cust['language']) 
+            return redirect(url_for('.list', cust_id=cust_id))
+    else: 
+        return redirect(url_for('.list', cust_id=cust_id))
+    logging.error('\'' + cust_id + '\' is invalid customer subdomain. ')
+    return render_template("register.html", error_msg='Error: Invalid User Organization')
+# [END doregister]
 
 # [START list]
 @crud.route("/list")
 def list():    
     token = request.args.get('page_token', None)
     cust_id = request.args.get('cust_id', None)
-    if cust_id == None: 
-        cust_id = ''
+    if cust_id == None or cust_id == '': 
+        return render_template("login.html")
+    cust_id = cust_id.strip().lower()
+
+    cust = getCustomerModel().authenticate(cust_id)
+    if cust == None:            
+        logging.error('\'' + cust_id + '\' is invalid customer Organization. ')
+        return render_template("login.html")
     
     if token:
         token = token.encode('utf-8')
@@ -46,9 +101,15 @@ def list():
 
 @crud.route('/<id>')
 def view(id):
-    cust_id = request.args.get('cust_id', None).strip()
-    if cust_id == None: 
-        cust_id = ''
+    cust_id = request.args.get('cust_id', None)
+    if cust_id == None or cust_id == '': 
+        return render_template("login.html")
+    cust_id = cust_id.strip().lower()
+    cust = getCustomerModel().authenticate(cust_id)
+    if cust == None:            
+        logging.error('\'' + cust_id + '\' is invalid customer Organization. ')
+        return render_template("login.html")
+    
     book = getResponseModel().read(id, cust_id)
     return render_template("view.html", cust_id=cust_id, book=book)
 
@@ -56,9 +117,16 @@ def view(id):
 # [START add]
 @crud.route('/add', methods=['GET', 'POST'])
 def add():
-    cust_id = request.args.get('cust_id', None).strip()
-    if cust_id == None: 
-        cust_id = ''
+    cust_id = request.args.get('cust_id', None)
+    if cust_id == None or cust_id == '': 
+        return render_template("login.html")
+    cust_id = cust_id.strip().lower()
+    cust = getCustomerModel().authenticate(cust_id)
+
+    if cust == None:            
+        logging.error('\'' + cust_id + '\' is invalid customer Organization. ')
+        return render_template("login.html")
+    
     if request.method == 'POST':
         data = request.form.to_dict(flat=True)
 
@@ -72,9 +140,16 @@ def add():
 
 @crud.route('/<id>/edit', methods=['GET', 'POST'])
 def edit(id):
-    cust_id = request.args.get('cust_id', None).strip()
-    if cust_id == None: 
-        cust_id = ''
+    cust_id = request.args.get('cust_id', None)
+    if cust_id == None or cust_id == '': 
+        return render_template("login.html")
+    cust_id = cust_id.strip().lower()
+    cust = getCustomerModel().authenticate(cust_id)   
+    
+    if cust == None:            
+        logging.error('\'' + cust_id + '\' is invalid customer Organization. ')
+        return render_template("login.html", error_msg='Error: Invalid User Organization')
+    
     book = getResponseModel().read(id, cust_id)
 
     if request.method == 'POST':
@@ -94,9 +169,14 @@ def edit(id):
 
 @crud.route('/<id>/delete')
 def delete(id):
-    cust_id = request.args.get('cust_id', None).strip()
-    if cust_id == None: 
-        cust_id = ''
+    cust_id = request.args.get('cust_id', None)
+    if cust_id == None or cust_id == '': 
+        return render_template("login.html")
+    cust_id = cust_id.strip().lower()
+    cust = getCustomerModel().authenticate(cust_id)
+    if cust == None:            
+        logging.error('\'' + cust_id + '\' is invalid customer Organization. ')
+        return render_template("login.html", error_msg='Error: Invalid User Organization')
     
     dataitm = getResponseModel().read(id, cust_id)
     
