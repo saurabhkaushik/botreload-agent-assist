@@ -14,7 +14,7 @@
   <div id="content"></div>
   <script id="add_task-hdbs" type="text/x-handlebars-template">
   <form id="task-form">
-	<h6><b>Here are Suggested Replies. Press 'Apply' for 'Public Reply'.</b></h6>
+	<h6><b>Here are suggested Replies. Press 'Apply' for 'Public Reply'.</b></h6>
 	<div class="panel-group" id="accordion">
 	{{#each comments}}
 	<div class="panel panel-default">
@@ -30,7 +30,7 @@
 	{{/each}}
 	</div> 
   </form>
-  <button id="add-btn" onclick="sendPortal(event)" class='btn'>Edit Smart Reply Response</button>
+  <button id="add-btn" onclick="sendPortal(event)" class='btn'>Edit 'Smart Reply' Response</button>
   <br><a href='https://www.botreload.com' target="_">BotReload.com</a> | <a href='mailto:botreload@gmail.com'>Report a bug.</a>
   </script>  
   <script id="error-template" type="text/x-handlebars-template">
@@ -40,6 +40,7 @@
   </script>
   <script id="post-apply-template" type="text/x-handlebars-template">
   	<h5><p>Comment has been applied to <b>Public Reply</b>. Please Edit (if required) and Submit.</p></h5>
+    <button id="add-btn" onclick="sendPortal(event)" class='btn'>Edit 'Smart Reply' Response</button>
 	<br><a href='https://www.botreload.com' target="_">BotReload.com</a> | <a href='mailto:botreload@gmail.com'>Report a bug.</a>
   </script>
   

@@ -5,10 +5,18 @@ var pastticket_data = {upload_ticket_data :'', ticket_data : ''};
 
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = 'https://br-assist-dev.appspot.com';
+var SERVER_NAME = 'https://br-aa-srv-prod.appspot.com';
 var header = 'Hi ';
 var footer = '<br><br>Thanks, <br> - ';
 var called_flag = false;
+var ticket_list = [];
+var comment_list = [];
+var iter_ticket = 0;
+var iter_comment = 0;
+var max_tickets = 10;
+var max_comments = 200;
+var ticket_json_data = {upload_ticket_data : [], upload_comment_data : [], ticket_data : ''};
+var timeout_comment = 5000;
 
 $(function() {
   client = ZAFClient.init();
@@ -170,13 +178,8 @@ function syncFeedbackData() {
     }
   );
 }
-var iter = 0;
+
 var ticket_url = "/api/v2/tickets.json";// +"?per_page=10";
-var ticket_json_data = {upload_ticket_data : [], upload_comment_data : [], ticket_data : ''};
-var ticket_list = [];
-var comment_list = [];
-var max_tickets = 10;
-var timeout_comment = 5000;
 function syncAllTicketData(ticket_url){
 	//console.log('syncAllTicketData:');
 	var settings = {
@@ -189,9 +192,11 @@ function syncAllTicketData(ticket_url){
     function(data) {
     	for (i = 0; i < data.tickets.length; i++) {
     		ticket_list.push(data.tickets[i]);
-    	   	getCommentData(data.tickets[i]);    	
+    	   	if (iter_comment++ < max_comments) {
+    	   		getCommentData(data.tickets[i]);    	
+    	   	}
     	}
-    	if (data['next_page'] != null && iter++ < max_tickets ) {        	
+    	if (data['next_page'] != null && iter_ticket++ < max_tickets ) {        	
     		syncAllTicketData(data['next_page']); 
     		return;
         }
