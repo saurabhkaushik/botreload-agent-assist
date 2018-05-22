@@ -18,61 +18,6 @@ class tickets_learner(object):
         self.storage_client = storage.Client()
     # [END build_service]
     
-    def extractTrainingData_old(self, cust_id):   
-        logging.info ('extractTrainingData : ')
-        next_page_token = 0
-        token = None        
-        from agentapp.IntentExtractor import IntentExtractor
-        intenteng = IntentExtractor()
-        while next_page_token != None:             
-            ticket_logs, next_page_token = get_model().list('tickets', cursor=token, cust_id='default', done=True)
-            token = next_page_token
-            for ticket_log in ticket_logs: 
-                tickets_data = ticket_log["json_data"] 
-                tickets_data_json = json.loads(tickets_data)
-                for ticket_data in tickets_data_json['tickets']: 
-                    description = ticket_data['description']
-                    subject = ticket_data['subject']
-                    tags = ', '.join(ticket_data['tags']) 
-                    #print (str(subject + ' . ' + description + ' . ' + tags))
-                    predicted = intenteng.getPredictedIntent(str(subject + ' . ' + description + ' . ' + tags) , cust_id)  
-                    if len(predicted) < 1: 
-                        predicted = ['Default']
-                    getTrainingModel().create(tags, str(subject + ' . ' + description), '', '', done=True, resp_category=predicted[0], cust_id=cust_id)
-
-    def extractTrainingData(self, cust_id):   
-        logging.info ('extractTrainingData : ')
-        next_page_token = 0
-        token = None        
-        from agentapp.IntentExtractor import IntentExtractor
-        intenteng = IntentExtractor()
-        while next_page_token != None:             
-            ticket_logs, next_page_token = get_model().list('tickets', cursor=token, cust_id=cust_id, done=True)
-            token = next_page_token
-            for ticket_log in ticket_logs: 
-                tickets_data = ticket_log["json_data"] 
-                tickets_data_json = json.loads(tickets_data)
-                #print (tickets_data_json)
-                itr = 0
-                for ticket_data in tickets_data_json['upload_ticket_data']: 
-                    #print(ticket_data)
-                    comments = ''
-                    for comment_data in tickets_data_json['upload_comment_data']:
-                        if (comment_data['id'] == ticket_data['id']):
-                            try:
-                                comments = comment_data['comments'][1]['plain_body']
-                            except IndexError as err: 
-                                logging.debug('')
-                    
-                    description = ticket_data['description']
-                    subject = ticket_data['subject']                    
-                    tags = ', '.join(ticket_data['tags']) 
-                    predicted = intenteng.getPredictedIntent(str(subject + ' . ' + description + ' . ' + tags) , cust_id)
-                    if len(predicted) < 1: 
-                        predicted = ['Default']
-                    getTrainingModel().create(tags, str(subject + ' . ' + description), comments, '',  done=True, resp_category=predicted[0], cust_id=cust_id)
-                    itr += 1
-
     def getTrainingData(self, cust_id):   
         logging.info ('getTrainingData : ')
         ticket_data = []
@@ -153,6 +98,9 @@ class tickets_learner(object):
         try:
             bucket = self.storage_client.get_bucket(current_app.config['STORAGE_BUCKET']) 
             m_blob = bucket.get_blob(cust_id + '_model.pkl')
+            if m_blob == None:
+                m_blob = bucket.get_blob('default' + '_model.pkl')
+                logging.error('Could find Pickle file for Organization, Serving Default : '+ str(cust_id))
             file = m_blob.download_as_string()
             return file
         except google.cloud.exceptions.NotFound:

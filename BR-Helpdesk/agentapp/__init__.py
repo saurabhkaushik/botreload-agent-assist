@@ -2,6 +2,7 @@ from agentapp.EntityExtractor import EntityExtractor
 from agentapp.IntentExtractor import IntentExtractor
 from agentapp.tickets_learner import tickets_learner
 from agentapp.model_select import get_model, getTrainingModel, getCustomerModel
+from agentapp.TrainingDataAnalyzer import TrainingDataAnalyzer
 
 from flask import current_app, redirect
 from flask import Flask, jsonify
@@ -20,8 +21,7 @@ import logging
 #entityeng = EntityExtractor()
 intenteng = IntentExtractor()
 ticketLearner = tickets_learner()
-#cust_id = ''
-#cust_list = []
+data_analyzer = TrainingDataAnalyzer()
 
 def create_app(config, debug=False, testing=False, config_overrides=None):
     app = Flask(__name__)
@@ -85,7 +85,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         logging.info('Customer Id : ' + str(cust_id))
         
         get_model().create('intent', json.dumps(request.json), done=True, cust_id=cust_id)
-        if (received_data['requester']['email'] == received_data['comments'][0]['author']['email']):
+        len_comment = len(received_data['comments']) 
+        if ((len_comment > 0) and (received_data['requester']['email'] == received_data['comments'][0]['author']['email'])):
             intent_input = cleanhtml(received_data['comments'][0]['value'])
         else:
             intent_input = cleanhtml(received_data['description'] + '. ' + received_data['subject'])
@@ -176,27 +177,40 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             intenteng.startTrainingProcess(cust_id_x['cust_name'])
         return '200'  
     
-    @app.route('/preparedata_old', methods=['GET'])
-    def prepareTrainingData_old():
-        logging.info('prepareTrainingData_old : ')
-        cust_list, next_page_token = getCustomerModel().list(done=True)
-        for cust_id_x in cust_list:
-            ticketLearner.extractTrainingData_old(cust_id_x['cust_name'])
-        cust_id = 'default'
-        ticket_logs, next_page_token = get_model().list('tickets', cust_id=cust_id, done=True)
-        for ticket_log in ticket_logs: 
-            get_model().delete(ticket_log['id'], cust_id=cust_id) 
-        return '200'  
-    
     @app.route('/preparedata', methods=['GET'])
     def prepareTrainingData():
-        logging.info('prepareTrainingData : ')
+        logging.info('prepareTrainingData_old : ')        
+        '''
+        # Copy TrainingLog to defaultTrainingLog
+        data_analyzer.copyOldTrainingLog()
+        
+        # Extract TrainingData from Ticket defaultTrainingLog to Cust_TrainingData 
+        data_analyzer.extractTicketData_default()
+        
+        # Extract Trainingdata from Ticket custTrainingLog to Cust_TrainingData         
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
-            ticketLearner.extractTrainingData(cust_id_x['cust_name'])
-            ticket_logs, next_page_token = get_model().list('tickets', cust_id=cust_id_x['cust_name'], done=True)
-            for ticket_log in ticket_logs: 
-                get_model().delete(ticket_log['id'], cust_id=cust_id_x['cust_name']) 
+            data_analyzer.extractTicketData_cust(cust_id_x['cust_name'])
+        
+        # Extract TrainingData from Intent defaultTrainingLog to Cust_TrainingData 
+        data_analyzer.extractIntentData_default()
+        
+        # Extract TrainingData from Intent CustTrainingLog to Cust_TrainingData         
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        for cust_id_x in cust_list:
+            data_analyzer.extractIntentData_cust(cust_id_x['cust_name'])
+        
+        # Extract TrainingData from Ticket/Comment in Cust_TrainingData
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        for cust_id_x in cust_list:
+            data_analyzer.extractTicketData_new(cust_id_x['cust_name'])
+        '''
+
+        # Apply Predicitons to all False Done 
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        for cust_id_x in cust_list:
+            data_analyzer.applyPrediction(cust_id_x['cust_name'])
+
         return '200'  
     
     @app.route('/testingservice', methods=['GET'])

@@ -5,7 +5,7 @@ var pastticket_data = {upload_ticket_data :'', ticket_data : ''};
 
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = 'https://br-aa-srv-prod.appspot.com';
+var SERVER_NAME = 'https://br-assist-dev.appspot.com';
 var header = 'Hi ';
 var footer = '<br><br>Thanks, <br> - ';
 var called_flag = false;
@@ -104,7 +104,7 @@ function sendPortal(event) {
 };
 
 function getResponseData() {
-	//console.log('getResponseData:', ticket_data); //JSON.stringify(ticket_data));
+	console.log('getResponseData:', ticket_data); //JSON.stringify(ticket_data));
 	var settings = {
 	    url: SERVER_NAME +'/intent',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},

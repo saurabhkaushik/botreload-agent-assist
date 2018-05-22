@@ -64,15 +64,21 @@ class IntentExtractor(object):
         logging.info ("Total Training Samples : %s" % len(self.y))
         
     def getIntentForText(self, textinput, cust_id): 
-        logging.info("\n"+"################# Starting Prediction Process ################################"+"\n")
+        logging.info("\n"+"################# Starting Prediction Process ################################"+"\n")        
         tickets_learn = tickets_learner()
         pickle_out = tickets_learn.get_bucket(cust_id)
         self.etree_w2v_tfidf = pickle.loads(pickle_out)
         self.test_X = []
         self.test_X.append(preprocess(textinput).split())
         #self.predicted = self.etree_w2v_tfidf.predict(self.test_X) 
-        self.predicted_prob = self.etree_w2v_tfidf.predict_proba(self.test_X)  
-        self.y_predict_dic = dict(zip(self.etree_w2v_tfidf.classes_, self.predicted_prob[0]))
+        #print (self.test_X)
+        self.predicted_prob = []
+        self.y_predict_dic = {}
+        try:
+            self.predicted_prob = self.etree_w2v_tfidf.predict_proba(self.test_X)  
+            self.y_predict_dic = dict(zip(self.etree_w2v_tfidf.classes_, self.predicted_prob[0]))
+        except ValueError as err: 
+            logging.error(str(err))       
         return self.y_predict_dic
         
     def getPredictedIntent(self, textinput, cust_id): 

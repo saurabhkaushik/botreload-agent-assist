@@ -34,7 +34,7 @@ def from_datastore(entity):
 
 
 # [START list]
-def list(limit=10, cursor=None, cust_id='', done=None):
+def list(limit=999, cursor=None, cust_id='', done=None):
     ds = get_client()
 
     query = ds.query(kind= cust_id +'TrainingData') #, order=['type'])

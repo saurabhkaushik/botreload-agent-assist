@@ -34,7 +34,7 @@ def from_datastore(entity):
 
 
 # [START list]
-def list(log_type, limit=10, cursor=None, cust_id='', done=None):
+def list(log_type, limit=999, cursor=None, cust_id='', done=None):
     ds = get_client()
 
     query = ds.query(kind= cust_id +'TrainingLog', order=['type'])
@@ -62,21 +62,24 @@ def read(id, cust_id=''):
 
 
 # [START update]
-def update(req_type, data, done=False, id=None, cust_id=''):
+def update(req_type, data, done=False, id=None, created=None, cust_id=''):
     ds = get_client()
     
     if id:
         key = ds.key(cust_id +'TrainingLog', int(id))
     else:
         key = ds.key(cust_id +'TrainingLog')
-
+        
+    if created == None:
+        created = datetime.datetime.utcnow()
+    
     entity = datastore.Entity(
         key=key,
         exclude_from_indexes=['json_data'])
     
     entity.update({
             'type': req_type,
-            'created': datetime.datetime.utcnow(),
+            'created': created,
             'json_data': data,
             'done': done
         })
