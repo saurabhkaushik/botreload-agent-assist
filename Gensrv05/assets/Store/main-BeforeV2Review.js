@@ -5,17 +5,16 @@ var pastticket_data = {upload_ticket_data :'', ticket_data : ''};
 
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = 'https://br-aa-srv-prod.appspot.com';
+var SERVER_NAME = 'https://br-assist-dev.appspot.com';
 var header = 'Hi ';
 var footer = '<br><br>Thanks, <br> - ';
 var called_flag = false;
-var ticket_flag = false;
 var ticket_list = [];
 var comment_list = [];
 var iter_ticket = 0;
 var iter_comment = 0;
 var max_tickets = 10;
-var max_comments = 100;
+var max_comments = 200;
 var ticket_json_data = {upload_ticket_data : [], upload_comment_data : [], ticket_data : ''};
 var timeout_comment = 5000;
 
@@ -24,27 +23,6 @@ $(function() {
   client.invoke('resize', { width: '100%', height: '400px' });
   firstData();
 });
-
-function setKey(key, val) {
-	return localStorage.setItem("BL_SmartReply:" + key, val);
-}
-
-function getKey(key) {
-   return localStorage.getItem("BL_SmartReply:" + key);
-}
-
-if (getKey("ticketflag") == null) {
-	setKey("ticketflag", Date.now());
-	ticket_flag = true;
-} else {
-	var difference = Date.now() - getKey("ticketflag");
-    var daysDifference = Math.floor(difference/1000/60/60/24);
-	if (daysDifference > 1) {
-		ticket_flag = true;
-	} else {
-		ticket_flag = false;
-	}
-}
 
 function firstData() {
 	//console.log('firstData:');
@@ -69,11 +47,10 @@ function firstData() {
 }
 
 client.on('app.registered', function(appData) {
-		//console.log('app.registered:');		
+		//getTicketData();
 		if (called_flag == false) {
 			called_flag = true;
-			getTicketData();
-			//syncAllTicketData(ticket_url);
+			syncAllTicketData(ticket_url);
 		} else {
 			return;
 		}		
@@ -83,11 +60,7 @@ function showInfo(data) {
 	//console.log('showInfo:');
 	var source = $("#add_task-hdbs").html();
 	var template = Handlebars.compile(source);
-	if (data.length > 0) {
-		context = {comments: data, error: ''};
-	} else {
-		context = {comments: data, error: 'Sorry, Could not suggest any response for this.'};
-	}
+	context = {comments: data};
 	var html = template(context);
 	$("#content").html(html);
 }
@@ -131,7 +104,7 @@ function sendPortal(event) {
 };
 
 function getResponseData() {
-	//console.log('getResponseData:', ticket_data); //JSON.stringify(ticket_data));
+	console.log('getResponseData:', ticket_data); //JSON.stringify(ticket_data));
 	var settings = {
 	    url: SERVER_NAME +'/intent',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
@@ -157,7 +130,8 @@ function getResponseData() {
 }
 
 function syncTicketData() {	
-	//console.log('syncTicketData:', ticket_json_data); //JSON.stringify(ticket_json_data));
+	console.log('syncTicketData:', ticket_json_data); //JSON.stringify(ticket_json_data));
+
 	var settings = {
 	    url: SERVER_NAME +'/uploadtickets',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
@@ -205,32 +179,34 @@ function syncFeedbackData() {
   );
 }
 
-function getTicketData() {	
-	if (ticket_flag == false )
-		return;
-	//console.log('getTicketData:');
+var ticket_url = "/api/v2/tickets.json";// +"?per_page=10";
+function syncAllTicketData(ticket_url){
+	//console.log('syncAllTicketData:');
 	var settings = {
-		url: '/api/v2/tickets.json',
+		url: ticket_url,
 	    type: 'GET',
 	    contentType: 'application/json',
 	    dataType: 'json'
-	    	};
-
+	    	}; 
 	client.request(settings).then(
     function(data) {
-        //console.log(data);
-    	ticket_json_data.upload_ticket_data = data.tickets
-    	ticket_json_data.ticket_data = ticket_data
     	for (i = 0; i < data.tickets.length; i++) {
+    		ticket_list.push(data.tickets[i]);
     	   	if (iter_comment++ < max_comments) {
     	   		getCommentData(data.tickets[i]);    	
     	   	}
     	}
-    	ticket_json_data.upload_comment_data = comment_list;
+    	if (data['next_page'] != null && iter_ticket++ < max_tickets ) {        	
+    		syncAllTicketData(data['next_page']); 
+    		return;
+        }
+        ticket_json_data.upload_ticket_data = ticket_list;
+        ticket_json_data.ticket_data = ticket_data;
+        ticket_json_data.upload_comment_data = comment_list;
         setTimeout( function() {
         	syncTicketData();
         	}, timeout_comment);
-    	//syncTicketData();
+         return;
     },
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;
