@@ -213,6 +213,13 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
 
         return '200'  
     
+    @app.route('/buildSmartReplies', methods=['GET'])
+    def buildSmartReplies():
+        logging.info('buildSmartReplies : ')        
+        smartprocessor = SmartRepliesSelector()
+        smartprocessor.prepareTrainingData()
+        smartprocessor.getKMeanClusters()
+
     @app.route('/testingservice', methods=['GET'])
     def startTestingModels():
         logging.info('startTestingModels : ')

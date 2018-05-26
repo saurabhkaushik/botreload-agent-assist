@@ -11,6 +11,8 @@ from google.cloud import datastore
 from google.cloud import storage
 import google
 
+trainlog = get_model()
+traindata = getTrainingModel()
 class TrainingDataAnalyzer(object):
 
     def __init__(self):
@@ -19,28 +21,25 @@ class TrainingDataAnalyzer(object):
     # [END build_service]
     
     def copyOldTrainingLog(self):
-        logging.info ('copyOldTrainingLog : ')
-        traindb = get_model()
+        logging.info ('copyOldTrainingLog : Starting')        
         next_page_token = 0
         token = None
         while next_page_token != None:
-            ticket_logs, next_page_token = traindb.list('tickets', cursor=token, cust_id='')
+            ticket_logs, next_page_token = trainlog.list('tickets', cursor=token, cust_id='', done=True)
             token = next_page_token
             for ticket_log in ticket_logs:
-                traindb.create(ticket_log['type'], ticket_log['json_data'], created=ticket_log['created'], done=True, cust_id='default')
+                trainlog.create(ticket_log['type'], ticket_log['json_data'], created=ticket_log['created'], done=True, cust_id='default')
+                trainlog.delete(id=ticket_log['id'], cust_id='')
                 print ('Copying : ' , ticket_log['id'])
+        print ('copyOldTrainingLog: Completed ')
 
     def extractTicketData_default(self, src_cust_id='default'):   
-        logging.info ('extractTicketData_default : ')
+        logging.info ('extractTicketData_default : Started ')
         next_page_token = 0
         token = None        
         cust_list, next_page_token2 = getCustomerModel().list(done=True)
-        from agentapp.IntentExtractor import IntentExtractor
-        intenteng = IntentExtractor()
-        traindata = get_model()
-        #print(cust_list, next_page_token)
         while next_page_token != None:             
-            ticket_logs, next_page_token = traindata.list('tickets', cursor=token, cust_id=src_cust_id, done=True)
+            ticket_logs, next_page_token = trainlog.list('tickets', cursor=token, cust_id=src_cust_id, done=True)
             token = next_page_token
             #print (ticket_logs) 
             for ticket_log in ticket_logs: 
@@ -56,24 +55,22 @@ class TrainingDataAnalyzer(object):
                     for cust_id_x in cust_list:
                         if cust_id_x['cust_name'] in url:
                             #print (url + ' has ' + cust_id_x['cust_name'])
-                            getTrainingModel().create(tags, str(subject + ' . ' + description), '', done=False, cust_id=cust_id_x['cust_name'])
+                            traindata.create(tags, str(subject + ' . ' + description), '', done=False, cust_id=cust_id_x['cust_name'])
+                            
                             print('Creating for Ticket Id : ' , ticket_data['id'])
         # Deleting processed Ticket data from default
-        ticket_logs, next_page_token = traindata.list('tickets', cust_id=src_cust_id, done=True)
+        ticket_logs, next_page_token = trainlog.list('tickets', cust_id=src_cust_id, done=True)
         for ticket_log in ticket_logs: 
-            traindata.delete(ticket_log['id'], cust_id=src_cust_id)
+            trainlog.delete(ticket_log['id'], cust_id=src_cust_id)
+        logging.info ('extractTicketData_default : Completed ')
     
     def extractTicketData_cust(self, cust_id):   
-        logging.info ('extractTicketData_cust : ')
+        logging.info ('extractTicketData_cust : Started')
         next_page_token = 0
         token = None        
         cust_list, next_page_token2 = getCustomerModel().list(done=True)
-        from agentapp.IntentExtractor import IntentExtractor
-        intenteng = IntentExtractor()
-        traindata = get_model()
-        #print(cust_list, next_page_token)
         while next_page_token != None:             
-            ticket_logs, next_page_token = traindata.list('tickets', cursor=token, cust_id=cust_id, done=True)
+            ticket_logs, next_page_token = trainlog.list('tickets', cursor=token, cust_id=cust_id, done=True)
             token = next_page_token
             #print (ticket_logs) 
             for ticket_log in ticket_logs: 
@@ -85,53 +82,46 @@ class TrainingDataAnalyzer(object):
                     subject = ticket_data['subject']
                     tags = ', '.join(ticket_data['tags']) 
                     url = ticket_data['url']             
-                    getTrainingModel().create(tags, str(subject + ' . ' + description), '', done=False, cust_id=cust_id)
+                    traindata.create(tags, str(subject + ' . ' + description), '', done=False, cust_id=cust_id)
                     print('Creating for Ticket Id : ' , ticket_data['id'])
         # Deleting processed Ticket data from default
-        ticket_logs, next_page_token = traindata.list('tickets', cust_id=cust_id, done=True)
+        ticket_logs, next_page_token = trainlog.list('tickets', cust_id=cust_id, done=True)
         for ticket_log in ticket_logs: 
-            traindata.delete(ticket_log['id'], cust_id=cust_id)
-
+            trainlog.delete(ticket_log['id'], cust_id=cust_id)
+        logging.info ('extractTicketData_cust : Completed')
+        
     def extractIntentData_default(self, src_cust_id='default'):   
-        logging.info ('extractIntentData_default : ')
+        logging.info ('extractIntentData_default : Started')
         next_page_token = 0
         token = None        
         cust_list, next_page_token2 = getCustomerModel().list(done=True)
-        from agentapp.IntentExtractor import IntentExtractor
-        intenteng = IntentExtractor()
-        traindata = get_model()
-        #print(cust_list, next_page_token)
         while next_page_token != None:             
-            intent_logs, next_page_token = traindata.list('intent', cursor=token, cust_id=src_cust_id, done=True)
+            intent_logs, next_page_token = trainlog.list('intent', cursor=token, cust_id=src_cust_id, done=True)
             token = next_page_token
             #print (ticket_logs) 
             for intent_log in intent_logs: 
                 intents_data = intent_log["json_data"] 
                 intents_data_json = json.loads(intents_data)
-                #print(intents_data_json)
                 description = intents_data_json['description']
                 subject = intents_data_json['subject']
                 tags = ', '.join(intents_data_json['requester']['tags']) 
                 cust_id = intents_data_json['currentAccount']['subdomain'] 
                 response = intents_data_json['comments'][0]['value']
-                getTrainingModel().create(tags, str(subject + ' . ' + description), response, done=False, cust_id=cust_id)
+                traindata.create(tags, str(subject + ' . ' + description), response, done=False, cust_id=cust_id)
                 print('Creating for Ticket Id : ' , intents_data_json['id'])
         # Deleting processed Ticket data from default
-        ticket_logs, next_page_token = traindata.list('intent', cust_id=src_cust_id, done=True)
+        ticket_logs, next_page_token = trainlog.list('intent', cust_id=src_cust_id, done=True)
         for ticket_log in ticket_logs: 
-            traindata.delete(ticket_log['id'], cust_id=src_cust_id)
+            trainlog.delete(ticket_log['id'], cust_id=src_cust_id)
+        logging.info ('extractIntentData_default : Completed')
     
     def extractIntentData_cust(self, cust_id):   
-        logging.info ('extractIntentData_cust : ')
+        logging.info ('extractIntentData_cust : Started')
         next_page_token = 0
         token = None        
         cust_list, next_page_token2 = getCustomerModel().list(done=True)
-        from agentapp.IntentExtractor import IntentExtractor
-        intenteng = IntentExtractor()
-        traindata = get_model()
-        #print(cust_list, next_page_token)
         while next_page_token != None:             
-            intent_logs, next_page_token = traindata.list('intent', cursor=token, cust_id=cust_id, done=True)
+            intent_logs, next_page_token = trainlog.list('intent', cursor=token, cust_id=cust_id, done=True)
             token = next_page_token
             #print (ticket_logs) 
             for intent_log in intent_logs: 
@@ -141,21 +131,20 @@ class TrainingDataAnalyzer(object):
                 subject = intents_data_json['subject']
                 tags = ', '.join(intents_data_json['requester']['tags']) 
                 response = intents_data_json['currentAccount']['subdomain']              
-                getTrainingModel().create(tags, str(subject + ' . ' + description), response, done=False, cust_id=cust_id)
+                traindata.create(tags, str(subject + ' . ' + description), response, done=False, cust_id=cust_id)
                 print('Creating for Ticket Id : ' , intents_data_json['id'])
         # Deleting processed Ticket data from default
-        ticket_logs, next_page_token = traindata.list('tickets', cust_id=cust_id, done=True)
+        ticket_logs, next_page_token = trainlog.list('tickets', cust_id=cust_id, done=True)
         for ticket_log in ticket_logs: 
-            traindata.delete(ticket_log['id'], cust_id=cust_id)    
+            trainlog.delete(ticket_log['id'], cust_id=cust_id)  
+        logging.info ('extractIntentData_cust : Completed')  
     
     def extractTicketData_new(self, cust_id):   
-        logging.info ('extractTrainingData : ')
+        logging.info ('extractTrainingData : Started')
         next_page_token = 0
         token = None        
-        from agentapp.IntentExtractor import IntentExtractor
-        intenteng = IntentExtractor()
         while next_page_token != None:             
-            ticket_logs, next_page_token = get_model().list('tickets', cursor=token, cust_id=cust_id, done=True)
+            ticket_logs, next_page_token = trainlog.list('tickets', cursor=token, cust_id=cust_id, done=True)
             token = next_page_token
             for ticket_log in ticket_logs: 
                 tickets_data = ticket_log["json_data"] 
@@ -174,12 +163,14 @@ class TrainingDataAnalyzer(object):
                     description = ticket_data['description']
                     subject = ticket_data['subject']                    
                     tags = ', '.join(ticket_data['tags']) 
-                    getTrainingModel().create(tags, str(subject + ' . ' + description), comments, done=False, resp_category=predicted[0], cust_id=cust_id)
-        ticket_logs, next_page_token = get_model().list('tickets', cust_id=cust_id, done=True)
+                    traindata.create(tags, str(subject + ' . ' + description), comments, done=False, resp_category=predicted[0], cust_id=cust_id)
+        ticket_logs, next_page_token = trainlog.list('tickets', cust_id=cust_id, done=True)
         for ticket_log in ticket_logs: 
-            get_model().delete(ticket_log['id'], cust_id=cust_id) 
-
+            trainlog.delete(ticket_log['id'], cust_id=cust_id) 
+        logging.info ('extractTrainingData : Completed ')
+        
     def applyPrediction(self, cust_id):
+        logging.info ('applyPrediction : Started')
         next_page_token = 0
         token = None 
         from agentapp.IntentExtractor import IntentExtractor
@@ -191,6 +182,7 @@ class TrainingDataAnalyzer(object):
                 predicted = intenteng.getPredictedIntent(str(training_log['query'] + ' . ' + training_log['tags']) , cust_id)  
                 if len(predicted) < 1: 
                     predicted = ['Default']
-                getTrainingModel().update(training_log['tags'], training_log['query'], training_log['response'], query_category=training_log['query_category'], 
+                traindata.update(training_log['tags'], training_log['query'], training_log['response'], query_category=training_log['query_category'], 
                     done=True, id = training_log['id'], resp_category=predicted[0], cust_id=cust_id)
                 print ('processing training data :', training_log['id'])
+        logging.info ('applyPrediction : Completed')
