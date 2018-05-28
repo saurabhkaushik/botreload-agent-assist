@@ -1,6 +1,7 @@
 from agentapp.EntityExtractor import EntityExtractor
 from agentapp.IntentExtractor import IntentExtractor
 from agentapp.tickets_learner import tickets_learner
+from agentapp.SmartRepliesSelector import SmartRepliesSelector
 from agentapp.model_select import get_model, getTrainingModel, getCustomerModel
 from agentapp.TrainingDataAnalyzer import TrainingDataAnalyzer
 
@@ -179,8 +180,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     
     @app.route('/preparedata', methods=['GET'])
     def prepareTrainingData():
-        logging.info('prepareTrainingData_old : ')        
-        '''
+        logging.info('prepareTrainingData : ')        
+        
         # Copy TrainingLog to defaultTrainingLog
         data_analyzer.copyOldTrainingLog()
         
@@ -190,7 +191,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         # Extract Trainingdata from Ticket custTrainingLog to Cust_TrainingData         
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
-            data_analyzer.extractTicketData_cust(cust_id_x['cust_name'])
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.extractTicketData_cust(cust_id_x['cust_name'])
         
         # Extract TrainingData from Intent defaultTrainingLog to Cust_TrainingData 
         data_analyzer.extractIntentData_default()
@@ -198,28 +200,33 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         # Extract TrainingData from Intent CustTrainingLog to Cust_TrainingData         
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
-            data_analyzer.extractIntentData_cust(cust_id_x['cust_name'])
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.extractIntentData_cust(cust_id_x['cust_name'])
         
         # Extract TrainingData from Ticket/Comment in Cust_TrainingData
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
-            data_analyzer.extractTicketData_new(cust_id_x['cust_name'])
-        '''
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.extractTicketData_new(cust_id_x['cust_name'])        
 
         # Apply Predicitons to all False Done 
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
-            data_analyzer.applyPrediction(cust_id_x['cust_name'])
-
-        return '200'  
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.applyPrediction(cust_id_x['cust_name'])
+        
+        return '200'
     
-    @app.route('/buildSmartReplies', methods=['GET'])
+    @app.route('/buildsmartreplies', methods=['GET'])
     def buildSmartReplies():
         logging.info('buildSmartReplies : ')        
         smartprocessor = SmartRepliesSelector()
-        smartprocessor.prepareTrainingData()
-        smartprocessor.getKMeanClusters()
-
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        for cust_id_x in cust_list:
+            smartprocessor.createProcessor(cust_id_x['cust_name'])
+            #smartprocessor.getKMeanClusters(cust_id_x['cust_name'])
+        return '200'
+        
     @app.route('/testingservice', methods=['GET'])
     def startTestingModels():
         logging.info('startTestingModels : ')
