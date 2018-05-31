@@ -42,14 +42,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     with app.app_context():
         model = get_model()
         model.init_app(app)        
-        #ticketLearner.import_trainingdata(cust_id)
-        #ticketLearner.import_responsedata(cust_id)
-        #intenteng.prepareTrainingData_ds(cust_id) 
-        #intenteng.startTrainingProcess(cust_id)
-        #intenteng.prepareTestingData(cust_id)
-        #intenteng.startTestingProcess(cust_id)
-        #intenteng.createConfusionMatrix(cust_id)
-        #cust_list = current_app.config['CUSTOMER_LIST']
         ticketLearner.create_bucket()
         
     #logging.info('Current Customers : '+ str(cust_list))
