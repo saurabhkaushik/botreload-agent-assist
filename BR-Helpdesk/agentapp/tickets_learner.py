@@ -29,6 +29,17 @@ class tickets_learner(object):
             ticket_data.append(ticket_logs)
         return ticket_data 
     
+    def getResponseData(self, cust_id):   
+        logging.info ('getResponseData : ' + cust_id)
+        resp_data = []
+        next_page_token = 0
+        token = None
+        while next_page_token != None:             
+            resp_logs, next_page_token = getResponseModel().list(cursor=token, cust_id=cust_id, done=True)
+            token = next_page_token
+            resp_data.append(resp_logs)
+        return resp_data 
+    
     def import_customerdata(self): 
         logging.info ('import_customerdata : Started ')
         with open(current_app.config['CUST_SET_PATH'], 'r', encoding='windows-1252') as f:

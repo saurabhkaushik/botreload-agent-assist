@@ -96,7 +96,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         formatted_resp = ticketLearner.formatOutput(predicted_intent, cust_id) 
         logging.info('\'' + str(intent_input) + '\' >> ' + str(formatted_resp))
         json_resp = json.dumps(formatted_resp)
-        get_model().create('response', json_resp, done=True, cust_id=cust_id)
+        #get_model().create('response', json_resp, done=True, cust_id=cust_id)
         return json_resp
 
     @app.route('/entity', methods=['POST'])
@@ -202,6 +202,15 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractIntentData_cust(cust_id_x['cust_name'])
+
+        # Extract TrainingData from Intent defaultTrainingLog to Cust_TrainingData 
+        data_analyzer.extractFeedbackData_default()
+        
+        # Extract TrainingData from Intent CustTrainingLog to Cust_TrainingData         
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.extractFeedbackData_cust(cust_id_x['cust_name'])
         
         # Extract TrainingData from Ticket/Comment in Cust_TrainingData
         cust_list, next_page_token = getCustomerModel().list(done=True)
@@ -209,11 +218,35 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractTicketData_new(cust_id_x['cust_name'])        
 
+        return '200'
+            
+    @app.route('/startretraining', methods=['GET'])
+    def startRetraining():
+        logging.info('startRetraining : ')  
+        
+        replyeng = SmartRepliesSelector() 
+        
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                replyeng.prepareTrainingData(cust_id)
+
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                replyeng.generateNewResponse(cust_id)
+                
         # Apply Predicitons to all False Done 
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.applyPrediction(cust_id_x['cust_name'])
+                data_analyzer.applyPrediction_response(cust_id_x['cust_name'])
+
+        # Apply Predicitons to all False Done 
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.applyPrediction_trainingdata(cust_id_x['cust_name'])
         
         return '200'
     

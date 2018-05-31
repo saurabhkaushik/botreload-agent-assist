@@ -92,7 +92,7 @@ def read(id, cust_id=''):
 
 
 # [START update]
-def update(tags, query, response, query_category='', resp_category='', done=False, id=None, cust_id=''):
+def update(tags, query, response, query_category='', resp_category='', done=False, id=None, feedback_flag=False, cust_id=''):
     ds = get_client()
     
     if id:
@@ -110,6 +110,7 @@ def update(tags, query, response, query_category='', resp_category='', done=Fals
             'query_category' : query_category, 
             'response' : response,
             'resp_category': resp_category,  
+            'feedback_flag': feedback_flag, 
             'created': datetime.datetime.utcnow(),
             'done': done
         })

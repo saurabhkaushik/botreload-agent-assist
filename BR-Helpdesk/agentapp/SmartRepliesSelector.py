@@ -11,8 +11,23 @@ from sklearn.metrics import pairwise_distances_argmin_min
 from agentapp.model_select import get_model, getTrainingModel, getResponseModel, getCustomerModel
 import re
 class SmartRepliesSelector(object):
+
+    def prepareTrainingData(self, cust_id):
+        logging.info("prepareTrainingData : Started : " + str(cust_id))
+        ticket_data = self.getTrainingData(cust_id=cust_id)
     
-    def createProcessor(self, cust_id):
+        ticket_struct = []
+        for linestms in ticket_data:           
+            for linestm in linestms:
+                if linestm['response'].strip() != '':
+                    ticket_struct.append({'id' : linestm['id'], 'query' : linestm['query'], 'response': linestm['response'], 'tags' : linestm['tags']})
+        self.ticket_pd = pd.DataFrame(ticket_struct)
+        logging.info ("Total Training Examples : %s" % len(self.ticket_pd))
+        logging.info("prepareTrainingData : Started : " + str(cust_id))
+        return 
+    
+    def generateNewResponse(self, cust_id):
+        logging.info('generateNewResponse : Started : ' + str(cust_id))
         self.prepareTrainingData(cust_id)
         X_q = self.ticket_pd['query']
         query_clstr_itr = int (len(X_q) / 10) 
@@ -30,32 +45,37 @@ class SmartRepliesSelector(object):
                     for index, items in query_sub.iterrows(): 
                         self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_cluster'] = int (items['response_cluster'])
                         self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'select_response'] = items['select_response']
-        #print (self.ticket_pd)
+        logging.info('generateNewResponse : Completed : ', cust_id)
+        return 
+    
+    def populateResponseData(self, cust_id): 
+        logging.info ('getTrainingData : started ' + str(cust_id))
         resp_model = getResponseModel()
+        next_page_token = 0
+        token = None
+        while next_page_token != None:             
+            ticket_logs, next_page_token = resp_model().list(cursor=token, cust_id=cust_id, done=True)
+            token = next_page_token
+            for resp_log in resp_logs:
+                resp_model.delete(resp_log['id'], cust_id)
+        
         for index, item in self.ticket_pd.iterrows():             
             if item['select_response'] == 'true': 
-                resp_model.create(convert(item['select_tags']), convert(item['select_tags']), item['response'], item['select_tags'], done=True, cust_id=cust_id)
-        logging.info('Inserted in Response Data')
-        
-    def prepareTrainingData(self, cust_id):
-        logging.info("prepareTrainingData : " + str(cust_id))
-        ticket_data = self.getTrainingData(cust_id=cust_id)
-    
-        ticket_struct = []
-        for linestms in ticket_data:           
-            for linestm in linestms:
-                ticket_struct.append({'id' : linestm['id'], 'query' : linestm['query'], 'response': linestm['response'], 'tags' : linestm['tags']})
-        self.ticket_pd = pd.DataFrame(ticket_struct)
-        logging.info ("Total Training Examples : %s" % len(self.ticket_pd))
+                resp_model.create((cust_id + '_Response_' + str(index)), (cust_id + '_Response_' + str(index)), item['response'], item['select_tags'], done=True, cust_id=cust_id)
+        logging.info ('getTrainingData : Completed ' + str(cust_id))
+        return
     
     def getKMeanClusters(self, cust_id, X_in, true_k):
         logging.info("getKMeanClusters : " + str(cust_id))
+        selected_resp = []
+        selected_tags = []
+        prediction = []
         vectorizer = TfidfVectorizer(stop_words='english')
         try:
             X = vectorizer.fit_transform(X_in)
         except ValueError as err: 
-            logging.error(err)
-            return      
+            logging.error("getKMeanClusters : " , err)
+            return prediction, selected_resp, selected_tags
         model = KMeans(n_clusters=true_k, init='k-means++', max_iter=100, n_init=1)
         model.fit(X)  
         prediction = model.predict(X)
@@ -71,8 +91,6 @@ class SmartRepliesSelector(object):
                 tags_temp.append(terms[ind])
             tags_clurt.append(tags_temp)
         
-        selected_resp = []
-        selected_tags = []
         closest = closest.tolist()
         input_x = X_in.tolist()
         for i in range(len(prediction)):  
@@ -88,7 +106,7 @@ class SmartRepliesSelector(object):
         return prediction, selected_resp, selected_tags 
     
     def getTrainingData(self, cust_id):   
-        logging.info ('getTrainingData : ')
+        logging.info ('getTrainingData : ' + str(cust_id))
         ticket_data = []
         next_page_token = 0
         token = None
@@ -97,14 +115,3 @@ class SmartRepliesSelector(object):
             token = next_page_token
             ticket_data.append(ticket_logs)
         return ticket_data 
-        
-def preprocess(sentence):
-    sentence = sentence.lower()
-    tokenizer = RegexpTokenizer(r'\w+')
-    tokens = tokenizer.tokenize(sentence)
-    filtered_words = [w for w in tokens if not w in stopwords.words('english')]
-    return " ".join(filtered_words)
-
-def convert(name):
-    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
