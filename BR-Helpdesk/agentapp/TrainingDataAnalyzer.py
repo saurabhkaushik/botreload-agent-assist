@@ -234,7 +234,7 @@ class TrainingDataAnalyzer(object):
         from agentapp.IntentExtractor import IntentExtractor
         intenteng = IntentExtractor()
         while next_page_token != None:             
-            training_logs, next_page_token = getTrainingModel().list_all(cursor=token, cust_id=cust_id, done=False)
+            training_logs, next_page_token = getTrainingModel().list(cursor=token, cust_id=cust_id, feedback_flag=False, done=False)
             token = next_page_token
             for training_log in training_logs: 
                 predicted = intenteng.getPredictedIntent(str(training_log['query'] + ' . ' + training_log['tags']) , cust_id)  
@@ -245,7 +245,7 @@ class TrainingDataAnalyzer(object):
                 print ('processing training data :', training_log['id'])
         logging.info ('applyPrediction : Completed : ' + cust_id)
 
-    def applyPrediction_response(self, cust_id):
+    def applyPrediction_responsedata(self, cust_id):
         logging.info ('applyPrediction_response : Started : ' + str(cust_id))
         trainlog = get_model()
         traindata = getTrainingModel() 
@@ -258,7 +258,7 @@ class TrainingDataAnalyzer(object):
         intenteng.startTrainingProcess(cust_id)
    
         while next_page_token != None:             
-            training_logs, next_page_token = getTrainingModel().list_all(cursor=token, cust_id=cust_id)
+            training_logs, next_page_token = getTrainingModel().list(cursor=token, feedback_flag=False, cust_id=cust_id)
             token = next_page_token
             for training_log in training_logs: 
                 predicted = intenteng.getPredictedIntent(str(training_log['query'] + ' . ' + training_log['tags']) , cust_id)  

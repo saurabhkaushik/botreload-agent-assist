@@ -32,30 +32,16 @@ def from_datastore(entity):
     return entity
 # [END from_datastore]
 
-
 # [START list]
-def list(limit=999, cursor=None, cust_id='', done=None):
-    ds = get_client()
-
-    query = ds.query(kind= cust_id +'TrainingData') #, order=['type'])
-    query_iterator = query.fetch(limit=limit, start_cursor=cursor)
-    page = next(query_iterator.pages)
-
-    entities = builtin_list(map(from_datastore, page))
-    next_cursor = (
-        query_iterator.next_page_token.decode('utf-8')
-        if query_iterator.next_page_token else None)
-
-    return entities, next_cursor
-# [END list]
-
-# [START list]
-def list_all(limit=999, cursor=None, cust_id='', done=None):
+def list(limit=999, cursor=None, cust_id='', feedback_flag=None, done=None):
     ds = get_client() 
 
-    query = ds.query(kind= cust_id +'TrainingData') #, order=['type'])
+    query = ds.query(kind= cust_id +'TrainingData') 
     if done != None: 
         query.add_filter('done', '=', done)
+    if feedback_flag != None: 
+        query.add_filter('feedback_flag', '=', feedback_flag)
+
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)
 

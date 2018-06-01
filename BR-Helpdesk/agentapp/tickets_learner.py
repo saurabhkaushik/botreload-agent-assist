@@ -30,7 +30,7 @@ class tickets_learner(object):
         return ticket_data 
     
     def getResponseData(self, cust_id):   
-        logging.info ('getResponseData : ' + cust_id)
+        logging.info ('getResponseData : ' + str(cust_id))
         resp_data = []
         next_page_token = 0
         token = None
@@ -52,19 +52,19 @@ class tickets_learner(object):
         logging.info ('import_customerdata : Completed')
 
     def import_trainingdata(self, cust_id, lang_type): 
-        logging.info ('import_trainingdata : Started ')
+        logging.info ('import_trainingdata : Started ' + str(cust_id))
         with open(current_app.config['TRAIN_SET_PATH'] + '-' +lang_type + '.csv', 'r', encoding='windows-1252') as f:
             reader = csv.reader(f)
             train_list = list(reader)
-        #rid = 100
+        rid = 100
         #while rid < 200: 
         for linestm in train_list:
             getTrainingModel().create(linestm[0].strip(), linestm[1].strip(), '', resp_category=linestm[2].strip(), done=True, id=rid, cust_id=cust_id)
-        #    rid += 1
+            rid += 1
         logging.info ('import_trainingdata : Completed')
     
     def import_responsedata(self, cust_id, lang_type): 
-        logging.info ('import_responsedata : Started')
+        logging.info ('import_responsedata : Started' + str(cust_id))
         with open(current_app.config['CANNED_RESP_PATH'] + '-' +lang_type + '.csv', 'r', encoding='windows-1252') as f:
             reader = csv.reader(f)
             train_list = list(reader)
@@ -75,7 +75,7 @@ class tickets_learner(object):
         logging.info ('import_responsedata : Completed')
             
     def get_response_mapping(self, response, cust_id):
-        logging.info ('get_response_mapping : ')
+        logging.info ('get_response_mapping : ' + str(cust_id))
         ds_response = getResponseModel().list(cust_id=cust_id, done=True)
         print ( 'ds_response : '+str(ds_response)) 
         
@@ -85,7 +85,7 @@ class tickets_learner(object):
         return None
     
     def formatOutput(self, predicted_intent, cust_id): 
-        logging.info ('formatOutput : ')
+        logging.info ('formatOutput : ' + str(cust_id))
         tickets_learn = tickets_learner()
         comments_struct = []  
         df_intent = pd.DataFrame(list(predicted_intent.items()), columns=['Resp_Class', 'Resp_Prob'])
@@ -105,7 +105,7 @@ class tickets_learner(object):
         return comments_struct  
 
     def get_bucket(self, cust_id):
-        print('get_bucket:')         
+        print('get_bucket:' + str(cust_id))         
         try:
             bucket = self.storage_client.get_bucket(current_app.config['STORAGE_BUCKET']) 
             m_blob = bucket.get_blob(cust_id + '_model.pkl')
@@ -119,7 +119,7 @@ class tickets_learner(object):
         return None
         
     def put_bucket(self, file, cust_id):
-        print('put_bucket:')
+        print('put_bucket:' + str(cust_id))
         try:
             bucket = self.storage_client.get_bucket(current_app.config['STORAGE_BUCKET'])
             filename = cust_id + '_model.pkl'
@@ -131,7 +131,7 @@ class tickets_learner(object):
         return file
         
     def create_bucket(self):
-        print('create_bucket:')
+        print('create_bucket:' + str(cust_id))
         try:
             bucket = self.storage_client.lookup_bucket(current_app.config['STORAGE_BUCKET'])
             if bucket == None: 

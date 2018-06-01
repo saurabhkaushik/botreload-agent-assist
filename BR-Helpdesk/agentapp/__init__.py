@@ -189,8 +189,9 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.applyPrediction_response(cust_id_x['cust_name'])
-                data_analyzer.applyPrediction_trainingdata(cust_id_x['cust_name'])
+                data_analyzer.applyPrediction_responsedata(cust_id_x['cust_name'])
+                intenteng.prepareTrainingData(cust_id_x['cust_name']) 
+                intenteng.startTrainingProcess(cust_id_x['cust_name'])
         return '200'
 
     @app.route('/processnewcustomer', methods=['GET'])
