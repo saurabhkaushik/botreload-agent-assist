@@ -33,14 +33,19 @@ def from_datastore(entity):
 # [END from_datastore]
 
 # [START list]
-def list(res_category=None, limit=999, cursor=None, cust_id='', done=None):
+def list(res_category=None, limit=999, cursor=None, modifiedflag=None, defaultflag=None, cust_id='', done=None):
     ds = get_client()
 
-    query = ds.query(kind=cust_id + 'ResponseData') #, order=['type'])
+    query = ds.query(kind=cust_id + 'ResponseData') 
     if res_category != None: 
         query.add_filter('res_category', '=', res_category)
     if done != None: 
         query.add_filter('done', '=', done)
+    if modifiedflag != None: 
+        query.add_filter('modifiedflag', '=', modifiedflag)
+    if defaultflag != None: 
+        query.add_filter('defaultflag', '=', defaultflag)
+
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)
 
@@ -61,7 +66,7 @@ def read(id, cust_id=''):
 
 
 # [START update]
-def update(cat_name, res_category, response_text, tags, done=False, id=None, cust_id=''):
+def update(cat_name, res_category, response_text, tags, modifiedflag=False, defaultflag=False, done=False, id=None, cust_id=''):
     ds = get_client()
     
     if id:
@@ -78,6 +83,8 @@ def update(cat_name, res_category, response_text, tags, done=False, id=None, cus
             'res_category': res_category,
             'response_text' : response_text,
             'tags' : tags,
+            'modifiedflag': modifiedflag,
+            'defaultflag' : defaultflag,
             'created': datetime.datetime.utcnow(),
             'done': done
         })

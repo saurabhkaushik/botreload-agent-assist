@@ -52,15 +52,15 @@ class tickets_learner(object):
         logging.info ('import_customerdata : Completed')
 
     def import_trainingdata(self, cust_id, lang_type): 
-        logging.info ('import_trainingdata : Started')
+        logging.info ('import_trainingdata : Started ')
         with open(current_app.config['TRAIN_SET_PATH'] + '-' +lang_type + '.csv', 'r', encoding='windows-1252') as f:
             reader = csv.reader(f)
             train_list = list(reader)
-        rid = 100
-        while rid < 200: 
-            for linestm in train_list:
-                getTrainingModel().create(linestm[0].strip(), linestm[1].strip(), '', resp_category=linestm[2].strip(), done=True, id=rid, cust_id=cust_id)
-                rid += 1
+        #rid = 100
+        #while rid < 200: 
+        for linestm in train_list:
+            getTrainingModel().create(linestm[0].strip(), linestm[1].strip(), '', resp_category=linestm[2].strip(), done=True, id=rid, cust_id=cust_id)
+        #    rid += 1
         logging.info ('import_trainingdata : Completed')
     
     def import_responsedata(self, cust_id, lang_type): 
@@ -70,7 +70,7 @@ class tickets_learner(object):
             train_list = list(reader)
         rid = 100
         for linestm in train_list:
-            getResponseModel().create(linestm[0].strip(), linestm[0].strip(), linestm[1].strip(), linestm[2].strip(), done=True, id=rid, cust_id=cust_id)
+            getResponseModel().create(linestm[0].strip(), linestm[0].strip(), linestm[1].strip(), linestm[2].strip(), defaultflag=True, done=True, id=rid, cust_id=cust_id)
             rid += 1
         logging.info ('import_responsedata : Completed')
             

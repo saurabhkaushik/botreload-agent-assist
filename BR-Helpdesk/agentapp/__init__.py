@@ -56,8 +56,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         return redirect(url_for('crud.login'))
     
     @app.route('/intent', methods=['POST'])
-    def intent():
-        logging.info('intent : ') 
+    def predictIntent():
+        logging.info('predictIntent : ') 
         intent_input = ''
         cust_id = ''
         
@@ -92,7 +92,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         return json_resp
 
     @app.route('/entity', methods=['POST'])
-    def entity():
+    def extractEntity():
         Received = request.json
         Email_Content = ""
         if 'query' in Received:
@@ -105,8 +105,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         return json_resp
 
     @app.route('/uploadtickets', methods=['POST'])
-    def uploadtickets():
-        logging.info('tickets : ')
+    def uploadTickets():
+        logging.info('uploadTickets : ')
         cust_id = ''
         received_data = request.json
         #print (received_data)
@@ -128,8 +128,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         return '200' 
     
     @app.route('/uploadfeedback', methods=['POST'])
-    def uploadfeedback():
-        logging.info('feedback : ')
+    def uploadFeedback():
+        logging.info('uploadFeedback : ')
         
         received_data = request.json
         cust_id = ''
@@ -170,10 +170,38 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             intenteng.startTrainingProcess(cust_id_x['cust_name'])
         return '200'  
     
+    @app.route('/buildsmartreplies', methods=['GET'])
+    def buildSmartReplies():
+        logging.info('buildSmartReplies : ') 
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                replyeng = SmartRepliesSelector()
+                replyeng.prepareTrainingData(cust_id_x['cust_name'])
+                replyeng.generateNewResponse(cust_id_x['cust_name'])
+                replyeng.populateResponseData(cust_id_x['cust_name'])
+        return '200'
+            
+    @app.route('/startretraining', methods=['GET'])
+    def startRetraining():
+        logging.info('startRetraining : ')        
+        # Apply Predicitons to all False Done 
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.applyPrediction_response(cust_id_x['cust_name'])
+                data_analyzer.applyPrediction_trainingdata(cust_id_x['cust_name'])
+        return '200'
+
+    @app.route('/processnewcustomer', methods=['GET'])
+    def processNewCustomer():
+        logging.info('processnewcustomer : ')
+        ticketLearner.processNewCustomer()
+        return '200'
+    
     @app.route('/preparedata', methods=['GET'])
     def prepareTrainingData():
         logging.info('prepareTrainingData : ')        
-        
         # Copy TrainingLog to defaultTrainingLog
         data_analyzer.copyOldTrainingLog()
         
@@ -209,47 +237,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractTicketData_new(cust_id_x['cust_name'])        
-
-        return '200'
-            
-    @app.route('/startretraining', methods=['GET'])
-    def startRetraining():
-        logging.info('startRetraining : ')  
-        
-        replyeng = SmartRepliesSelector() 
-        
-        cust_list, next_page_token = getCustomerModel().list(done=True)
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                replyeng.prepareTrainingData(cust_id)
-
-        cust_list, next_page_token = getCustomerModel().list(done=True)
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                replyeng.generateNewResponse(cust_id)
-                
-        # Apply Predicitons to all False Done 
-        cust_list, next_page_token = getCustomerModel().list(done=True)
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.applyPrediction_response(cust_id_x['cust_name'])
-
-        # Apply Predicitons to all False Done 
-        cust_list, next_page_token = getCustomerModel().list(done=True)
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.applyPrediction_trainingdata(cust_id_x['cust_name'])
-        
-        return '200'
-    
-    @app.route('/buildsmartreplies', methods=['GET'])
-    def buildSmartReplies():
-        logging.info('buildSmartReplies : ')        
-        smartprocessor = SmartRepliesSelector()
-        cust_list, next_page_token = getCustomerModel().list(done=True)
-        for cust_id_x in cust_list:
-            smartprocessor.createProcessor(cust_id_x['cust_name'])
-            #smartprocessor.getKMeanClusters(cust_id_x['cust_name'])
         return '200'
         
     @app.route('/testingservice', methods=['GET'])
@@ -261,15 +248,10 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             intenteng.startTestingProcess(cust_id_x['cust_name'])
             intenteng.createConfusionMatrix(cust_id_x['cust_name'])
         return '200'
-        
-    @app.route('/processnewcustomer', methods=['GET'])
-    def processnewcustomer():
-        logging.info('processnewcustomer : ')
-        ticketLearner.processNewCustomer()
-        return '200'
-
+    
+    ''' 
     @app.route('/addcustomer', methods=['GET'])
-    def addcustomer():
+    def addCustomer():
         logging.info('addcustomer : ')
         cust_id = request.args.get('cust_id')
         lang_type = request.args.get('lang_type')
@@ -289,6 +271,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             return '200'
         logging.info('Created new customer' + cust_id)
         return '200'  
+    '''
     
     @app.errorhandler(404)
     def not_found(error):

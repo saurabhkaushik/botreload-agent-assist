@@ -28,7 +28,6 @@ class SmartRepliesSelector(object):
     
     def generateNewResponse(self, cust_id):
         logging.info('generateNewResponse : Started : ' + str(cust_id))
-        self.prepareTrainingData(cust_id)
         X_q = self.ticket_pd['query']
         query_clstr_itr = int (len(X_q) / 10) 
         print ('Query Cluster Size : ', query_clstr_itr)
@@ -54,14 +53,18 @@ class SmartRepliesSelector(object):
         next_page_token = 0
         token = None
         while next_page_token != None:             
-            ticket_logs, next_page_token = resp_model().list(cursor=token, cust_id=cust_id, done=True)
+            ticket_logs, next_page_token = resp_model().list(cursor=token, modifiedflag=False, defaultflag=False, cust_id=cust_id, done=True)
             token = next_page_token
             for resp_log in resp_logs:
                 resp_model.delete(resp_log['id'], cust_id)
-        
-        for index, item in self.ticket_pd.iterrows():             
+        rep_index = 1000
+        for index, item in self.ticket_pd.iterrows(): 
+            respobj = resp_model.read(item['id'], cust_id=cust_id) 
+            if respobj != None: 
+                rep_index += 1  
             if item['select_response'] == 'true': 
-                resp_model.create((cust_id + '_Response_' + str(index)), (cust_id + '_Response_' + str(index)), item['response'], item['select_tags'], done=True, cust_id=cust_id)
+                resp_model.create((cust_id + '_Response_' + str(rep_index)), (cust_id + '_Response_' + str(rep_index)), item['response'], item['select_tags'], done=True, cust_id=cust_id)
+            rep_index += 1 
         logging.info ('getTrainingData : Completed ' + str(cust_id))
         return
     
