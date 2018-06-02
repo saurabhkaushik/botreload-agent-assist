@@ -25,7 +25,7 @@ from agentapp.TfidfVectorizer import TfidfEmbeddingVectorizer, MeanEmbeddingVect
 class IntentExtractor(object): 
     
     def prepareTrainingData(self, cust_id):
-        logging.info("\n"+"################# Preparing Training Data ################################"+"\n")
+        logging.info("prepareTrainingData : Started" + str(cust_id))
         self.X, self.y = [], []
         
         tickets_learn = tickets_learner()
@@ -43,9 +43,11 @@ class IntentExtractor(object):
         
         self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
         logging.info ("Total Training Examples : %s" % len(self.y))
-            
+        logging.info("prepareTrainingData : Completed" + str(cust_id))
+        return
+    
     def startTrainingProcess(self, cust_id):
-        logging.info("\n"+"################# Starting Training Processing ################################"+"\n")
+        logging.info("startTrainingProcess : Started" + str(cust_id))
         self.model = Word2Vec(self.X, size=100, window=5, min_count=1, workers=2)
         self.model.wv.index2word
         w2v = {w: vec for w, vec in zip(self.model.wv.index2word, self.model.wv.syn0)}
@@ -62,9 +64,11 @@ class IntentExtractor(object):
         tickets_learn.put_bucket(pickle_out, cust_id) 
                 
         logging.info ("Total Training Samples : %s" % len(self.y))
+        logging.info("startTrainingProcess : Completed " + str(cust_id))
+        return
         
     def getIntentForText(self, textinput, cust_id): 
-        logging.info("\n"+"################# Starting Prediction Process ################################"+"\n")        
+        logging.info("getIntentForText : Started" + str(cust_id))
         tickets_learn = tickets_learner()
         pickle_out = tickets_learn.get_bucket(cust_id)
         self.etree_w2v_tfidf = pickle.loads(pickle_out)
@@ -78,11 +82,12 @@ class IntentExtractor(object):
             self.predicted_prob = self.etree_w2v_tfidf.predict_proba(self.test_X)  
             self.y_predict_dic = dict(zip(self.etree_w2v_tfidf.classes_, self.predicted_prob[0]))
         except ValueError as err: 
-            logging.error(str(err))       
+            logging.error(str(err)) 
+        logging.info("getIntentForText : Completed " + str(cust_id))      
         return self.y_predict_dic
         
     def getPredictedIntent(self, textinput, cust_id): 
-        logging.info("\n"+"################# Starting Prediction Process ################################"+"\n")
+        logging.info("getPredictedIntent : Started" + str(cust_id))
         tickets_learn = tickets_learner()
         pickle_out = tickets_learn.get_bucket(cust_id)
         self.etree_w2v_tfidf = pickle.loads(pickle_out)
@@ -93,11 +98,11 @@ class IntentExtractor(object):
             self.predicted = self.etree_w2v_tfidf.predict(self.test_X) 
         except ValueError as err: 
             logging.error(str(err))
+        logging.info("getPredictedIntent : Completed" + str(cust_id))
         return self.predicted
     
     def prepareTestingData(self, cust_id):
-        logging.info("\n"+"################# Preparing Testing Data ################################"+"\n")
-        
+        logging.info("prepareTestingData : Started" + str(cust_id))        
         self.test_X, self.test_y = [], []
         
         tickets_learn = tickets_learner()
@@ -115,9 +120,11 @@ class IntentExtractor(object):
        
         self.test_X, self.test_y = np.array(self.test_X, dtype=object), np.array(self.test_y, dtype=object)
         logging.info ("Total Testing Examples : %s" % len(self.test_y))
+        logging.info("prepareTestingData : Completed " + str(cust_id)) 
+        return 
 
     def startTestingProcess(self, cust_id): 
-        logging.info("\n"+"################# Starting Testing Process ################################"+"\n")
+        logging.info("startTestingProcess : Started" + str(cust_id)) 
         tickets_learn = tickets_learner()
         pickle_out = tickets_learn.get_bucket(cust_id)
         self.etree_w2v_tfidf = pickle.loads(pickle_out)
@@ -125,9 +132,11 @@ class IntentExtractor(object):
         for input_data, output_data in zip(self.test_X, self.predicted) :
             logging.debug (str(input_data) + "  =>  " + str(output_data))
         logging.info ("Total Predicted Testing Examples : %s" % len(self.predicted))
+        logging.info("startTestingProcess : Completed" + str(cust_id))
+        return 
         
     def createConfusionMatrix(self, cust_id):
-        logging.info("\n"+"################# Evaluating Model Performance ################################"+"\n")
+        logging.info("createConfusionMatrix : Started" + str(cust_id))
         for y_value_a, y_value_p in zip(self.test_y, self.predicted): 
             logging.info ('\'' + y_value_a + '\' >> \'' + y_value_p + '\'' )
         logging.info("Mean: \n" + str(np.mean(self.test_y == self.predicted)))
@@ -137,6 +146,8 @@ class IntentExtractor(object):
         logging.info("f1_score : " + str(f1_score(self.test_y, self.predicted, average="macro", labels=np.unique(self.predicted))))
         logging.info("precision_score : " + str(precision_score(self.test_y, self.predicted, average="macro", labels=np.unique(self.predicted))))
         logging.info("recall_score : " + str(recall_score(self.test_y, self.predicted, average="macro")))
+        logging.info("createConfusionMatrix : Completed" + str(cust_id))
+        return 
 
 def preprocess(sentence):
     sentence = sentence.lower()

@@ -60,7 +60,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         logging.info('predictIntent : ') 
         intent_input = ''
         cust_id = ''
-        
+        intenteng = IntentExtractor() 
+        ticketLearner = tickets_learner()
         received_data = request.json        
         try: 
             cust_id = received_data['currentAccount']['subdomain']
@@ -153,6 +154,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     @app.route('/importdata', methods=['GET'])
     def startDataImport():
         logging.info('startDataImport : ')
+        ticketLearner = tickets_learner()
         ticketLearner.import_customerdata()
         cust_list, next_page_token = getCustomerModel().list(done=True)
         #print (cust_list) 
@@ -164,6 +166,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     @app.route('/starttraining', methods=['GET'])
     def startTrainingModels():
         logging.info('startTrainingModels : ')
+        intenteng = IntentExtractor() 
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
             intenteng.prepareTrainingData(cust_id_x['cust_name']) 
@@ -173,10 +176,10 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     @app.route('/buildsmartreplies', methods=['GET'])
     def buildSmartReplies():
         logging.info('buildSmartReplies : ') 
+        replyeng = SmartRepliesSelector()
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                replyeng = SmartRepliesSelector()
+            if cust_id_x['cust_name'] != 'default':                 
                 replyeng.prepareTrainingData(cust_id_x['cust_name'])
                 replyeng.generateNewResponse(cust_id_x['cust_name'])
                 replyeng.populateResponseData(cust_id_x['cust_name'])
@@ -185,7 +188,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     @app.route('/startretraining', methods=['GET'])
     def startRetraining():
         logging.info('startRetraining : ')        
-        # Apply Predicitons to all False Done 
+        intenteng = IntentExtractor() 
+        data_analyzer = TrainingDataAnalyzer()
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
@@ -197,15 +201,18 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     @app.route('/processnewcustomer', methods=['GET'])
     def processNewCustomer():
         logging.info('processnewcustomer : ')
+        ticketLearner = tickets_learner()
+        ticketLearner = tickets_learner()
         ticketLearner.processNewCustomer()
         return '200'
     
     @app.route('/preparedata', methods=['GET'])
     def prepareTrainingData():
         logging.info('prepareTrainingData : ')        
+        data_analyzer = TrainingDataAnalyzer()
         # Copy TrainingLog to defaultTrainingLog
         data_analyzer.copyOldTrainingLog()
-        
+        '''
         # Extract TrainingData from Ticket defaultTrainingLog to Cust_TrainingData 
         data_analyzer.extractTicketData_default()
         
@@ -214,7 +221,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractTicketData_cust(cust_id_x['cust_name'])
-        
+        '''
         # Extract TrainingData from Intent defaultTrainingLog to Cust_TrainingData 
         data_analyzer.extractIntentData_default()
         

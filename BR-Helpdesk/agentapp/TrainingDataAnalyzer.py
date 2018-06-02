@@ -11,7 +11,7 @@ import google
 from nltk.tokenize import RegexpTokenizer
 import numpy as np
 from nltk.corpus import stopwords
-
+import re 
 class TrainingDataAnalyzer(object):
     
     def __init__(self):
@@ -56,7 +56,7 @@ class TrainingDataAnalyzer(object):
                         if cust_id_x['cust_name'] in url:
                             traindata.create(tags, str(subject + ' . ' + description), '', done=False, id=id, cust_id=cust_id_x['cust_name'])                            
                             trainlog.delete(ticket_log['id'], cust_id=src_cust_id)
-                            print('Creating for Ticket Id : ' , ticket_data['id'], src_cust_id)                            
+                            print('Creating for Ticket Id : ' , ticket_data['id'], cust_id_x['cust_name'])                            
         logging.info ('extractTicketData_default : Completed : ' + str(src_cust_id))
     
     def extractTicketData_cust(self, cust_id):   
@@ -165,7 +165,7 @@ class TrainingDataAnalyzer(object):
                         if train_data != None and response_data != None: 
                             traindata.update(train_data["tags"], train_data["query"], train_data["response"], query_category=train_data['query_category'], resp_category=response_data['res_category'], feedback_flag=True, done=True, id=train_data['id'], cust_id=cust_id)
                             trainlog.delete(intent_log['id'], cust_id=src_cust_id)
-                            print('Updating Feedback : ' , intents_data_json['id'], cust_id)
+                            print('Updating Feedback : ' , id, cust_id)
         logging.info ('extractFeedbackData_default : Completed : ' + str(src_cust_id))
     
     def extractFeedbackData_cust(self, cust_id):   
@@ -189,8 +189,8 @@ class TrainingDataAnalyzer(object):
                 response_data = getResponseModel().read(selected_response_id, cust_id=cust_id)
                 if train_data != None and response_data != None: 
                     traindata.update(train_data["tags"], train_data["query"], train_data["response"], query_category=train_data['query_category'], resp_category=response_data['res_category'], feedback_flag=True, done=True, id=train_data['id'], cust_id=cust_id)
-                    trainlog.delete(intent_log['id'], cust_id=src_cust_id)
-                    print('Updating Feedback : ' , intents_data_json['id'], cust_id)
+                    trainlog.delete(intent_log['id'], cust_id=cust_id)
+                    print('Updating Feedback : ' , id, cust_id)
         logging.info ('extractFeedbackData_cust : Completed : ' + str(cust_id))  
     
     def extractTicketData_new(self, cust_id):   
@@ -219,9 +219,9 @@ class TrainingDataAnalyzer(object):
                     subject = ticket_data['subject'] 
                     id =  ticket_data['id']                  
                     tags = ', '.join(ticket_data['tags']) 
-                    traindata.create(tags, str(subject + ' . ' + description), comments, done=False, resp_category=predicted[0], cust_id=cust_id)
+                    traindata.create(tags, str(str(subject) + ' . ' + str(description)), comments, done=False, id=id, cust_id=cust_id)
                     trainlog.delete(ticket_log['id'], cust_id=cust_id)
-                    print('Creating for Tickets : ' , intents_data_json['id'], cust_id)
+                    print('Creating for Tickets : ' , id, cust_id)
         logging.info ('extractTrainingData : Completed :' + cust_id)
         
     def applyPrediction_trainingdata(self, cust_id):
@@ -258,7 +258,7 @@ class TrainingDataAnalyzer(object):
         intenteng.startTrainingProcess(cust_id)
    
         while next_page_token != None:             
-            training_logs, next_page_token = getTrainingModel().list(cursor=token, feedback_flag=False, cust_id=cust_id)
+            training_logs, next_page_token = traindata.list(cursor=token, feedback_flag=False, cust_id=cust_id)
             token = next_page_token
             for training_log in training_logs: 
                 predicted = intenteng.getPredictedIntent(str(training_log['query'] + ' . ' + training_log['tags']) , cust_id)  

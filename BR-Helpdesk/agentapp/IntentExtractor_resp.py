@@ -23,10 +23,9 @@ import pickle
 from agentapp.TfidfVectorizer import TfidfEmbeddingVectorizer, MeanEmbeddingVectorizer
 
 class IntentExtractor_resp(object): 
-    
 
     def prepareTrainingData(self, cust_id):
-        logging.info("\n"+"################# Preparing Training Data - Response #########################"+"\n")
+        logging.info("prepareTrainingData : Started" + str(cust_id))
         self.X, self.y = [], []
         
         tickets_learn = tickets_learner()
@@ -43,10 +42,11 @@ class IntentExtractor_resp(object):
         
         self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
         logging.info ("Total Training Examples : %s" % len(self.y))
-
+        logging.info("prepareTrainingData : Completed " + str(cust_id))
+        return
             
     def startTrainingProcess(self, cust_id):
-        logging.info("\n"+"################# Starting Training Processing ################################"+"\n")
+        logging.info("startTrainingProcess : Started" + str(cust_id))
         self.model = Word2Vec(self.X, size=100, window=5, min_count=1, workers=2)
         self.model.wv.index2word
         w2v = {w: vec for w, vec in zip(self.model.wv.index2word, self.model.wv.syn0)}
@@ -55,9 +55,11 @@ class IntentExtractor_resp(object):
         self.etree_w2v_tfidf.fit(self.X, self.y)
         
         logging.info ("Total Training Samples : %s" % len(self.y))
+        logging.info("startTrainingProcess : Completed" + str(cust_id))
+        return
         
     def getPredictedIntent(self, textinput, cust_id): 
-        logging.info("\n"+"################# Starting Prediction Process ################################"+"\n")
+        logging.info("getPredictedIntent : Started" + str(cust_id))
         self.test_X = []
         self.test_X.append(preprocess(textinput).split())
         self.predicted = []
@@ -65,6 +67,7 @@ class IntentExtractor_resp(object):
             self.predicted = self.etree_w2v_tfidf.predict(self.test_X) 
         except ValueError as err: 
             logging.error(str(err))
+        logging.info("getPredictedIntent : Completed" + str(cust_id))
         return self.predicted
 
 def preprocess(sentence):

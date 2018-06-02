@@ -24,7 +24,7 @@ class tickets_learner(object):
         next_page_token = 0
         token = None
         while next_page_token != None:             
-            ticket_logs, next_page_token = getTrainingModel().list_all(cursor=token, cust_id=cust_id, done=True)
+            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, cust_id=cust_id, done=True)
             token = next_page_token
             ticket_data.append(ticket_logs)
         return ticket_data 
@@ -131,7 +131,7 @@ class tickets_learner(object):
         return file
         
     def create_bucket(self):
-        print('create_bucket:' + str(cust_id))
+        print('create_bucket:' )
         try:
             bucket = self.storage_client.lookup_bucket(current_app.config['STORAGE_BUCKET'])
             if bucket == None: 
