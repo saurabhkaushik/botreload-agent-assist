@@ -20,7 +20,7 @@ class SmartRepliesSelector(object):
         for linestms in ticket_data:           
             for linestm in linestms:
                 if linestm['response'].strip() != '':
-                    ticket_struct.append({'id' : linestm['id'], 'query' : linestm['query'], 'response': linestm['response'], 'tags' : linestm['tags']})
+                    ticket_struct.append({'id' : linestm['id'], 'query' : linestm['query'], 'response': linestm['response'].lower().strip(), 'tags' : linestm['tags']})
         self.ticket_pd = pd.DataFrame(ticket_struct)
         #print (self.ticket_pd)
         logging.info ("Total Training Examples : %s" % len(self.ticket_pd))
@@ -68,7 +68,7 @@ class SmartRepliesSelector(object):
             respobj = resp_model.read(rep_index, cust_id=cust_id)
             while respobj != None:
                 rep_index += 1 
-                respobj = resp_model.read(rep_index, cust_id=cust_id)                                     
+                respobj = resp_model.read(rep_index, cust_id=cust_id)                                                     
             
             if item['select_response'] == 'true': 
                 resp_model.create((cust_id + '_Response_' + str(rep_index)), (cust_id + '_Response_' + str(rep_index)), item['response'], item['select_tags'], done=True, id=rep_index, cust_id=cust_id)
@@ -99,7 +99,7 @@ class SmartRepliesSelector(object):
         for i in range(true_k):
             tags_temp = []
             for ind in order_centroids[i, :10]:
-                tags_temp.append(terms[ind])
+                tags_temp.append(terms[ind].lower().strip())
             tags_clurt.append(tags_temp)
         
         closest = closest.tolist()
@@ -122,7 +122,7 @@ class SmartRepliesSelector(object):
         next_page_token = 0
         token = None
         while next_page_token != None:             
-            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, cust_id=cust_id, done=False)
+            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, cust_id=cust_id)
             token = next_page_token
             ticket_data.append(ticket_logs)
         return ticket_data 

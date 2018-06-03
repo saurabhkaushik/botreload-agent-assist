@@ -224,51 +224,6 @@ class TrainingDataAnalyzer(object):
                     print('Creating for Tickets : ' , id, cust_id)
         logging.info ('extractTrainingData : Completed :' + cust_id)
         
-    def applyPrediction_trainingdata(self, cust_id):
-        logging.info ('applyPrediction : Started : ' + str(cust_id))
-        trainlog = get_model()
-        traindata = getTrainingModel() 
-
-        next_page_token = 0
-        token = None 
-        from agentapp.IntentExtractor import IntentExtractor
-        intenteng = IntentExtractor()
-        while next_page_token != None:             
-            training_logs, next_page_token = getTrainingModel().list(cursor=token, cust_id=cust_id, feedback_flag=False, done=False)
-            token = next_page_token
-            for training_log in training_logs: 
-                predicted = intenteng.getPredictedIntent(str(training_log['query'] + ' . ' + training_log['tags']) , cust_id)  
-                if len(predicted) < 1: 
-                    predicted = ['Default']
-                traindata.update(training_log['tags'], training_log['query'], training_log['response'], query_category=training_log['query_category'], 
-                    done=True, id = training_log['id'], resp_category=predicted[0], cust_id=cust_id)
-                print ('processing training data :', training_log['id'])
-        logging.info ('applyPrediction : Completed : ' + cust_id)
-
-    def applyPrediction_responsedata(self, cust_id):
-        logging.info ('applyPrediction_response : Started : ' + str(cust_id))
-        trainlog = get_model()
-        traindata = getTrainingModel() 
-
-        next_page_token = 0
-        token = None 
-        from agentapp.IntentExtractor_resp import IntentExtractor_resp
-        intenteng = IntentExtractor_resp()
-        intenteng.prepareTrainingData(cust_id)
-        intenteng.startTrainingProcess(cust_id)
-   
-        while next_page_token != None:             
-            training_logs, next_page_token = traindata.list(cursor=token, feedback_flag=False, cust_id=cust_id)
-            token = next_page_token
-            for training_log in training_logs: 
-                predicted = intenteng.getPredictedIntent(str(training_log['query'] + ' . ' + training_log['tags']) , cust_id)  
-                if len(predicted) < 1: 
-                    predicted = ['Default']
-                traindata.update(training_log['tags'], training_log['query'], training_log['response'], query_category=training_log['query_category'], 
-                    done=True, id = training_log['id'], resp_category=predicted[0], cust_id=cust_id)
-                print ('processing training data :', training_log['id'])
-        logging.info ('applyPrediction_response : Completed : ' + str(cust_id))
-
 def cleanhtml(raw_html):
   cleanr = re.compile('<.*?>')
   cleantext = re.sub(cleanr, '', raw_html)

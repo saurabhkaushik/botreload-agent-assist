@@ -1,6 +1,7 @@
 from agentapp.EntityExtractor import EntityExtractor
 from agentapp.IntentExtractor import IntentExtractor
 from agentapp.tickets_learner import tickets_learner
+from agentapp.StorageOps import StorageOps
 from agentapp.SmartRepliesSelector import SmartRepliesSelector
 from agentapp.model_select import get_model, getTrainingModel, getCustomerModel
 from agentapp.TrainingDataAnalyzer import TrainingDataAnalyzer
@@ -23,7 +24,7 @@ import logging
 intenteng = IntentExtractor()
 ticketLearner = tickets_learner()
 data_analyzer = TrainingDataAnalyzer()
-
+storageOps = StorageOps()
 def create_app(config, debug=False, testing=False, config_overrides=None):
     app = Flask(__name__)
     app.config.from_object(config)
@@ -42,7 +43,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     with app.app_context():
         model = get_model()
         model.init_app(app)        
-        ticketLearner.create_bucket()
+        storageOps.create_bucket()
         
     #logging.info('Current Customers : '+ str(cust_list))
 
@@ -189,21 +190,31 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     def startRetraining():
         logging.info('startRetraining : ')        
         intenteng = IntentExtractor() 
-        data_analyzer = TrainingDataAnalyzer()
-        cust_list, next_page_token = getCustomerModel().list(done=True)
+        intenteng_resp = IntentExtractor_resp()
+        cust_model = getCustomerModel()
+        cust_list, next_page_token = cust_model.list(done=True)
         for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.applyPrediction_responsedata(cust_id_x['cust_name'])
+            if cust_id_x['cust_name'] != 'default':
+                intenteng_resp.prepareTrainingData(cust_id_x['cust_name'])
+                intenteng_resp.startTrainingProcess(cust_id_x['cust_name'])
+                intenteng_resp.startTrainLogPrediction(cust_id_x['cust_name'])        
                 intenteng.prepareTrainingData(cust_id_x['cust_name']) 
                 intenteng.startTrainingProcess(cust_id_x['cust_name'])
         return '200'
 
     @app.route('/processnewcustomer', methods=['GET'])
     def processNewCustomer():
-        logging.info('processnewcustomer : ')
+        logging.info('processnewcustomer : ')        
+        cust_model = getCustomerModel()
         ticketLearner = tickets_learner()
-        ticketLearner = tickets_learner()
-        ticketLearner.processNewCustomer()
+        cust_list, next_page_token = cust_model.list(newflag=True, done=True)
+        intenteng = IntentExtractor()
+        for cust_x in cust_list:             
+            ticketLearner.import_trainingdata(cust_x['cust_name'], cust_x['language']) 
+            intenteng.prepareTrainingData(cust_x['cust_name']) 
+            intenteng.startTrainingProcess(cust_x['cust_name'])
+            cust_model.update(cust_x['cust_name'], language=cust_x['language'], intent_threshold=cust_x['intent_threshold'], organization=cust_x['organization'], email_id=cust_x['email_id'], password =cust_x['password'], newflag=False, done=True, id=cust_x['id'])
+            logging.info('Processed new Customer : ' + cust_x['cust_name'])
         return '200'
     
     @app.route('/preparedata', methods=['GET'])

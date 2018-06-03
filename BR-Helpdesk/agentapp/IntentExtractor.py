@@ -14,6 +14,7 @@ from flask import current_app
 import logging
 #from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
+from agentapp.StorageOps import StorageOps
 import nltk
 nltk.download('stopwords')
 from nltk.tokenize import RegexpTokenizer
@@ -25,7 +26,7 @@ from agentapp.TfidfVectorizer import TfidfEmbeddingVectorizer, MeanEmbeddingVect
 class IntentExtractor(object): 
     
     def prepareTrainingData(self, cust_id):
-        logging.info("prepareTrainingData : Started" + str(cust_id))
+        logging.info("prepareTrainingData : Started " + str(cust_id))
         self.X, self.y = [], []
         
         tickets_learn = tickets_learner()
@@ -35,19 +36,21 @@ class IntentExtractor(object):
         yY = []
         for linestms in ticket_data:           
             for linestm in linestms:
-                logging.debug (linestm['tags'] + " =>  " + linestm['resp_category'])
-                xX.append(preprocess(str(linestm['tags'] + ', ' + linestm['query'])).strip().split())
-                yY.append(linestm['resp_category'].strip())
+                tempxX = preprocess(str(linestm['tags'] + ', ' + linestm['query'])).strip()
+                if (tempxX != ''):
+                    xX.append(tempxX.split())
+                    yY.append(linestm['resp_category'].strip())
         self.X = xX
         self.y = yY
         
         self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
         logging.info ("Total Training Examples : %s" % len(self.y))
-        logging.info("prepareTrainingData : Completed" + str(cust_id))
+        logging.info("prepareTrainingData : Completed " + str(cust_id))
         return
     
     def startTrainingProcess(self, cust_id):
-        logging.info("startTrainingProcess : Started" + str(cust_id))
+        storageOps = StorageOps()
+        logging.info("startTrainingProcess : Started " + str(cust_id))
         self.model = Word2Vec(self.X, size=100, window=5, min_count=1, workers=2)
         self.model.wv.index2word
         w2v = {w: vec for w, vec in zip(self.model.wv.index2word, self.model.wv.syn0)}
@@ -60,17 +63,16 @@ class IntentExtractor(object):
         self.etree_w2v_tfidf.fit(self.X, self.y)
         
         pickle_out = pickle.dumps(self.etree_w2v_tfidf)
-        tickets_learn = tickets_learner()
-        tickets_learn.put_bucket(pickle_out, cust_id) 
+        storageOps.put_bucket(pickle_out, cust_id) 
                 
         logging.info ("Total Training Samples : %s" % len(self.y))
         logging.info("startTrainingProcess : Completed " + str(cust_id))
         return
         
     def getIntentForText(self, textinput, cust_id): 
-        logging.info("getIntentForText : Started" + str(cust_id))
-        tickets_learn = tickets_learner()
-        pickle_out = tickets_learn.get_bucket(cust_id)
+        logging.info("getIntentForText : Started " + str(cust_id))
+        storageOps = StorageOps()
+        pickle_out = storageOps.get_bucket(cust_id)
         self.etree_w2v_tfidf = pickle.loads(pickle_out)
         self.test_X = []
         self.test_X.append(preprocess(textinput).split())
@@ -87,9 +89,9 @@ class IntentExtractor(object):
         return self.y_predict_dic
         
     def getPredictedIntent(self, textinput, cust_id): 
-        logging.info("getPredictedIntent : Started" + str(cust_id))
-        tickets_learn = tickets_learner()
-        pickle_out = tickets_learn.get_bucket(cust_id)
+        logging.info("getPredictedIntent : Started " + str(cust_id))
+        storageOps = StorageOps()
+        pickle_out = storageOps.get_bucket(cust_id)
         self.etree_w2v_tfidf = pickle.loads(pickle_out)
         self.test_X = []
         self.test_X.append(preprocess(textinput).split())
@@ -98,11 +100,29 @@ class IntentExtractor(object):
             self.predicted = self.etree_w2v_tfidf.predict(self.test_X) 
         except ValueError as err: 
             logging.error(str(err))
-        logging.info("getPredictedIntent : Completed" + str(cust_id))
+        logging.info("getPredictedIntent : Completed " + str(cust_id))
         return self.predicted
     
+    def startTrainLogPrediction(self, cust_id):
+        logging.info ('startTrainLogPrediction : Started : ' + str(cust_id))
+        traindata = getTrainingModel() 
+        next_page_token = 0
+        token = None 
+        while next_page_token != None:             
+            training_logs, next_page_token = traindata.list(cursor=token, cust_id=cust_id, feedback_flag=False, done=False)
+            token = next_page_token
+            for training_log in training_logs: 
+                predicted = self.getPredictedIntent(str(training_log['query'] + ' . ' + training_log['tags']) , cust_id)  
+                if len(predicted) < 1: 
+                    predicted = ['Default']
+                traindata.update(training_log['tags'], training_log['query'], training_log['response'], query_category=training_log['query_category'], 
+                    done=True, id = training_log['id'], resp_category=predicted[0], cust_id=cust_id)
+                print ('processing training data :', training_log['id'])
+        logging.info ('startTrainLogPrediction : Completed : ' + cust_id)
+
+    
     def prepareTestingData(self, cust_id):
-        logging.info("prepareTestingData : Started" + str(cust_id))        
+        logging.info("prepareTestingData : Started " + str(cust_id))        
         self.test_X, self.test_y = [], []
         
         tickets_learn = tickets_learner()
@@ -124,19 +144,19 @@ class IntentExtractor(object):
         return 
 
     def startTestingProcess(self, cust_id): 
-        logging.info("startTestingProcess : Started" + str(cust_id)) 
-        tickets_learn = tickets_learner()
-        pickle_out = tickets_learn.get_bucket(cust_id)
+        logging.info("startTestingProcess : Started " + str(cust_id)) 
+        storageOps = StorageOps()
+        pickle_out = storageOps.get_bucket(cust_id)
         self.etree_w2v_tfidf = pickle.loads(pickle_out)
         self.predicted = self.etree_w2v_tfidf.predict(self.test_X)
         for input_data, output_data in zip(self.test_X, self.predicted) :
             logging.debug (str(input_data) + "  =>  " + str(output_data))
         logging.info ("Total Predicted Testing Examples : %s" % len(self.predicted))
-        logging.info("startTestingProcess : Completed" + str(cust_id))
+        logging.info("startTestingProcess : Completed " + str(cust_id))
         return 
         
     def createConfusionMatrix(self, cust_id):
-        logging.info("createConfusionMatrix : Started" + str(cust_id))
+        logging.info("createConfusionMatrix : Started " + str(cust_id))
         for y_value_a, y_value_p in zip(self.test_y, self.predicted): 
             logging.info ('\'' + y_value_a + '\' >> \'' + y_value_p + '\'' )
         logging.info("Mean: \n" + str(np.mean(self.test_y == self.predicted)))
@@ -146,7 +166,7 @@ class IntentExtractor(object):
         logging.info("f1_score : " + str(f1_score(self.test_y, self.predicted, average="macro", labels=np.unique(self.predicted))))
         logging.info("precision_score : " + str(precision_score(self.test_y, self.predicted, average="macro", labels=np.unique(self.predicted))))
         logging.info("recall_score : " + str(recall_score(self.test_y, self.predicted, average="macro")))
-        logging.info("createConfusionMatrix : Completed" + str(cust_id))
+        logging.info("createConfusionMatrix : Completed " + str(cust_id))
         return 
 
 def preprocess(sentence):
