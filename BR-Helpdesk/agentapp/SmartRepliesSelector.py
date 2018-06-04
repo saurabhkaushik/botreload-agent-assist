@@ -55,6 +55,7 @@ class SmartRepliesSelector(object):
     def populateResponseData(self, cust_id): 
         logging.info ('populateResponseData : Started ' + str(cust_id))
         resp_model = getResponseModel()
+        storageOps = StorageOps()
         next_page_token = 0
         token = None
         while next_page_token != None:             
@@ -72,7 +73,8 @@ class SmartRepliesSelector(object):
             
             if item['select_response'] == 'true': 
                 resp_model.create((cust_id + '_Response_' + str(rep_index)), (cust_id + '_Response_' + str(rep_index)), item['response'], item['select_tags'], done=True, id=rep_index, cust_id=cust_id)
-
+        csvfile = self.ticket_pd.to_csv()        
+        storageOps.put_bucket(pickle_out, str("SR_CSV_" + str(cust_id))) 
         logging.info ('populateResponseData : Completed ' + str(cust_id))
         return
     

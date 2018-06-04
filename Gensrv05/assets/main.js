@@ -1,7 +1,7 @@
 var ticket_data = {id : 0, description:'', comment:'', comments: '', currentUser:'', subject:'', assignee:'', requester:'' , currentAccount:''};
 var feedback_data = {selected_response_id : 0, ticket_data : ''};
+var past_ticket_data = {upload_ticket_data : [], upload_comment_data : [], ticket_data : ''};
 var response_data = {server_response : ''};
-var pastticket_data = {upload_ticket_data :'', ticket_data : ''};
 
 var context;
 var client = ZAFClient.init();
@@ -16,7 +16,6 @@ var iter_ticket = 0;
 var iter_comment = 0;
 var max_tickets = 10;
 var max_comments = 100;
-var ticket_json_data = {upload_ticket_data : [], upload_comment_data : [], ticket_data : ''};
 var timeout_comment = 5000;
 
 $(function() {
@@ -157,14 +156,13 @@ function getResponseData() {
 }
 
 function syncTicketData() {	
-	//console.log('syncTicketData:', ticket_json_data); //JSON.stringify(ticket_json_data));
+	//console.log('syncTicketData:', past_ticket_data); //JSON.stringify(past_ticket_data));
 	var settings = {
 	    url: SERVER_NAME +'/uploadtickets',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
 	    type: 'POST',
 	    contentType: 'application/json',
-	    //data: JSON.stringify(pastticket_data),
-	    data: JSON.stringify(ticket_json_data),
+	    data: JSON.stringify(past_ticket_data),
 	    dataType: 'json'
 	  };
 	client.request(settings).then(
@@ -219,14 +217,14 @@ function getTicketData() {
 	client.request(settings).then(
     function(data) {
         //console.log(data);
-    	ticket_json_data.upload_ticket_data = data.tickets
-    	ticket_json_data.ticket_data = ticket_data
+    	past_ticket_data.upload_ticket_data = data.tickets
+    	past_ticket_data.ticket_data = ticket_data
     	for (i = 0; i < data.tickets.length; i++) {
     	   	if (iter_comment++ < max_comments) {
     	   		getCommentData(data.tickets[i]);    	
     	   	}
     	}
-    	ticket_json_data.upload_comment_data = comment_list;
+    	past_ticket_data.upload_comment_data = comment_list;
         setTimeout( function() {
         	syncTicketData();
         	}, timeout_comment);

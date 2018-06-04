@@ -34,7 +34,7 @@ def from_datastore(entity):
 
 
 # [START list]
-def list(log_type, limit=999, cursor=None, cust_id='', done=None):
+def list(log_type=None, limit=999, cursor=None, cust_id='', done=None):
     ds = get_client()
 
     query = ds.query(kind= cust_id +'TrainingLog', order=['type'])

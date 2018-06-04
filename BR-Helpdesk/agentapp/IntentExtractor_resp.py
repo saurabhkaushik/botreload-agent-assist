@@ -51,8 +51,12 @@ class IntentExtractor_resp(object):
         self.model = Word2Vec(self.X, size=100, window=5, min_count=1, workers=2)
         self.model.wv.index2word
         w2v = {w: vec for w, vec in zip(self.model.wv.index2word, self.model.wv.syn0)}
-        self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
+        '''self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
                         ("extra trees", ExtraTreesClassifier(n_estimators=200))])
+        self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", TfidfEmbeddingVectorizer(w2v)), 
+                        ("MultinomialNB", MultinomialNB())])'''
+        self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
+                        ("SVC", SVC(kernel='linear', probability=True))])
         self.etree_w2v_tfidf.fit(self.X, self.y)
         
         logging.info ("Total Training Samples : %s" % len(self.y))

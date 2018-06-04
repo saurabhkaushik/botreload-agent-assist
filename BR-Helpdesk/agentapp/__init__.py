@@ -45,8 +45,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         model.init_app(app)        
         storageOps.create_bucket()
         
-    #logging.info('Current Customers : '+ str(cust_list))
-
     # Register the Bookshelf CRUD blueprint.
     from .crud import crud
     app.register_blueprint(crud, url_prefix='/smartreply')
@@ -158,7 +156,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         ticketLearner = tickets_learner()
         ticketLearner.import_customerdata()
         cust_list, next_page_token = getCustomerModel().list(done=True)
-        #print (cust_list) 
         for cust_id_x in cust_list:
             ticketLearner.import_trainingdata(cust_id_x['cust_name'], cust_id_x['language'])  
             ticketLearner.import_responsedata(cust_id_x['cust_name'], cust_id_x['language'])         
@@ -223,10 +220,15 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         data_analyzer = TrainingDataAnalyzer()
         # Copy TrainingLog to defaultTrainingLog
         data_analyzer.copyOldTrainingLog()
-        '''
-        # Extract TrainingData from Ticket defaultTrainingLog to Cust_TrainingData 
-        data_analyzer.extractTicketData_default()
+        # Extract TrainingData from Intent CustTrainingLog to Cust_TrainingData         
+        cust_list, next_page_token = getCustomerModel().list(done=True)
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.copyDefaultTrainingLog(cust_id_x['cust_name'])
         
+        # Extract TrainingData from Ticket defaultTrainingLog to Cust_TrainingData 
+        #data_analyzer.extractTicketData_default()
+        '''
         # Extract Trainingdata from Ticket custTrainingLog to Cust_TrainingData         
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
@@ -234,7 +236,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
                 data_analyzer.extractTicketData_cust(cust_id_x['cust_name'])
         '''
         # Extract TrainingData from Intent defaultTrainingLog to Cust_TrainingData 
-        data_analyzer.extractIntentData_default()
+        #data_analyzer.extractIntentData_default()
         
         # Extract TrainingData from Intent CustTrainingLog to Cust_TrainingData         
         cust_list, next_page_token = getCustomerModel().list(done=True)
@@ -243,7 +245,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
                 data_analyzer.extractIntentData_cust(cust_id_x['cust_name'])
 
         # Extract TrainingData from Intent defaultTrainingLog to Cust_TrainingData 
-        data_analyzer.extractFeedbackData_default()
+        #data_analyzer.extractFeedbackData_default()
         
         # Extract TrainingData from Intent CustTrainingLog to Cust_TrainingData         
         cust_list, next_page_token = getCustomerModel().list(done=True)
@@ -255,7 +257,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.extractTicketData_new(cust_id_x['cust_name'])        
+                data_analyzer.extractNewTicketData_cust(cust_id_x['cust_name'])        
         return '200'
         
     @app.route('/testingservice', methods=['GET'])
