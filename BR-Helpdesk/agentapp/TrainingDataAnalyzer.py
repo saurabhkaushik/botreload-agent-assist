@@ -24,16 +24,16 @@ class TrainingDataAnalyzer(object):
         next_page_token = 0
         token = None
         while next_page_token != None:
-            ticket_logs, next_page_token = trainlog.list(cursor=token, cust_id='', done=True)
+            ticket_logs, next_page_token = trainlog.list(cursor=token, cust_id='', log_type=None, done=True)
             token = next_page_token
             for ticket_log in ticket_logs:
                 trainlog.create(ticket_log['type'], ticket_log['json_data'], created=ticket_log['created'], done=True, cust_id='default')
                 trainlog.delete(id=ticket_log['id'], cust_id='')
-                print ('Copying Ticket data: ' , ticket_log['id'])
+                print ('Copying Old data: ' , ticket_log['id'])
         print ('copyOldTrainingLog: Completed ')
 
-    def copyDefaultTrainingLog(self, cust_id):   
-        logging.info ('copyDefaultTrainingLog : Started :' + str(cust_id))
+    def copyDefaultTrainingLog(self):   
+        logging.info ('copyDefaultTrainingLog : Started :' )
         trainlog = get_model()
         traindata = getTrainingModel() 
 
@@ -41,36 +41,61 @@ class TrainingDataAnalyzer(object):
         token = None        
         cust_list, next_page_token2 = getCustomerModel().list(done=True)
         while next_page_token != None:             
-            ticket_logs, next_page_token = trainlog.list(cursor=token, cust_id='Default', done=True)
+            ticket_logs, next_page_token = trainlog.list(cursor=token, cust_id='default', done=True)
             token = next_page_token
             for ticket_log in ticket_logs: 
                 tickets_data = ticket_log["json_data"] 
-                tickets_data_json = json.loads(tickets_data) 
-                if tickets_data_json['ticket_data'] == None: # Intent / Old TIcket           
-                    if tickets_data_json['currentAccount']['subdomain']  != None: # Intent
-                        cust_id = intents_data_json['currentAccount']['subdomain'] 
+                if (ticket_log['type'] == 'response'): 
+                    continue
+                tickets_data_json = json.loads(tickets_data)
+                tik_data1 = None 
+                try : 
+                    tik_data1 = tickets_data_json['ticket_data']
+                except KeyError as err: 
+                    tik_data1 = None 
+                if tik_data1 == None: # Intent / Old TIcket 
+                    tik_data2 = None 
+                    try : 
+                        tik_data2 = tickets_data_json['currentAccount']['subdomain']
+                    except KeyError as err: 
+                        tik_data2 = None           
+                    if tik_data2  != None: # Intent
+                        cust_id = tickets_data_json['currentAccount']['subdomain'] 
                         for cust_id_x in cust_list:
                             if cust_id_x['cust_name'] == cust_id:
-                                trainlog.create(ticket_log['type'], ticket_log['json_data'], created=ticket_log['created'], done=True, cust_id='default')
-                                trainlog.delete(id=ticket_log['id'], cust_id='')
+                                trainlog.create(ticket_log['type'], ticket_log['json_data'], created=ticket_log['created'], done=True, cust_id=cust_id)
+                                trainlog.delete(id=ticket_log['id'], cust_id='default')
+                                print ('Copying Intent data: ' , ticket_log['id'], cust_id)
                                 continue
-                    if tickets_data_json['tickets'][0][url] != None : # Old Ticket 
+                    tik_data3 = None 
+                    try : 
+                        tik_data3 = tickets_data_json['tickets'][0]['url']
+                    except KeyError as err: 
+                        tik_data3 = None  
+                    if tik_data3 != None : # Old Ticket 
                         url = tickets_data_json['tickets'][0]['url']
                         for cust_id_x in cust_list:
                             if cust_id_x['cust_name'] in url:
                                 cust_id = cust_id_x['cust_name']
-                                trainlog.create(ticket_log['type'], ticket_log['json_data'], created=ticket_log['created'], done=True, cust_id='default')
-                                trainlog.delete(id=ticket_log['id'], cust_id='')
+                                trainlog.create(ticket_log['type'], ticket_log['json_data'], created=ticket_log['created'], done=True, cust_id=cust_id)
+                                trainlog.delete(id=ticket_log['id'], cust_id='default')
+                                print ('Copying Old Ticket data: ' , ticket_log['id'], cust_id)
                                 continue
                 else: # New Ticket and Feedback 
-                    if intents_data_json['ticket_data']['currentAccount']['subdomain'] != None: 
-                        cust_id = intents_data_json["ticket_data"]['currentAccount']['subdomain']
+                    tik_data4 = None 
+                    try : 
+                        tik_data4 = tickets_data_json['ticket_data']['currentAccount']['subdomain']
+                    except KeyError as err: 
+                        tik_data4 = None 
+                    if tik_data4 != None: 
+                        cust_id = tickets_data_json["ticket_data"]['currentAccount']['subdomain']
                         for cust_id_x in cust_list:
                             if cust_id_x['cust_name'] == cust_id:
-                                trainlog.create(ticket_log['type'], ticket_log['json_data'], created=ticket_log['created'], done=True, cust_id='default')
-                                trainlog.delete(id=ticket_log['id'], cust_id='')
+                                trainlog.create(ticket_log['type'], ticket_log['json_data'], created=ticket_log['created'], done=True, cust_id=cust_id)
+                                trainlog.delete(id=ticket_log['id'], cust_id='default')
+                                print ('Copying New Ticket/Feedback data: ' , ticket_log['id'], cust_id)
                                 continue 
-        logging.info ('copyDefaultTrainingLog : Completed : ' + str(cust_id))
+        logging.info ('copyDefaultTrainingLog : Completed : ')
 
     def extractTicketData_default(self, src_cust_id='default'):   
         logging.info ('extractTicketData_default : Started :' + str(src_cust_id))
@@ -166,6 +191,11 @@ class TrainingDataAnalyzer(object):
             for intent_log in intent_logs: 
                 intents_data = intent_log["json_data"] 
                 intents_data_json = json.loads(intents_data)
+                try:                     
+                    description = intents_data_json['description']
+                except KeyError as err: 
+                    print (err)
+                    continue
                 description = intents_data_json['description']
                 subject = intents_data_json['subject']
                 tags = ', '.join(intents_data_json['requester']['tags']) 

@@ -35,7 +35,8 @@ class IntentExtractor_resp(object):
         yY = []
         for linestms in ticket_data:           
             for linestm in linestms:
-                if (linestm['tags'].strip() != ''):
+                tempxX = linestm['tags'].strip()
+                if (tempxX != ''):
                     xX.append(preprocess(str(linestm['tags'])).strip().split())
                     yY.append(linestm['res_category'].strip())
         self.X = xX
@@ -48,7 +49,10 @@ class IntentExtractor_resp(object):
             
     def startTrainingProcess(self, cust_id):
         logging.info("startTrainingProcess : Started " + str(cust_id))
-        self.model = Word2Vec(self.X, size=100, window=5, min_count=1, workers=2)
+        if len(self.y) < 1: 
+            logging.info('Cant process as no Training ')
+            return
+        self.model = Word2Vec(self.X, size=100, window=5, min_count=1, workers=3)
         self.model.wv.index2word
         w2v = {w: vec for w, vec in zip(self.model.wv.index2word, self.model.wv.syn0)}
         '''self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
@@ -65,6 +69,9 @@ class IntentExtractor_resp(object):
         
     def getPredictedIntent(self, textinput, cust_id): 
         logging.info("getPredictedIntent : Started " + str(cust_id))
+        if len(self.y) < 1: 
+            logging.info('Cant process as no Training ')
+            return
         self.test_X = []
         self.test_X.append(preprocess(textinput).split())
         self.predicted = []
@@ -77,6 +84,9 @@ class IntentExtractor_resp(object):
     
     def startTrainLogPrediction(self, cust_id):
         logging.info("startTrainLogPrediction : Started " + str(cust_id))
+        if len(self.y) < 1: 
+            logging.info('Cant process as no Training ')
+            return
         traindata = getTrainingModel() 
         next_page_token = 0
         token = None 

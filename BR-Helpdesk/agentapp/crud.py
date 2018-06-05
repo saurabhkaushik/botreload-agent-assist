@@ -90,7 +90,7 @@ def list():
     if token:
         token = token.encode('utf-8')
 
-    books, next_page_token = getResponseModel().list(cursor=token, cust_id=cust_id, done=True)
+    books, next_page_token = getResponseModel().list(cursor=token, cust_id=cust_id, done=True, modifiedflag=None, defaultflag=None)
 
     return render_template(
         "list.html", cust_id=cust_id,

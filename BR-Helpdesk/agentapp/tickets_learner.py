@@ -14,7 +14,7 @@ class tickets_learner(object):
         next_page_token = 0
         token = None
         while next_page_token != None:             
-            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, cust_id=cust_id, done=True)
+            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, cust_id=cust_id, feedback_flag=None, done=True)
             token = next_page_token
             ticket_data.append(ticket_logs)
         return ticket_data 
@@ -25,7 +25,7 @@ class tickets_learner(object):
         next_page_token = 0
         token = None
         while next_page_token != None:             
-            resp_logs, next_page_token = getResponseModel().list(cursor=token, cust_id=cust_id, done=True)
+            resp_logs, next_page_token = getResponseModel().list(cursor=token, modifiedflag=None, defaultflag=None, cust_id=cust_id, done=True)
             token = next_page_token
             resp_data.append(resp_logs)
         return resp_data 
@@ -66,7 +66,7 @@ class tickets_learner(object):
             
     def get_response_mapping(self, response, cust_id):
         logging.info ('get_response_mapping : ' + str(cust_id))
-        ds_response = getResponseModel().list(cust_id=cust_id, done=True)
+        ds_response = getResponseModel().list(cust_id=cust_id, modifiedflag=None, defaultflag=None, done=True)
         print ( 'ds_response : '+str(ds_response)) 
         
         for resp in ds_response: 
@@ -81,7 +81,7 @@ class tickets_learner(object):
         df_intent = pd.DataFrame(list(predicted_intent.items()), columns=['Resp_Class', 'Resp_Prob'])
         df_intent = df_intent.sort_values(['Resp_Prob'], ascending=[False])
         df_intent['Comment'] = 'NA'
-        ds_response = getResponseModel().list(cust_id=cust_id, done=True) 
+        ds_response = getResponseModel().list(cust_id=cust_id, modifiedflag=None, defaultflag=None, done=True) 
         i = 0
         for index, row in df_intent.iterrows():
             for resp_list in ds_response: 

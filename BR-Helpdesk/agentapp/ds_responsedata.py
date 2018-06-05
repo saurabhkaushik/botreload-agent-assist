@@ -33,11 +33,11 @@ def from_datastore(entity):
 # [END from_datastore]
 
 # [START list]
-def list(res_category=None, limit=999, cursor=None, modifiedflag=None, defaultflag=None, cust_id='', done=None):
+def list(res_category='', limit=999, cursor=None, modifiedflag=False, defaultflag=False, cust_id='', done=False):
     ds = get_client()
 
     query = ds.query(kind=cust_id + 'ResponseData') 
-    if res_category != None: 
+    if res_category != None and res_category != '': 
         query.add_filter('res_category', '=', res_category)
     if done != None: 
         query.add_filter('done', '=', done)

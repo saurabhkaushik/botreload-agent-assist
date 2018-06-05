@@ -51,6 +51,9 @@ class IntentExtractor(object):
     def startTrainingProcess(self, cust_id):
         storageOps = StorageOps()
         logging.info("startTrainingProcess : Started " + str(cust_id))
+        if len(self.y) < 1: 
+            logging.info('Cant process as no Training ')
+            return
         self.model = Word2Vec(self.X, size=100, window=5, min_count=1, workers=3)
         self.model.wv.index2word
         w2v = {w: vec for w, vec in zip(self.model.wv.index2word, self.model.wv.syn0)}

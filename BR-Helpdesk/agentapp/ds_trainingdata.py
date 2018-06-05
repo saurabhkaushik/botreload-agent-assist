@@ -33,7 +33,7 @@ def from_datastore(entity):
 # [END from_datastore]
 
 # [START list]
-def list(limit=999, cursor=None, cust_id='', feedback_flag=None, done=None):
+def list(limit=999, cursor=None, cust_id='', feedback_flag=False, done=False):
     ds = get_client() 
 
     query = ds.query(kind= cust_id +'TrainingData') 

@@ -1,5 +1,6 @@
 from agentapp.EntityExtractor import EntityExtractor
 from agentapp.IntentExtractor import IntentExtractor
+from agentapp.IntentExtractor_resp import IntentExtractor_resp
 from agentapp.tickets_learner import tickets_learner
 from agentapp.StorageOps import StorageOps
 from agentapp.SmartRepliesSelector import SmartRepliesSelector
@@ -158,11 +159,11 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
-            cust_list = [cust_id]
-        logging.info('Processing startTrainingModels For : ' + cust_list)
+            cust_list = [{'cust_name' : cust_id}]
+        logging.info('Processing startDataImport For : ' + str(cust_list))
 
         ticketLearner = tickets_learner()
-        ticketLearner.import_customerdata()
+        #ticketLearner.import_customerdata()
         for cust_id_x in cust_list:
             ticketLearner.import_trainingdata(cust_id_x['cust_name'], cust_id_x['language'])  
             ticketLearner.import_responsedata(cust_id_x['cust_name'], cust_id_x['language'])         
@@ -176,8 +177,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
-            cust_list = [cust_id]
-        logging.info('Processing startTrainingModels For : ' + cust_list)
+            cust_list = [{'cust_name' : cust_id}]
+        logging.info('Processing startTrainingModels For : ' + str(cust_list))
 
         intenteng = IntentExtractor() 
         for cust_id_x in cust_list:
@@ -193,8 +194,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
-            cust_list = [cust_id]
-        logging.info('Processing buildSmartReplies For : ' + cust_list)
+            cust_list = [{'cust_name' : cust_id}]
+        logging.info('Processing buildSmartReplies For : ' + str(cust_list))
 
         replyeng = SmartRepliesSelector()
         for cust_id_x in cust_list:
@@ -212,8 +213,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
-            cust_list = [cust_id]
-        logging.info('Processing startRetraining For : ' + cust_list)
+            cust_list = [{'cust_name' : cust_id}]
+        logging.info('Processing startRetraining For : ' + str(cust_list))
        
         intenteng = IntentExtractor() 
         intenteng_resp = IntentExtractor_resp()
@@ -235,8 +236,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
-            cust_list = [cust_id]
-        logging.info('Processing processnewcustomer For : ' + cust_list)
+            cust_list = [{'cust_name' : cust_id}]
+        logging.info('Processing processNewCustomer For : ' + str(cust_list))
 
         cust_model = getCustomerModel()
         ticketLearner = tickets_learner()
@@ -249,24 +250,18 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             logging.info('Processed new Customer : ' + cust_x['cust_name'])
         return '200'
     
-    @app.route('/copytrainingdata', methods=['GET'])
-    def copyTrainingData():
-        logging.info('copyTrainingData : ')        
-        cust_id = request.args.get('cust_id')
-        cust_list =[]
-        if cust_id == None:             
-            cust_list, __ = getCustomerModel().list(done=True)
-        else: 
-            cust_list = [cust_id]
-        logging.info('Processing copyTrainingData For : ' + cust_list)
-
+    @app.route('/copyoldtrainingdata', methods=['GET'])
+    def copyOldTrainingData():
+        logging.info('copyOldTrainingData : ')        
         data_analyzer = TrainingDataAnalyzer()
-        # Copy TrainingLog to defaultTrainingLog
         data_analyzer.copyOldTrainingLog()
-        # Extract TrainingData from Intent CustTrainingLog to Cust_TrainingData         
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.copyDefaultTrainingLog(cust_id_x['cust_name'])
+        return '200'
+
+    @app.route('/copydefaulttrainingdata', methods=['GET'])
+    def copyDefaultTrainingData():
+        logging.info('copyDefaultTrainingData : ')        
+        data_analyzer = TrainingDataAnalyzer()
+        data_analyzer.copyDefaultTrainingLog()
         return '200'
     
     @app.route('/processtrainingdata', methods=['GET'])
@@ -277,30 +272,28 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
-            cust_list = [cust_id]
-        logging.info('Processing processtrainingdata For : ' + cust_list)
+            cust_list = [{'cust_name' : cust_id}]
+        logging.info('Processing processTrainingData For : ' + str(cust_list))
 
         data_analyzer = TrainingDataAnalyzer()
+        # Extraction of Intent data          
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.extractIntentData_cust(cust_id_x['cust_name']) 
         '''
-        # Extract Trainingdata from Ticket custTrainingLog to Cust_TrainingData         
+        # Extraction of Old Ticket data          
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractTicketData_cust(cust_id_x['cust_name'])
-        '''
-        # Extract TrainingData from Intent CustTrainingLog to Cust_TrainingData         
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.extractIntentData_cust(cust_id_x['cust_name'])
-
-        # Extract TrainingData from Intent CustTrainingLog to Cust_TrainingData         
+        # Extraction of Feedback data          
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractFeedbackData_cust(cust_id_x['cust_name'])
-        
-        # Extract TrainingData from Ticket/Comment in Cust_TrainingData
+        # Extraction of New Ticket data 
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.extractNewTicketData_cust(cust_id_x['cust_name'])        
+                data_analyzer.extractNewTicketData_cust(cust_id_x['cust_name'])   
+        '''     
         return '200'
         
     @app.route('/testingservice', methods=['GET'])

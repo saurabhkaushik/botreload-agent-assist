@@ -34,11 +34,11 @@ def from_datastore(entity):
 
 
 # [START list]
-def list(log_type=None, limit=999, cursor=None, cust_id='', done=None):
+def list(log_type='', limit=999, cursor=None, cust_id='', done=False):
     ds = get_client()
 
-    query = ds.query(kind= cust_id +'TrainingLog', order=['type'])
-    if log_type != None: 
+    query = ds.query(kind= cust_id +'TrainingLog') # , order=['type'])
+    if log_type != None and log_type != '': 
         query.add_filter('type', '=', log_type)
     if done != None: 
         query.add_filter('done', '=', done)

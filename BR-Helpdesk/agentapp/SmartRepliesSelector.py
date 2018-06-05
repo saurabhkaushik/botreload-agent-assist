@@ -9,6 +9,7 @@ from nltk.corpus import stopwords
 import pandas as pd 
 from sklearn.metrics import pairwise_distances_argmin_min
 from agentapp.model_select import get_model, getTrainingModel, getResponseModel, getCustomerModel
+from agentapp.StorageOps import StorageOps
 import re
 class SmartRepliesSelector(object):
 
@@ -70,6 +71,7 @@ class SmartRepliesSelector(object):
         storageOps = StorageOps()
         next_page_token = 0
         token = None
+        last_id = 9999
         while next_page_token != None:             
             resp_logs, next_page_token = resp_model.list(cursor=token, modifiedflag=False, defaultflag=False, cust_id=cust_id, done=True)
             token = next_page_token
@@ -77,18 +79,11 @@ class SmartRepliesSelector(object):
                 resp_model.delete(resp_log['id'], cust_id)
                 last_id = resp_log['id']
 
-        rep_index = integer(last_id) + 1
+        rep_index = int(last_id) + 1
         for index, item in self.ticket_pd.iterrows(): 
-            '''
-            # Avoid overwriting modified responses 
-            respobj = resp_model.read(rep_index, cust_id=cust_id)
-            while respobj != None:
-                rep_index += 1 
-                respobj = resp_model.read(rep_index, cust_id=cust_id)                                                     
-            '''
             if item['select_response'] == 'true' and item['select_tags'].strip() != '': 
                 resp_model.create((cust_id + '_Response_' + str(rep_index)), (cust_id + '_Response_' + str(rep_index)), item['response'], item['select_tags'], done=True, id=rep_index, cust_id=cust_id)
-            rep_index += 1 
+                rep_index += 1 
             
         csvfile = self.ticket_pd.to_csv()        
         storageOps.put_bucket(csvfile, str("SR_CSV_" + str(cust_id))) 
@@ -141,7 +136,7 @@ class SmartRepliesSelector(object):
         next_page_token = 0
         token = None
         while next_page_token != None:             
-            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, cust_id=cust_id)
+            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, feedback_flag=None, cust_id=cust_id)
             token = next_page_token
             ticket_data.append(ticket_logs)
         return ticket_data 
