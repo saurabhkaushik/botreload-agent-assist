@@ -31,6 +31,12 @@ class SmartRepliesSelector(object):
         logging.info('generateNewResponse : Started : ' + str(cust_id))
         self.ticket_pd['response_cluster'] = -1
         self.ticket_pd['select_response'] = np.nan
+        X_q = []
+        try :
+            X_q = self.ticket_pd['query']
+        except KeyError as err:
+            logging.error("generateNewResponse : " + str(err))
+            return 
         X_q = self.ticket_pd['query']
         query_clstr_itr = int (len(X_q) / 10) 
         print ('Query Cluster Size : ', query_clstr_itr)
@@ -54,6 +60,12 @@ class SmartRepliesSelector(object):
     
     def populateResponseData(self, cust_id): 
         logging.info ('populateResponseData : Started ' + str(cust_id))
+        try: 
+            tx = self.ticket_pd['response_cluster']
+        except KeyError as err:
+            logging.error("populateResponseData : " + str(err))
+            return 
+        
         resp_model = getResponseModel()
         storageOps = StorageOps()
         next_page_token = 0
@@ -63,18 +75,23 @@ class SmartRepliesSelector(object):
             token = next_page_token
             for resp_log in resp_logs:
                 resp_model.delete(resp_log['id'], cust_id)
-        rep_index = 1000
+                last_id = resp_log['id']
+
+        rep_index = integer(last_id) + 1
         for index, item in self.ticket_pd.iterrows(): 
+            '''
             # Avoid overwriting modified responses 
             respobj = resp_model.read(rep_index, cust_id=cust_id)
             while respobj != None:
                 rep_index += 1 
                 respobj = resp_model.read(rep_index, cust_id=cust_id)                                                     
-            
-            if item['select_response'] == 'true': 
+            '''
+            if item['select_response'] == 'true' and item['select_tags'].strip() != '': 
                 resp_model.create((cust_id + '_Response_' + str(rep_index)), (cust_id + '_Response_' + str(rep_index)), item['response'], item['select_tags'], done=True, id=rep_index, cust_id=cust_id)
+            rep_index += 1 
+            
         csvfile = self.ticket_pd.to_csv()        
-        storageOps.put_bucket(pickle_out, str("SR_CSV_" + str(cust_id))) 
+        storageOps.put_bucket(csvfile, str("SR_CSV_" + str(cust_id))) 
         logging.info ('populateResponseData : Completed ' + str(cust_id))
         return
     
@@ -100,7 +117,7 @@ class SmartRepliesSelector(object):
         tags_clurt = []
         for i in range(true_k):
             tags_temp = []
-            for ind in order_centroids[i, :10]:
+            for ind in order_centroids[i, :20]:
                 tags_temp.append(terms[ind].lower().strip())
             tags_clurt.append(tags_temp)
         
