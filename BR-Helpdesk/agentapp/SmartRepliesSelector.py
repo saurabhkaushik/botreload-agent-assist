@@ -64,11 +64,12 @@ class SmartRepliesSelector(object):
             if resp_clst_itr > 5:
                 resp_clst_itr = 5
             qx = query_sub['response'].apply(lambda x: self.utilclass.cleanData(x, lowercase=True, remove_stops=True))
-            query_sub['response_cluster'], query_sub['select_response'], ___, query_sub['response_summary'] = self.getKMeanClusters_resp(cust_id, qx, query_sub['response'], resp_clst_itr) 
+            query_sub['response_cluster'], query_sub['select_response'], query_sub['response_tags'], query_sub['response_summary'] = self.getKMeanClusters_resp(cust_id, qx, query_sub['response'], resp_clst_itr) 
             for index, items in query_sub.iterrows(): 
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_cluster'] = int (items['response_cluster'])
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'select_response'] = items['select_response']
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_summary'] = items['response_summary']
+                self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_tags'] = items['response_tags']
         print (self.ticket_pd)
         logging.info('generateNewResponse : Completed : ' + str(cust_id))
         return 
@@ -96,7 +97,7 @@ class SmartRepliesSelector(object):
         rep_index = int(last_id) + 1
         for index, item in self.ticket_pd.iterrows(): 
             if item['select_response'] == 'true' and item['select_tags'].strip() != '': 
-                resp_model.create((cust_id + '_Response_' + str(rep_index)), (cust_id + '_Response_' + str(rep_index)), item['response_summary'], item['select_tags'], done=True, id=rep_index, cust_id=cust_id)
+                resp_model.create((cust_id + '_Response_' + str(rep_index)), (cust_id + '_Response_' + str(rep_index)), item['response_summary'], item['select_tags'], item['response_tags'], done=True, id=rep_index, cust_id=cust_id)
                 rep_index += 1 
             
         csvfile = self.ticket_pd.to_csv()        

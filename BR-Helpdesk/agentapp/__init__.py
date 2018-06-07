@@ -162,7 +162,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         ticketLearner = tickets_learner()
         #ticketLearner.import_customerdata()
         for cust_id_x in cust_list:
-            ticketLearner.import_trainingdata(cust_id_x['cust_name'], cust_id_x['language'])  
+            #ticketLearner.import_trainingdata(cust_id_x['cust_name'], cust_id_x['language'])  
             ticketLearner.import_responsedata(cust_id_x['cust_name'], cust_id_x['language'])         
         return '200'  
     

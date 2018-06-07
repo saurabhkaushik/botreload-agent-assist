@@ -66,7 +66,7 @@ def read(id, cust_id=''):
 
 
 # [START update]
-def update(cat_name, res_category, response_text, tags, modifiedflag=False, defaultflag=False, done=False, id=None, cust_id=''):
+def update(cat_name, res_category, response_text, tags, resp_tags, modifiedflag=False, defaultflag=False, done=False, id=None, cust_id=''):
     ds = get_client()
     
     if id:
@@ -83,6 +83,7 @@ def update(cat_name, res_category, response_text, tags, modifiedflag=False, defa
             'res_category': res_category,
             'response_text' : response_text,
             'tags' : tags,
+            'resp_tags' : resp_tags, 
             'modifiedflag': modifiedflag,
             'defaultflag' : defaultflag,
             'created': datetime.datetime.utcnow(),

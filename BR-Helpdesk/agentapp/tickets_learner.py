@@ -60,7 +60,7 @@ class tickets_learner(object):
             train_list = list(reader)
         rid = 100
         for linestm in train_list:
-            getResponseModel().create(linestm[0].strip(), linestm[0].strip(), linestm[1].strip(), linestm[2].strip(), defaultflag=True, done=True, id=rid, cust_id=cust_id)
+            getResponseModel().create(linestm[0].strip(), linestm[0].strip(), linestm[1].strip(), linestm[2].strip(), linestm[2].strip(), defaultflag=True, done=True, id=rid, cust_id=cust_id)
             rid += 1
         logging.info ('import_responsedata : Completed ' + str(cust_id))
             

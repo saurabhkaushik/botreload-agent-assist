@@ -8,6 +8,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.corpus import wordnet as wn
 from nltk.stem.wordnet import WordNetLemmatizer
+nltk.download('stopwords')
 st = PorterStemmer()
 stops = set(stopwords.words("english"))
 cust_name_list = ['GSK', 'gsk', 'Novartis','novartis']
