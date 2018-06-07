@@ -12,6 +12,8 @@ from nltk.corpus import stopwords
 import pandas as pd 
 import logging
 import re
+import math 
+from gensim.summarization import summarize
 
 class SmartRepliesSelector(object):
     
@@ -45,20 +47,24 @@ class SmartRepliesSelector(object):
             logging.error("generateNewResponse : " + str(err))
             return 
         X_q = self.ticket_pd['query'].apply(lambda x: self.utilclass.cleanData(x, lowercase=True, remove_stops=True))
-        query_clstr_itr = int (len(X_q) / 10) 
+        query_clstr_itr = int (math.sqrt(len(X_q) / 2)) #int (len(X_q) / 10) 
         print ('Query Cluster Size : ', query_clstr_itr)
         if (query_clstr_itr <= 1): 
             return
+        if (query_clstr_itr > 15): 
+            query_clstr_itr = 15
         self.ticket_pd['query_cluster'], _, self.ticket_pd['select_tags'] = self.getKMeanClusters(cust_id, X_q, query_clstr_itr)
         
         for x in range (0, query_clstr_itr): 
             query_sub = self.ticket_pd[self.ticket_pd.query_cluster == x]            
-            resp_clst_itr = int(len(query_sub) / 5)
+            resp_clst_itr = int (math.sqrt(len(query_sub) / 2)) #int(len(query_sub) / 5)
             print ('Response Cluster Size : ',resp_clst_itr)                 
             if resp_clst_itr <= 1:
                 continue
+            if resp_clst_itr > 5:
+                resp_clst_itr = 5
             qx = query_sub['response'].apply(lambda x: self.utilclass.cleanData(x, lowercase=True, remove_stops=True))
-            query_sub['response_cluster'], query_sub['select_response'], ___, query_sub['response_summary'] = self.getKMeanClusters_resp(cust_id, qx, resp_clst_itr) 
+            query_sub['response_cluster'], query_sub['select_response'], ___, query_sub['response_summary'] = self.getKMeanClusters_resp(cust_id, qx, query_sub['response'], resp_clst_itr) 
             for index, items in query_sub.iterrows(): 
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_cluster'] = int (items['response_cluster'])
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'select_response'] = items['select_response']
@@ -90,7 +96,7 @@ class SmartRepliesSelector(object):
         rep_index = int(last_id) + 1
         for index, item in self.ticket_pd.iterrows(): 
             if item['select_response'] == 'true' and item['select_tags'].strip() != '': 
-                resp_model.create((cust_id + '_Response_' + str(rep_index)), (cust_id + '_Response_' + str(rep_index)), item['response'], item['select_tags'], done=True, id=rep_index, cust_id=cust_id)
+                resp_model.create((cust_id + '_Response_' + str(rep_index)), (cust_id + '_Response_' + str(rep_index)), item['response_summary'], item['select_tags'], done=True, id=rep_index, cust_id=cust_id)
                 rep_index += 1 
             
         csvfile = self.ticket_pd.to_csv()        
@@ -139,7 +145,7 @@ class SmartRepliesSelector(object):
            
         return prediction, selected_resp, selected_tags 
     
-    def getKMeanClusters_resp(self, cust_id, X_in, true_k):
+    def getKMeanClusters_resp(self, cust_id, X_in, X2_in, true_k):
         #logging.info("getKMeanClusters : " + str(cust_id))
         selected_resp = []
         selected_tags = []
@@ -177,16 +183,19 @@ class SmartRepliesSelector(object):
                 selected_resp.append('true')
             else :
                 selected_resp.append('false')
-        
+                
+        input_x2 = X2_in.tolist()
         txtforsum = []
         sumresponse = []
-        for i in range(len(prediction)):
+        for i in range(true_k):
             for j in range(len(prediction)):
                 if i == prediction[j]: 
-                    txtforsum.append(input_x[j])  
-            sumresponse.append(self.summarizationtext(txtforsum)) 
-        #print (sumresponse)    
-        return prediction, selected_resp, selected_tags, sumresponse 
+                    txtforsum.append(input_x2[j]) 
+            sumresponse.append(self.summarizationtext(txtforsum))
+        outsumresp = []
+        for i in range(len(prediction)):
+            outsumresp.append(sumresponse[prediction[i]])
+        return prediction, selected_resp, selected_tags, outsumresp 
     
     def getTrainingData(self, cust_id):   
         #logging.info ('getTrainingData : ' + str(cust_id))
@@ -199,12 +208,13 @@ class SmartRepliesSelector(object):
             ticket_data.append(ticket_logs)
         return ticket_data 
 
-    def summarizationtext(self, textlist): 
-        from gensim.summarization import summarize
+    def summarizationtext(self, textlist):       
+        ratio_c = 1 / len(textlist)
         intext = " ".join(textlist) 
-        if len (intext) > 1:
-            #sumtext = summarize(intext, word_count=30)
-            sumtext = summarize(intext, ratio=0.5)
-        else:
-            sumtext = ''
+        sumtext = ''
+        if len (intext) > 10:
+            try: 
+                sumtext = summarize(intext, word_count=50) #ratio=ratio_c)
+            except ValueError as err: 
+                logging.error(err)
         return sumtext  

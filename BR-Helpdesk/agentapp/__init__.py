@@ -22,16 +22,10 @@ import time
 import os
 import logging 
 
-#entityeng = EntityExtractor()
-intenteng = IntentExtractor()
-ticketLearner = tickets_learner()
-data_analyzer = TrainingDataAnalyzer()
-storageOps = StorageOps()
-utilclass = UtilityClass()
 def create_app(config, debug=False, testing=False, config_overrides=None):
     app = Flask(__name__)
     app.config.from_object(config)
-
+    storage = StorageOps()
     app.debug = debug
     app.testing = testing
 
@@ -46,7 +40,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     with app.app_context():
         model = get_model()
         model.init_app(app)        
-        storageOps.create_bucket()
+        storage.create_bucket()
         
     # Register the Bookshelf CRUD blueprint.
     from .crud import crud
@@ -64,6 +58,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         cust_id = ''
         intenteng = IntentExtractor() 
         ticketLearner = tickets_learner()
+        utilclass = UtilityClass()
         received_data = request.json        
         try: 
             cust_id = received_data['currentAccount']['subdomain']
@@ -301,6 +296,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     @app.route('/testingservice', methods=['GET'])
     def startTestingModels():
         logging.info('startTestingModels : ')
+        intenteng = IntentExtractor()
         cust_list, next_page_token = getCustomerModel().list(done=True)
         for cust_id_x in cust_list:
             intenteng.prepareTestingData(cust_id_x['cust_name'])

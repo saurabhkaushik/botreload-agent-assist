@@ -10,6 +10,7 @@ from nltk.corpus import wordnet as wn
 from nltk.stem.wordnet import WordNetLemmatizer
 st = PorterStemmer()
 stops = set(stopwords.words("english"))
+cust_name_list = ['GSK', 'gsk', 'Novartis','novartis']
 lemma = WordNetLemmatizer()
 
 class UtilityClass: 
@@ -64,12 +65,12 @@ class UtilityClass:
 
         return txt    
     
-    def cleanhtml(raw_html):
+    def cleanhtml(self, raw_html):
         cleanr = re.compile('<.*?>')
         cleantext = re.sub(cleanr, '', raw_html)
         return cleantext
     
-    def preprocess(sentence):
+    def preprocess(self, sentence):
         sentence = sentence.lower()
         tokenizer = RegexpTokenizer(r'\w+')
         tokens = tokenizer.tokenize(sentence)
