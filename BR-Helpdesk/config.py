@@ -16,11 +16,10 @@ SECRET_KEY = 'secret'
 # You do not have to configure the other data backends. If unsure, choose
 # 'datastore' as it does not require any additional configuration.
 DATA_BACKEND = 'datastore'
-STORAGE_BUCKET = 'botreload-009'
-CUSTOMER_LIST = ['', 'd3v-genxhelp', 'lodgify', 'telelink', 'qless', 'onpay1', 'adviserlogic', 'plastiq', 'ampleorganics', 'boonstraparts', 'mymuesli-it', 'sapphireretail', 'ChelseaReservations']
+STORAGE_BUCKET = 'botreload-999'
 # Google Cloud Project ID. This can be found on the 'Overview' page at
 # https://console.developers.google.com
-PROJECT_ID = 'br-assist-dev'
+PROJECT_ID = 'br-aa-srv-prod'
 
 TRAIN_SET_PATH = 'input/hd_training_data'
 CANNED_RESP_PATH = 'input/hd_canned_resp'
