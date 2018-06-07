@@ -1,23 +1,17 @@
-from agentapp.model_select import get_model, getTrainingModel, getResponseModel, getCustomerModel
-from agentapp.StorageOps import StorageOps
-from agentapp.UtilityClass import UtilityClass
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 from sklearn.metrics import adjusted_rand_score
-from sklearn.metrics import pairwise_distances_argmin_min
+import logging
 from agentapp.tickets_learner import tickets_learner
 from nltk.tokenize import RegexpTokenizer
 import numpy as np
 from nltk.corpus import stopwords
 import pandas as pd 
-import logging
+from sklearn.metrics import pairwise_distances_argmin_min
+from agentapp.model_select import get_model, getTrainingModel, getResponseModel, getCustomerModel
+from agentapp.StorageOps import StorageOps
 import re
-
 class SmartRepliesSelector(object):
-    
-    def __init__(self):
-        self.utilclass = UtilityClass()
-        self.storage = StorageOps()
 
     def prepareTrainingData(self, cust_id):
         logging.info("prepareTrainingData : Started : " + str(cust_id))
@@ -44,7 +38,7 @@ class SmartRepliesSelector(object):
         except KeyError as err:
             logging.error("generateNewResponse : " + str(err))
             return 
-        X_q = self.ticket_pd['query'].apply(lambda x: self.utilclass.cleanData(x, lowercase=True, remove_stops=True))
+        X_q = self.ticket_pd['query']
         query_clstr_itr = int (len(X_q) / 10) 
         print ('Query Cluster Size : ', query_clstr_itr)
         if (query_clstr_itr <= 1): 
@@ -57,13 +51,11 @@ class SmartRepliesSelector(object):
             print ('Response Cluster Size : ',resp_clst_itr)                 
             if resp_clst_itr <= 1:
                 continue
-            qx = query_sub['response'].apply(lambda x: self.utilclass.cleanData(x, lowercase=True, remove_stops=True))
-            query_sub['response_cluster'], query_sub['select_response'], ___, query_sub['response_summary'] = self.getKMeanClusters_resp(cust_id, qx, resp_clst_itr) 
+            query_sub['response_cluster'], query_sub['select_response'], ___ = self.getKMeanClusters(cust_id, query_sub['response'], resp_clst_itr) 
             for index, items in query_sub.iterrows(): 
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_cluster'] = int (items['response_cluster'])
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'select_response'] = items['select_response']
-                self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_summary'] = items['response_summary']
-        print (self.ticket_pd)
+        #print (self.ticket_pd)
         logging.info('generateNewResponse : Completed : ' + str(cust_id))
         return 
     
@@ -136,57 +128,7 @@ class SmartRepliesSelector(object):
                 selected_resp.append('true')
             else :
                 selected_resp.append('false')
-           
         return prediction, selected_resp, selected_tags 
-    
-    def getKMeanClusters_resp(self, cust_id, X_in, true_k):
-        #logging.info("getKMeanClusters : " + str(cust_id))
-        selected_resp = []
-        selected_tags = []
-        prediction = []
-        vectorizer = TfidfVectorizer(stop_words='english')
-        try:
-            X = vectorizer.fit_transform(X_in)
-        except ValueError as err: 
-            logging.error("getKMeanClusters : " , err)
-            return prediction, selected_resp, selected_tags
-        model = KMeans(n_clusters=true_k, init='k-means++', max_iter=100, n_init=1)
-        model.fit(X)  
-        prediction = model.predict(X)
-         
-        closest, _ = pairwise_distances_argmin_min(model.cluster_centers_, X)
-        
-        order_centroids = model.cluster_centers_.argsort()[:, ::-1]
-        terms = vectorizer.get_feature_names()
-        tags_clurt = []
-        for i in range(true_k):
-            tags_temp = []
-            for ind in order_centroids[i, :20]:
-                tags_temp.append(terms[ind].lower().strip())
-            tags_clurt.append(tags_temp)
-        
-        closest = closest.tolist()
-        input_x = X_in.tolist()
-        for i in range(len(prediction)):  
-            qtags = '' 
-            for resp_tags in tags_clurt[prediction[i]]:
-                if resp_tags in input_x[i]:
-                    qtags += resp_tags + ' '
-            selected_tags.append(qtags.strip())
-            if i in closest:  
-                selected_resp.append('true')
-            else :
-                selected_resp.append('false')
-        
-        txtforsum = []
-        sumresponse = []
-        for i in range(len(prediction)):
-            for j in range(len(prediction)):
-                if i == prediction[j]: 
-                    txtforsum.append(input_x[j])  
-            sumresponse.append(self.summarizationtext(txtforsum)) 
-        #print (sumresponse)    
-        return prediction, selected_resp, selected_tags, sumresponse 
     
     def getTrainingData(self, cust_id):   
         #logging.info ('getTrainingData : ' + str(cust_id))
@@ -194,17 +136,7 @@ class SmartRepliesSelector(object):
         next_page_token = 0
         token = None
         while next_page_token != None:             
-            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, feedback_flag=None, cust_id=cust_id, done=True)
+            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, feedback_flag=None, cust_id=cust_id)
             token = next_page_token
             ticket_data.append(ticket_logs)
         return ticket_data 
-
-    def summarizationtext(self, textlist): 
-        from gensim.summarization import summarize
-        intext = " ".join(textlist) 
-        if len (intext) > 1:
-            #sumtext = summarize(intext, word_count=30)
-            sumtext = summarize(intext, ratio=0.5)
-        else:
-            sumtext = ''
-        return sumtext  

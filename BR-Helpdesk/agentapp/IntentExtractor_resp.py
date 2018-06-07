@@ -2,6 +2,7 @@ from gensim.models.word2vec import Word2Vec
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.pipeline import Pipeline
+from agentapp.UtilityClass import UtilityClass
 import re 
 import numpy as np
 from pandas_ml import ConfusionMatrix 
@@ -23,6 +24,8 @@ import pickle
 from agentapp.TfidfVectorizer import TfidfEmbeddingVectorizer, MeanEmbeddingVectorizer
 
 class IntentExtractor_resp(object): 
+    def __init__(self):
+        self.utilclass = UtilityClass()
 
     def prepareTrainingData(self, cust_id):
         logging.info("prepareTrainingData : Started " + str(cust_id))
@@ -37,7 +40,8 @@ class IntentExtractor_resp(object):
             for linestm in linestms:
                 tempxX = linestm['tags'].strip()
                 if (tempxX != ''):
-                    xX.append(preprocess(str(linestm['tags'])).strip().split())
+                    strx = self.utilclass.cleanData(str(linestm['tags']), lowercase=True, remove_stops=True)
+                    xX.append(strx.strip().split())
                     yY.append(linestm['res_category'].strip())
         self.X = xX
         self.y = yY
@@ -73,7 +77,8 @@ class IntentExtractor_resp(object):
             logging.info('Cant process as no Training ')
             return
         self.test_X = []
-        self.test_X.append(preprocess(textinput).split())
+        strx = self.utilclass.cleanData(textinput, lowercase=True, remove_stops=True)
+        self.test_X.append(strx.strip().split())
         self.predicted = []
         try:
             self.predicted = self.etree_w2v_tfidf.predict(self.test_X) 
@@ -102,10 +107,3 @@ class IntentExtractor_resp(object):
                 print ('processing training data :', training_log['id'])
 
         logging.info("startTrainLogPrediction : Completed " + str(cust_id))
-
-def preprocess(sentence):
-    sentence = sentence.lower()
-    tokenizer = RegexpTokenizer(r'\w+')
-    tokens = tokenizer.tokenize(sentence)
-    filtered_words = [w for w in tokens if not w in stopwords.words('english')]
-    return " ".join(filtered_words)

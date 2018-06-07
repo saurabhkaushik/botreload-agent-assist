@@ -9,7 +9,7 @@ import pandas as pd
 class tickets_learner(object):
     
     def getTrainingData(self, cust_id):   
-        logging.info ('getTrainingData : ')
+        logging.info ('getTrainingData : '  + str(cust_id))
         ticket_data = []
         next_page_token = 0
         token = None
@@ -39,7 +39,7 @@ class tickets_learner(object):
         for linestm in train_list:
             getCustomerModel().create(linestm[0].strip().lower(), language=linestm[1].strip().lower(), done=True, id=rid)
             rid += 1
-        logging.info ('import_customerdata : Completed')
+        logging.info ('import_customerdata : Completed' )
 
     def import_trainingdata(self, cust_id, lang_type): 
         logging.info ('import_trainingdata : Started ' + str(cust_id))
@@ -51,10 +51,10 @@ class tickets_learner(object):
         for linestm in train_list:
             getTrainingModel().create(linestm[0].strip(), linestm[1].strip(), '', resp_category=linestm[2].strip(), done=True, id=rid, cust_id=cust_id)
             rid += 1
-        logging.info ('import_trainingdata : Completed')
+        logging.info ('import_trainingdata : Completed '  + str(cust_id))
     
     def import_responsedata(self, cust_id, lang_type): 
-        logging.info ('import_responsedata : Started' + str(cust_id))
+        logging.info ('import_responsedata : Started ' + str(cust_id))
         with open(current_app.config['CANNED_RESP_PATH'] + '-' +lang_type + '.csv', 'r', encoding='windows-1252') as f:
             reader = csv.reader(f)
             train_list = list(reader)
@@ -62,7 +62,7 @@ class tickets_learner(object):
         for linestm in train_list:
             getResponseModel().create(linestm[0].strip(), linestm[0].strip(), linestm[1].strip(), linestm[2].strip(), defaultflag=True, done=True, id=rid, cust_id=cust_id)
             rid += 1
-        logging.info ('import_responsedata : Completed')
+        logging.info ('import_responsedata : Completed ' + str(cust_id))
             
     def get_response_mapping(self, response, cust_id):
         logging.info ('get_response_mapping : ' + str(cust_id))

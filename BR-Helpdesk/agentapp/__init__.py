@@ -6,6 +6,7 @@ from agentapp.StorageOps import StorageOps
 from agentapp.SmartRepliesSelector import SmartRepliesSelector
 from agentapp.model_select import get_model, getTrainingModel, getCustomerModel
 from agentapp.TrainingDataAnalyzer import TrainingDataAnalyzer
+from agentapp.UtilityClass import UtilityClass
 
 from flask import current_app, redirect
 from flask import Flask, jsonify
@@ -26,6 +27,7 @@ intenteng = IntentExtractor()
 ticketLearner = tickets_learner()
 data_analyzer = TrainingDataAnalyzer()
 storageOps = StorageOps()
+utilclass = UtilityClass()
 def create_app(config, debug=False, testing=False, config_overrides=None):
     app = Flask(__name__)
     app.config.from_object(config)
@@ -81,9 +83,9 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         get_model().create('intent', json.dumps(request.json), done=True, cust_id=cust_id)
         len_comment = len(received_data['comments']) 
         if ((len_comment > 0) and (received_data['requester']['email'] == received_data['comments'][0]['author']['email'])):
-            intent_input = cleanhtml(received_data['comments'][0]['value'])
+            intent_input = utilclass.cleanhtml(received_data['comments'][0]['value'])
         else:
-            intent_input = cleanhtml(received_data['description'] + '. ' + received_data['subject'])
+            intent_input = utilclass.cleanhtml(received_data['description'] + '. ' + received_data['subject'])
             
         predicted_intent = intenteng.getIntentForText(intent_input, cust_id) 
         formatted_resp = ticketLearner.formatOutput(predicted_intent, cust_id) 
@@ -163,7 +165,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         logging.info('Processing startDataImport For : ' + str(cust_list))
 
         ticketLearner = tickets_learner()
-        #ticketLearner.import_customerdata()
+        ticketLearner.import_customerdata()
         for cust_id_x in cust_list:
             ticketLearner.import_trainingdata(cust_id_x['cust_name'], cust_id_x['language'])  
             ticketLearner.import_responsedata(cust_id_x['cust_name'], cust_id_x['language'])         
@@ -343,7 +345,3 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
 
     return app
 
-def cleanhtml(raw_html):
-  cleanr = re.compile('<.*?>')
-  cleantext = re.sub(cleanr, '', raw_html)
-  return cleantext
