@@ -14,3 +14,4 @@ PyMongo>=3.6.0
 six>=1.11.0
 google-cloud-datastore>=1.6.0
 google-cloud-storage>=0.0
+textacy>=0.0

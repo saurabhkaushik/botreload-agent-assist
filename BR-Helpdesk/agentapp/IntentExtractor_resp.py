@@ -41,6 +41,7 @@ class IntentExtractor_resp(object):
                 tempxX = linestm['tags'].strip()
                 if (tempxX != ''):
                     strx = self.utilclass.cleanData(str(linestm['tags']), lowercase=True, remove_stops=True)
+                    strx = self.utilclass.preprocessText(strx)
                     xX.append(strx.strip().split())
                     yY.append(linestm['res_category'].strip())
         self.X = xX
@@ -78,6 +79,7 @@ class IntentExtractor_resp(object):
             return
         self.test_X = []
         strx = self.utilclass.cleanData(textinput, lowercase=True, remove_stops=True)
+        strx = self.utilclass.preprocessText(strx)
         self.test_X.append(strx.strip().split())
         self.predicted = []
         try:

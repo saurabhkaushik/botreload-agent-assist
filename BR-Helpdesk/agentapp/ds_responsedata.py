@@ -83,9 +83,9 @@ def update(cat_name, res_category, response_text, tags, resp_tags, modifiedflag=
             'res_category': res_category,
             'response_text' : response_text,
             'tags' : tags,
-            'resp_tags' : resp_tags, 
             'modifiedflag': modifiedflag,
             'defaultflag' : defaultflag,
+            'resp_tags' : resp_tags,
             'created': datetime.datetime.utcnow(),
             'done': done
         })

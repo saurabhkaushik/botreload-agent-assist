@@ -44,9 +44,10 @@ class IntentExtractor(object):
         for linestms in ticket_data:           
             for linestm in linestms:
                 strx = str(linestm['tags'] + ', ' + linestm['query']).strip()
-                tempxX = self.utilclass.cleanData(strx, lowercase=True, remove_stops=True).strip()
-                if (tempxX != ''):
-                    xX.append(tempxX.split())
+                strx = self.utilclass.cleanData(strx, lowercase=True, remove_stops=True).strip()
+                strx = self.utilclass.preprocessText(strx)
+                if (strx != ''):
+                    xX.append(strx.split())
                     yY.append(linestm['resp_category'].strip())
         self.X = xX
         self.y = yY
@@ -85,6 +86,7 @@ class IntentExtractor(object):
         self.etree_w2v_tfidf = pickle.loads(pickle_out)
         self.test_X = []
         strx = self.utilclass.cleanData(textinput, lowercase=True, remove_stops=True)
+        strx = self.utilclass.preprocessText(strx)
         self.test_X.append(strx.strip().split())
         #self.predicted = self.etree_w2v_tfidf.predict(self.test_X) 
         #print (self.test_X)
@@ -104,6 +106,7 @@ class IntentExtractor(object):
         self.etree_w2v_tfidf = pickle.loads(pickle_out)
         self.test_X = []
         strx = self.utilclass.cleanData(textinput, lowercase=True, remove_stops=True)
+        strx = self.utilclass.preprocessText(strx)
         self.test_X.append(strx.strip().split())
         self.predicted = []
         try:

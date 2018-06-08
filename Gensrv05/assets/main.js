@@ -5,7 +5,7 @@ var response_data = {server_response : ''};
 
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = 'https://br-aa-srv-prod.appspot.com';
+var SERVER_NAME = 'https://botreloadprod002.appspot.com';
 var header = 'Hi ';
 var footer = '<br><br>Thanks, <br> - ';
 var called_flag = false;

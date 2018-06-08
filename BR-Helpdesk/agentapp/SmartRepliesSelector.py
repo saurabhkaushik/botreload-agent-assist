@@ -29,7 +29,7 @@ class SmartRepliesSelector(object):
         for linestms in ticket_data:           
             for linestm in linestms:
                 if linestm['response'].strip() != '':
-                    ticket_struct.append({'id' : linestm['id'], 'query' : linestm['query'], 'response': linestm['response'].lower().strip(), 'tags' : linestm['tags']})
+                    ticket_struct.append({'id' : linestm['id'], 'query' : linestm['query'], 'response': linestm['response'].strip(), 'tags' : linestm['tags']})
         self.ticket_pd = pd.DataFrame(ticket_struct)
         #print (self.ticket_pd)
         logging.info ("Total Training Examples : %s" % len(self.ticket_pd))
@@ -47,6 +47,7 @@ class SmartRepliesSelector(object):
             logging.error("generateNewResponse : " + str(err))
             return 
         X_q = self.ticket_pd['query'].apply(lambda x: self.utilclass.cleanData(x, lowercase=True, remove_stops=True))
+        X_q = X_q.apply(lambda x: self.utilclass.preprocessText(x))
         query_clstr_itr = int (math.sqrt(len(X_q) / 2)) #int (len(X_q) / 10) 
         print ('Query Cluster Size : ', query_clstr_itr)
         if (query_clstr_itr <= 1): 
@@ -64,6 +65,7 @@ class SmartRepliesSelector(object):
             if resp_clst_itr > 5:
                 resp_clst_itr = 5
             qx = query_sub['response'].apply(lambda x: self.utilclass.cleanData(x, lowercase=True, remove_stops=True))
+            qx = qx.apply(lambda x: self.utilclass.preprocessText(x))
             query_sub['response_cluster'], query_sub['select_response'], query_sub['response_tags'], query_sub['response_summary'] = self.getKMeanClusters_resp(cust_id, qx, query_sub['response'], resp_clst_itr) 
             for index, items in query_sub.iterrows(): 
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_cluster'] = int (items['response_cluster'])
@@ -184,7 +186,8 @@ class SmartRepliesSelector(object):
                 selected_resp.append('true')
             else :
                 selected_resp.append('false')
-                
+
+        X2_in = X2_in.apply(lambda x: self.utilclass.preprocessText(x, lowercase=False))       
         input_x2 = X2_in.tolist()
         txtforsum = []
         sumresponse = []
