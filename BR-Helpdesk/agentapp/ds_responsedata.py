@@ -104,5 +104,5 @@ def delete(id, cust_id=''):
     key = ds.key(cust_id + 'ResponseData', int(id))
     data = read(id, cust_id=cust_id)
     if data != None:
-        update(data['resp_name'], data['res_category'], data['response_text'], data['tags'], id=data['id'], done=False, cust_id=cust_id) 
+        update(data['resp_name'], data['res_category'], data['response_text'], data['tags'], data['resp_tags'], id=data['id'], done=False, cust_id=cust_id) 
     #ds.delete(key)
