@@ -96,7 +96,7 @@ class SmartRepliesSelector(object):
 
         rep_index = int(last_id) + 1
         for index, item in self.ticket_pd.iterrows(): 
-            if item['select_response'] == 'true' and item['select_tags'].strip() != '': 
+            if item['select_response'] == 'true' and item['select_tags'].strip() != '' and item['response_summary'].strip() != '' and item['response_tags'] != '': 
                 resp_model.create((cust_id + '_Response_' + str(rep_index)), (cust_id + '_Response_' + str(rep_index)), item['response_summary'], item['select_tags'], item['response_tags'], done=True, id=rep_index, cust_id=cust_id)
                 rep_index += 1 
             
