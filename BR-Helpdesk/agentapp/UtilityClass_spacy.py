@@ -14,6 +14,8 @@ stops = set(stopwords.words("english"))
 cust_name_list = ['GSK', 'gsk', 'Novartis','novartis']
 lemma = WordNetLemmatizer()
 
+from textacy.preprocess import preprocess_text
+
 class UtilityClass: 
     
     def replaceSynm(self, txt):
@@ -65,6 +67,21 @@ class UtilityClass:
             txt = txt.replace(cust_name_list[i], 'Customer')
 
         return txt    
+    
+    def preprocessText(self, strtxt, lowercase=True, no_punct=True): 
+        posttxt = preprocess_text(strtxt,
+                           fix_unicode=True,
+                           lowercase=lowercase,
+                           transliterate=True,
+                           no_urls=True,
+                           no_emails=True,
+                           no_phone_numbers=True,
+                           no_numbers=True,
+                           no_currency_symbols=True,
+                           no_punct=no_punct,
+                           no_contractions=False,
+                           no_accents=True)
+        return posttxt
     
     def cleanhtml(self, raw_html):
         cleanr = re.compile('<.*?>')

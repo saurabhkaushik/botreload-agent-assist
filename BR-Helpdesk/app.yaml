@@ -22,6 +22,6 @@ beta_settings:
 manual_scaling:
   instances: 1
 resources:
-  cpu: 3
-  memory_gb: 12
-  disk_size_gb: 20
+  cpu: 2
+  memory_gb: 4
+  disk_size_gb: 12

@@ -7,6 +7,18 @@ You can create and manage projects at https://console.developers.google.com
 
 import os
 
+# Development 
+#STORAGE_BUCKET = 'botreload-009'
+#PROJECT_ID = 'br-assist-dev'
+
+# Production 1 
+#STORAGE_BUCKET = 'botreload-999'
+#PROJECT_ID = 'br-aa-srv-prod'
+
+# Production 2 
+STORAGE_BUCKET = 'botreloadprod002'
+PROJECT_ID = 'botreloadprod002'
+
 # The secret key is used by Flask to encrypt session cookies.
 SECRET_KEY = 'secret'
 
@@ -16,10 +28,6 @@ SECRET_KEY = 'secret'
 # You do not have to configure the other data backends. If unsure, choose
 # 'datastore' as it does not require any additional configuration.
 DATA_BACKEND = 'datastore'
-STORAGE_BUCKET = 'botreload-999'
-# Google Cloud Project ID. This can be found on the 'Overview' page at
-# https://console.developers.google.com
-PROJECT_ID = 'br-aa-srv-prod'
 
 TRAIN_SET_PATH = 'input/hd_training_data'
 CANNED_RESP_PATH = 'input/hd_canned_resp'

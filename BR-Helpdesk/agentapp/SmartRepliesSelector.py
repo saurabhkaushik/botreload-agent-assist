@@ -1,6 +1,7 @@
 from agentapp.model_select import get_model, getTrainingModel, getResponseModel, getCustomerModel
 from agentapp.StorageOps import StorageOps
 from agentapp.UtilityClass import UtilityClass
+from agentapp.UtilityClass import UtilityClass_spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 from sklearn.metrics import adjusted_rand_score
@@ -20,6 +21,7 @@ class SmartRepliesSelector(object):
     def __init__(self):
         self.utilclass = UtilityClass()
         self.storage = StorageOps()
+        self.utilspace = UtilityClass_spacy()
 
     def prepareTrainingData(self, cust_id):
         logging.info("prepareTrainingData : Started : " + str(cust_id))
@@ -47,7 +49,7 @@ class SmartRepliesSelector(object):
             logging.error("generateNewResponse : " + str(err))
             return 
         X_q = self.ticket_pd['query'].apply(lambda x: self.utilclass.cleanData(x, lowercase=True, remove_stops=True))
-        X_q = X_q.apply(lambda x: self.utilclass.preprocessText(x))
+        X_q = X_q.apply(lambda x: self.utilspace.preprocessText(x))
         query_clstr_itr = int (math.sqrt(len(X_q) / 2)) #int (len(X_q) / 10) 
         print ('Query Cluster Size : ', query_clstr_itr)
         if (query_clstr_itr <= 1): 
@@ -65,7 +67,7 @@ class SmartRepliesSelector(object):
             if resp_clst_itr > 5:
                 resp_clst_itr = 5
             qx = query_sub['response'].apply(lambda x: self.utilclass.cleanData(x, lowercase=True, remove_stops=True))
-            qx = qx.apply(lambda x: self.utilclass.preprocessText(x))
+            qx = qx.apply(lambda x: self.utilspace.preprocessText(x))
             query_sub['response_cluster'], query_sub['select_response'], query_sub['response_tags'], query_sub['response_summary'] = self.getKMeanClusters_resp(cust_id, qx, query_sub['response'], resp_clst_itr) 
             for index, items in query_sub.iterrows(): 
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_cluster'] = int (items['response_cluster'])
@@ -187,7 +189,7 @@ class SmartRepliesSelector(object):
             else :
                 selected_resp.append('false')
 
-        X2_in = X2_in.apply(lambda x: self.utilclass.preprocessText(x, lowercase=False, no_punct=False))       
+        X2_in = X2_in.apply(lambda x: self.utilspace.preprocessText(x, lowercase=False, no_punct=False))       
         input_x2 = X2_in.tolist()
         txtforsum = []
         sumresponse = []

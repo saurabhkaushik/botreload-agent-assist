@@ -3,9 +3,12 @@ var feedback_data = {selected_response_id : 0, selected_response_prob : 0, ticke
 var past_ticket_data = {upload_ticket_data : [], upload_comment_data : [], ticket_data : ''};
 var response_data = {server_response : ''};
 
+//var SERVER_NAME = 'https://botreloadprod002.appspot.com';
+//var SERVER_NAME = 'https://br-assist-dev.appspot.com';
+var SERVER_NAME = 'https://br-aa-srv-prod.appspot.com';
+
 var context;
 var client = ZAFClient.init();
-var SERVER_NAME = 'https://botreloadprod002.appspot.com';
 var header = 'Hi ';
 var footer = '<br><br>Thanks, <br> - ';
 var called_flag = false;

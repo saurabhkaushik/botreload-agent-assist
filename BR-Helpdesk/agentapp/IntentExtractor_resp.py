@@ -3,6 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.pipeline import Pipeline
 from agentapp.UtilityClass import UtilityClass
+from agentapp.UtilityClass import UtilityClass_spacy
 import re 
 import numpy as np
 from pandas_ml import ConfusionMatrix 
@@ -26,6 +27,7 @@ from agentapp.TfidfVectorizer import TfidfEmbeddingVectorizer, MeanEmbeddingVect
 class IntentExtractor_resp(object): 
     def __init__(self):
         self.utilclass = UtilityClass()
+        self.utilspace = UtilityClass_spacy()
 
     def prepareTrainingData(self, cust_id):
         logging.info("prepareTrainingData : Started " + str(cust_id))
@@ -41,7 +43,7 @@ class IntentExtractor_resp(object):
                 tempxX = linestm['tags'].strip()
                 if (tempxX != ''):
                     strx = self.utilclass.cleanData(str(linestm['tags']), lowercase=True, remove_stops=True)
-                    strx = self.utilclass.preprocessText(strx)
+                    strx = self.utilspace.preprocessText(strx)
                     xX.append(strx.strip().split())
                     yY.append(linestm['res_category'].strip())
         self.X = xX
@@ -79,7 +81,7 @@ class IntentExtractor_resp(object):
             return
         self.test_X = []
         strx = self.utilclass.cleanData(textinput, lowercase=True, remove_stops=True)
-        strx = self.utilclass.preprocessText(strx)
+        strx = self.utilspace.preprocessText(strx)
         self.test_X.append(strx.strip().split())
         self.predicted = []
         try:
@@ -101,7 +103,9 @@ class IntentExtractor_resp(object):
             training_logs, next_page_token = traindata.list(cursor=token, feedback_flag=False, cust_id=cust_id, done=None)
             token = next_page_token
             for training_log in training_logs: 
-                predicted = self.getPredictedIntent(str(training_log['query'] + ' . ' + training_log['tags']) , cust_id)  
+                strx = self.utilclass.cleanData(training_log['query'] + ' . ' + training_log['tags'])
+                strx = self.utilspace.preprocessText(strx)
+                predicted = self.getPredictedIntent(strx, cust_id)  
                 if len(predicted) < 1: 
                     predicted = ['Default']
                 traindata.update(training_log['tags'], training_log['query'], training_log['response'], query_category=training_log['query_category'], 
