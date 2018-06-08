@@ -162,7 +162,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         ticketLearner = tickets_learner()
         #ticketLearner.import_customerdata()
         for cust_id_x in cust_list:
-            ticketLearner.import_trainingdata(cust_id_x['cust_name'], cust_id_x['language'])  
+            #ticketLearner.import_trainingdata(cust_id_x['cust_name'], cust_id_x['language'])  
             ticketLearner.import_responsedata(cust_id_x['cust_name'], cust_id_x['language'])         
         return '200'  
     
@@ -193,10 +193,11 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         else: 
             cust_list = [{'cust_name' : cust_id}]
         logging.info('Processing buildSmartReplies For : ' + str(cust_list))
-
+        ticketLearner = tickets_learner()
         replyeng = SmartRepliesSelector()
         for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default':                 
+            if cust_id_x['cust_name'] != 'default': 
+                ticketLearner.import_responsedata(cust_id_x['cust_name'], cust_id_x['language'])                
                 replyeng.prepareTrainingData(cust_id_x['cust_name'])
                 replyeng.generateNewResponse(cust_id_x['cust_name'])
                 replyeng.populateResponseData(cust_id_x['cust_name'])
@@ -215,9 +216,9 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
        
         intenteng = IntentExtractor() 
         intenteng_resp = IntentExtractor_resp()
-        cust_model = getCustomerModel()
+        cust_model = getCustomerModel()        
         for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default':
+            if cust_id_x['cust_name'] != 'default':                
                 intenteng_resp.prepareTrainingData(cust_id_x['cust_name'])
                 intenteng_resp.startTrainingProcess(cust_id_x['cust_name'])
                 intenteng_resp.startTrainLogPrediction(cust_id_x['cust_name'])        

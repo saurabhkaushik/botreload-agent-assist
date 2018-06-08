@@ -187,7 +187,7 @@ class SmartRepliesSelector(object):
             else :
                 selected_resp.append('false')
 
-        X2_in = X2_in.apply(lambda x: self.utilclass.preprocessText(x, lowercase=False))       
+        X2_in = X2_in.apply(lambda x: self.utilclass.preprocessText(x, lowercase=False, no_punct=False))       
         input_x2 = X2_in.tolist()
         txtforsum = []
         sumresponse = []

@@ -68,7 +68,7 @@ class UtilityClass:
 
         return txt    
     
-    def preprocessText(self, strtxt, lowercase=True): 
+    def preprocessText(self, strtxt, lowercase=True, no_punct=True): 
         posttxt = preprocess_text(strtxt,
                            fix_unicode=True,
                            lowercase=lowercase,
@@ -78,7 +78,7 @@ class UtilityClass:
                            no_phone_numbers=True,
                            no_numbers=True,
                            no_currency_symbols=True,
-                           no_punct=True,
+                           no_punct=no_punct,
                            no_contractions=False,
                            no_accents=True)
         return posttxt
