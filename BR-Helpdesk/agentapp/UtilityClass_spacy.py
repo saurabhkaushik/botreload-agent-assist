@@ -16,7 +16,7 @@ lemma = WordNetLemmatizer()
 
 from textacy.preprocess import preprocess_text
 
-class UtilityClass: 
+class UtilityClass_spacy: 
     
     def replaceSynm(self, txt):
         word_lst = nltk.word_tokenize(str(txt))

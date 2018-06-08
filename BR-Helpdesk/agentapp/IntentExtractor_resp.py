@@ -3,7 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.pipeline import Pipeline
 from agentapp.UtilityClass import UtilityClass
-from agentapp.UtilityClass import UtilityClass_spacy
+from agentapp.UtilityClass_spacy import UtilityClass_spacy
 import re 
 import numpy as np
 from pandas_ml import ConfusionMatrix 
