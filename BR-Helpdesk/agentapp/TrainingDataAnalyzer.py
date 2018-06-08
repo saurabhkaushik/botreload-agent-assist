@@ -250,12 +250,13 @@ class TrainingDataAnalyzer(object):
                 intents_data = intent_log["json_data"] 
                 intents_data_json = json.loads(intents_data)
                 selected_response_id = intents_data_json["selected_response_id"]
+                selected_response_prob = intents_data_json["selected_response_prob"]
                 cust_id = intents_data_json["ticket_data"]['currentAccount']['subdomain'] 
                 id = intents_data_json["ticket_data"]['id']                
                 train_data = traindata.read(id, cust_id=cust_id)
                 response_data = getResponseModel().read(selected_response_id, cust_id=cust_id)
                 if train_data != None and response_data != None: 
-                    traindata.update(train_data["tags"], train_data["query"], train_data["response"], query_category=train_data['query_category'], resp_category=response_data['res_category'], feedback_flag=True, done=True, id=train_data['id'], cust_id=cust_id)
+                    traindata.update(train_data["tags"], train_data["query"], train_data["response"], query_category=train_data['query_category'], resp_category=response_data['res_category'], feedback_flag=True, feedback_prob=selected_response_prob, done=True, id=train_data['id'], cust_id=cust_id)
                     trainlog.delete(intent_log['id'], cust_id=cust_id)
                     print('Updating Feedback : ' , id, cust_id)
         logging.info ('extractFeedbackData_cust : Completed : ' + str(cust_id))  

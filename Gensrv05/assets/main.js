@@ -1,5 +1,5 @@
 var ticket_data = {id : 0, description:'', comment:'', comments: '', currentUser:'', subject:'', assignee:'', requester:'' , currentAccount:''};
-var feedback_data = {selected_response_id : 0, ticket_data : ''};
+var feedback_data = {selected_response_id : 0, selected_response_prob : 0, ticket_data : ''};
 var past_ticket_data = {upload_ticket_data : [], upload_comment_data : [], ticket_data : ''};
 var response_data = {server_response : ''};
 
@@ -112,13 +112,14 @@ function showPostApply(data) {
 	$("#content").html(html);
 }
 
-function applyComment(event, id, kid) {
+function applyComment(event, id, prob, kid) {
 	//console.log('applyComment:');
 	var comment_data = header + ticket_data.requester['name'] + ', <br><br>' + context.comments[kid].comment + footer + ticket_data.currentUser;
 	client.invoke('comment.appendHtml', comment_data);
     client.invoke('notify', 'Comment added to Ticket.');
     showPostApply();
     feedback_data.selected_response_id = id;
+    feedback_data.selected_response_prob = prob;
     feedback_data.ticket_data = ticket_data;
     syncFeedbackData(feedback_data);
 };

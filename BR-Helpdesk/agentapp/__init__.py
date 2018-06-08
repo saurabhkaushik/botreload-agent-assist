@@ -231,7 +231,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         cust_id = request.args.get('cust_id')
         cust_list =[]
         if cust_id == None:             
-            cust_list, __ = getCustomerModel().list(done=True)
+            cust_list, __ = getCustomerModel().list(newflag=True, done=True)
         else: 
             cust_list = [{'cust_name' : cust_id}]
         logging.info('Processing processNewCustomer For : ' + str(cust_list))

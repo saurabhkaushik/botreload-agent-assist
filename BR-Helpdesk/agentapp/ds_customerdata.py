@@ -52,8 +52,6 @@ def list(cust_name='', newflag=False, limit=999, cursor=None, done=False):
         if query_iterator.next_page_token else None)
 
     return entities, next_cursor
-# [END list]
-
 
 def read(id):
     ds = get_client()
