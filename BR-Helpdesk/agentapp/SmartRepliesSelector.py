@@ -204,7 +204,7 @@ class SmartRepliesSelector(object):
         next_page_token = 0
         token = None
         while next_page_token != None:             
-            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, feedback_flag=None, cust_id=cust_id, done=True)
+            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, feedback_flag=None, cust_id=cust_id, done=None)
             token = next_page_token
             ticket_data.append(ticket_logs)
         return ticket_data 

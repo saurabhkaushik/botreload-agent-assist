@@ -96,7 +96,7 @@ class IntentExtractor_resp(object):
         next_page_token = 0
         token = None 
         while next_page_token != None:             
-            training_logs, next_page_token = traindata.list(cursor=token, feedback_flag=False, cust_id=cust_id)
+            training_logs, next_page_token = traindata.list(cursor=token, feedback_flag=False, cust_id=cust_id, done=None)
             token = next_page_token
             for training_log in training_logs: 
                 predicted = self.getPredictedIntent(str(training_log['query'] + ' . ' + training_log['tags']) , cust_id)  
