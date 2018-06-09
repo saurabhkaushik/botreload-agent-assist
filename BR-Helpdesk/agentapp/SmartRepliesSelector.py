@@ -114,7 +114,7 @@ class SmartRepliesSelector(object):
         selected_resp = []
         selected_tags = []
         prediction = []
-        vectorizer = TfidfVectorizer(stop_words='english')
+        vectorizer = TfidfVectorizer(stop_words='english', analyzer='word')
         try:
             X = vectorizer.fit_transform(X_in)
         except ValueError as err: 
@@ -155,7 +155,7 @@ class SmartRepliesSelector(object):
         selected_resp = []
         selected_tags = []
         prediction = []
-        vectorizer = TfidfVectorizer(stop_words='english')
+        vectorizer = TfidfVectorizer(stop_words='english', analyzer='word')
         try:
             X = vectorizer.fit_transform(X_in)
         except ValueError as err: 

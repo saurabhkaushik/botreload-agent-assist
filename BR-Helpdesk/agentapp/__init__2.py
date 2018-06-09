@@ -197,7 +197,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         replyeng = SmartRepliesSelector()
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
-                ticketLearner.import_responsedata(cust_id_x['cust_name'], cust_id_x['language'])                
                 replyeng.prepareTrainingData(cust_id_x['cust_name'])
                 replyeng.generateNewResponse(cust_id_x['cust_name'])
                 replyeng.populateResponseData(cust_id_x['cust_name'])
