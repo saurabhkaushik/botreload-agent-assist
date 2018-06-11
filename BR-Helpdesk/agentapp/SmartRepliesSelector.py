@@ -26,7 +26,7 @@ class SmartRepliesSelector(object):
     def prepareTrainingData(self, cust_id):
         logging.info("prepareTrainingData : Started : " + str(cust_id))
         tickets_learn = tickets_learner()
-        ticket_data = tickets_learn.getTrainingData(cust_id=cust_id)
+        ticket_data = tickets_learn.getTrainingData(cust_id=cust_id, done=None)
     
         ticket_struct = []
         for linestms in ticket_data:           

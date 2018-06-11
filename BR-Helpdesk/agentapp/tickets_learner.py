@@ -8,13 +8,13 @@ import pandas as pd
 
 class tickets_learner(object):
     
-    def getTrainingData(self, cust_id):   
+    def getTrainingData(self, cust_id, done=True):   
         logging.info ('getTrainingData : '  + str(cust_id))
         ticket_data = []
         next_page_token = 0
         token = None
         while next_page_token != None:             
-            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, feedback_flag=None, cust_id=cust_id, done=True)
+            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, feedback_flag=None, cust_id=cust_id, done=done)
             token = next_page_token
             ticket_data.append(ticket_logs)
         return ticket_data 

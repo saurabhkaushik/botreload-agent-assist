@@ -157,8 +157,9 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
-            cust_list = [{'cust_name' : cust_id}]
-        logging.info('Processing startDataImport For : ' + str(cust_list))
+            lang = request.args.get('language')
+            cust_list = [{'cust_name' : cust_id, 'language' : lang}]
+        logging.info('Processing startDataImport for : ' + str(cust_list))
 
         ticketLearner = tickets_learner()
         #ticketLearner.import_customerdata()

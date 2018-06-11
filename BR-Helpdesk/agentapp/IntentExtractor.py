@@ -37,14 +37,14 @@ class IntentExtractor(object):
         self.X, self.y = [], []
         tickets_learn = tickets_learner()
         ticket_data = tickets_learn.getTrainingData(cust_id=cust_id)
-    
+        
         xX = []
         yY = []
         for linestms in ticket_data:           
             for linestm in linestms:
                 strx = str(linestm['tags'] + ' . ' + linestm['query']).strip()
                 strx = self.utilclass.cleanData(strx, lowercase=True, remove_stops=True).strip()
-                strx = util_space.preprocessText(strx)
+                #strx = util_space.preprocessText(strx)
                 if (strx != ''):
                     xX.append(strx.split())
                     yY.append(linestm['resp_category'].strip())
