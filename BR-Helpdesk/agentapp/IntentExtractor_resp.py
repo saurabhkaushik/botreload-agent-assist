@@ -31,8 +31,7 @@ class IntentExtractor_resp(object):
 
     def prepareTrainingData(self, cust_id):
         logging.info("prepareTrainingData : Started " + str(cust_id))
-        self.X, self.y = [], []
-        
+        self.X, self.y = [], []        
         tickets_learn = tickets_learner()
         ticket_data = tickets_learn.getResponseData(cust_id=cust_id)
     
@@ -103,7 +102,7 @@ class IntentExtractor_resp(object):
             training_logs, next_page_token = traindata.list(cursor=token, feedback_flag=False, cust_id=cust_id, done=None)
             token = next_page_token
             for training_log in training_logs: 
-                strx = self.utilclass.cleanData(training_log['query'] + ' . ' + training_log['tags'])
+                strx = self.utilclass.cleanData(training_log['tags']  + ' . ' + training_log['query'] )
                 strx = self.utilspace.preprocessText(strx)
                 predicted = self.getPredictedIntent(strx, cust_id)  
                 if len(predicted) < 1: 

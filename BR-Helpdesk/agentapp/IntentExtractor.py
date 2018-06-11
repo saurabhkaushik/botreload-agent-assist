@@ -16,6 +16,7 @@ from pandas_ml import ConfusionMatrix
 import csv
 from collections import defaultdict
 import logging
+import pandas as pd
 #from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
 from nltk.tokenize import RegexpTokenizer
@@ -30,7 +31,6 @@ class IntentExtractor(object):
     def __init__(self):
         self.utilclass = UtilityClass()
         self.storage = StorageOps()
-
     
     def prepareTrainingData(self, cust_id):
         logging.info("prepareTrainingData : Started " + str(cust_id))
@@ -42,7 +42,7 @@ class IntentExtractor(object):
         yY = []
         for linestms in ticket_data:           
             for linestm in linestms:
-                strx = str(linestm['tags'] + ', ' + linestm['query']).strip()
+                strx = str(linestm['tags'] + ' . ' + linestm['query']).strip()
                 strx = self.utilclass.cleanData(strx, lowercase=True, remove_stops=True).strip()
                 strx = util_space.preprocessText(strx)
                 if (strx != ''):
@@ -115,6 +115,23 @@ class IntentExtractor(object):
         logging.info("getPredictedIntent : Completed " + str(cust_id))
         return self.predicted
     
+    def getPredictedIntent_list(self, X_in, cust_id): 
+        logging.info("getPredictedIntent_list : Started " + str(cust_id))
+        pickle_out = self.storage.get_bucket(cust_id)
+        self.etree_w2v_tfidf = pickle.loads(pickle_out)
+
+        X_in = X_in.apply(lambda x : self.utilclass.cleanData(x, lowercase=True, remove_stops=True).strip().split())
+        X_list = X_in.tolist()
+        predicted_list= []
+        try:
+            predicted_list = self.etree_w2v_tfidf.predict(X_list) 
+        except ValueError as err: 
+            logging.error(str(err))
+            return None 
+        predict_df = pd.Series(predicted_list)
+        logging.info("getPredictedIntent_list : Completed " + str(cust_id))
+        return predict_df
+    
     def startTrainLogPrediction(self, cust_id):
         logging.info ('startTrainLogPrediction : Started : ' + str(cust_id))
         traindata = getTrainingModel() 
@@ -124,7 +141,9 @@ class IntentExtractor(object):
             training_logs, next_page_token = traindata.list(cursor=token, cust_id=cust_id, feedback_flag=False, done=False)
             token = next_page_token
             for training_log in training_logs: 
-                predicted = self.getPredictedIntent(str(training_log['query'] + ' . ' + training_log['tags']) , cust_id)  
+                strx = training_log['query'] + ' . ' + training_log['tags']
+                strx = self.utilclass.cleanData(strx, lowercase=True, remove_stops=True)
+                predicted = self.getPredictedIntent(strx, cust_id)  
                 if len(predicted) < 1: 
                     predicted = ['Default']
                 traindata.update(training_log['tags'], training_log['query'], training_log['response'], query_category=training_log['query_category'], 

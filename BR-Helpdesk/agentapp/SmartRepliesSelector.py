@@ -25,7 +25,8 @@ class SmartRepliesSelector(object):
 
     def prepareTrainingData(self, cust_id):
         logging.info("prepareTrainingData : Started : " + str(cust_id))
-        ticket_data = self.getTrainingData(cust_id=cust_id)
+        tickets_learn = tickets_learner()
+        ticket_data = tickets_learn.getTrainingData(cust_id=cust_id)
     
         ticket_struct = []
         for linestms in ticket_data:           
@@ -42,6 +43,7 @@ class SmartRepliesSelector(object):
         logging.info('generateNewResponse : Started : ' + str(cust_id))
         self.ticket_pd['response_cluster'] = -1
         self.ticket_pd['select_response'] = np.nan
+        
         X_q = []
         try :
             X_q = self.ticket_pd['query']
@@ -57,7 +59,7 @@ class SmartRepliesSelector(object):
         if (query_clstr_itr > 15): 
             query_clstr_itr = 15
         self.ticket_pd['query_cluster'], _, self.ticket_pd['select_tags'] = self.getKMeanClusters(cust_id, X_q, query_clstr_itr)
-        
+
         for x in range (0, query_clstr_itr): 
             query_sub = self.ticket_pd[self.ticket_pd.query_cluster == x]            
             resp_clst_itr = int (math.sqrt(len(query_sub) / 2)) #int(len(query_sub) / 5)
@@ -203,17 +205,6 @@ class SmartRepliesSelector(object):
             outsumresp.append(sumresponse[prediction[i]])
         return prediction, selected_resp, selected_tags, outsumresp 
     
-    def getTrainingData(self, cust_id):   
-        #logging.info ('getTrainingData : ' + str(cust_id))
-        ticket_data = []
-        next_page_token = 0
-        token = None
-        while next_page_token != None:             
-            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, feedback_flag=None, cust_id=cust_id, done=None)
-            token = next_page_token
-            ticket_data.append(ticket_logs)
-        return ticket_data 
-
     def summarizationtext(self, textlist):       
         ratio_c = 1 / len(textlist)
         intext = " ".join(textlist) 

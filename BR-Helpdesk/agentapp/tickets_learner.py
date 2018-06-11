@@ -14,7 +14,7 @@ class tickets_learner(object):
         next_page_token = 0
         token = None
         while next_page_token != None:             
-            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, cust_id=cust_id, feedback_flag=None, done=True)
+            ticket_logs, next_page_token = getTrainingModel().list(cursor=token, feedback_flag=None, cust_id=cust_id, done=True)
             token = next_page_token
             ticket_data.append(ticket_logs)
         return ticket_data 
@@ -65,15 +65,21 @@ class tickets_learner(object):
         logging.info ('import_responsedata : Completed ' + str(cust_id))
             
     def get_response_mapping(self, response, cust_id):
-        logging.info ('get_response_mapping : ' + str(cust_id))
-        ds_response = getResponseModel().list(cust_id=cust_id, modifiedflag=None, defaultflag=None, done=True)
-        print ( 'ds_response : '+str(ds_response)) 
-        
+        logging.info ('get_response_mapping : ' + str(cust_id) + ' : ' + response)
+        ds_response = getResponseModel().list(res_category=response, cust_id=cust_id, modifiedflag=None, defaultflag=None, done=True)
         for resp in ds_response: 
             if (resp != None) and (len(resp) > 0) :
                 return resp[0]
         return None
     
+    def get_response_mapping_tags(self, response, cust_id, tags):
+        logging.info ('get_response_mapping_tags : ' + str(cust_id))
+        ds_response = getResponseModel().list(res_category=response, cust_id=cust_id, modifiedflag=None, defaultflag=None, done=True)
+        for resp in ds_response: 
+            if (resp != None) and (len(resp) > 0) :
+                return resp[0][tags]
+        return ''
+
     def formatOutput(self, predicted_intent, cust_id): 
         logging.info ('formatOutput : ' + str(cust_id))
         tickets_learn = tickets_learner()

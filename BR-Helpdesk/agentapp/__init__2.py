@@ -7,6 +7,7 @@ from agentapp.SmartRepliesSelector import SmartRepliesSelector
 from agentapp.model_select import get_model, getTrainingModel, getCustomerModel
 from agentapp.TrainingDataAnalyzer import TrainingDataAnalyzer
 from agentapp.UtilityClass import UtilityClass
+from agentapp.ModelEvaluate import ModelEvaluate
 
 from flask import current_app, redirect
 from flask import Flask, jsonify
@@ -221,7 +222,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
                 intenteng_resp.prepareTrainingData(cust_id_x['cust_name'])
                 intenteng_resp.startTrainingProcess(cust_id_x['cust_name'])
                 intenteng_resp.startTrainLogPrediction(cust_id_x['cust_name'])        
-                intenteng.prepareTrainingData(cust_id_x['cust_name']) 
+                intenteng.prepareTrainingData(cust_id_x['cust_name'])
                 intenteng.startTrainingProcess(cust_id_x['cust_name'])
         return '200'
 
@@ -304,6 +305,24 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             intenteng.createConfusionMatrix(cust_id_x['cust_name'])
         return '200'
     
+    @app.route('/modelevaluate', methods=['GET'])
+    def modelEvaluate():
+        logging.info('modelEvaluate : ')
+        cust_id = request.args.get('cust_id')
+        cust_list =[]
+        if cust_id == None:             
+            cust_list, __ = getCustomerModel().list(done=True)
+        else: 
+            cust_list = [{'cust_name' : cust_id}]
+        logging.info('Processing modelEvaluate For : ' + str(cust_list))
+        
+        modeleval = ModelEvaluate()
+        for cust_id_x in cust_list:
+            modeleval.prepareTrainingData(cust_id_x['cust_name'])
+            modeleval.startEvaluation(cust_id_x['cust_name'])
+            modeleval.createConfusionMatrix(cust_id_x['cust_name'])         
+        return '200'
+
     ''' 
     @app.route('/addcustomer', methods=['GET'])
     def addCustomer():
