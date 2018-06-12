@@ -99,7 +99,7 @@ class IntentExtractor_resp(object):
         next_page_token = 0
         token = None 
         while next_page_token != None:             
-            training_logs, next_page_token = traindata.list(cursor=token, feedback_flag=False, cust_id=cust_id, done=None)
+            training_logs, next_page_token = traindata.list(cursor=token, feedback_flag=False, cust_id=cust_id)
             token = next_page_token
             for training_log in training_logs: 
                 strx = self.utilclass.cleanData(training_log['tags']  + ' . ' + training_log['query'] )

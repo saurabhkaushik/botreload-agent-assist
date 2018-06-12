@@ -33,7 +33,7 @@ def from_datastore(entity):
 # [END from_datastore]
 
 # [START list]
-def list(res_category='', limit=999, cursor=None, modifiedflag=False, defaultflag=False, cust_id='', done=False):
+def list(res_category=None, limit=999, cursor=None, modifiedflag=None, defaultflag=None, cust_id=None, done=None):
     ds = get_client()
 
     query = ds.query(kind=cust_id + 'ResponseData') 

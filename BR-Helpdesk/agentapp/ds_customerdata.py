@@ -33,7 +33,7 @@ def from_datastore(entity):
 # [END from_datastore]
 
 # [START list]
-def list(cust_name='', newflag=False, limit=999, cursor=None, done=False):
+def list(cust_name='', newflag=None, retrainflag=None, limit=999, cursor=None, done=None):
     ds = get_client()
 
     query = ds.query(kind='CustomerData')     
@@ -41,8 +41,11 @@ def list(cust_name='', newflag=False, limit=999, cursor=None, done=False):
         query.add_filter('done', '=', done)
     if newflag != None: 
         query.add_filter('newflag', '=', newflag)
+    if retrainflag != None: 
+        query.add_filter('retrainflag', '=', retrainflag)
     if cust_name != None and cust_name != '': 
         query.add_filter('cust_name', '=', cust_name)
+        
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)
 
@@ -60,13 +63,13 @@ def read(id):
     return from_datastore(results)
 
 def authenticate(cust_id_x, newflag=None): 
-    cust_list = list(cust_name=cust_id_x.strip().lower(), newflag=newflag, done=True)    
+    cust_list = list(cust_name=cust_id_x.strip().lower(), newflag=None, retrainflag=None, done=True)    
     if len(cust_list[0]) > 0 : 
         return cust_list[0][0]
     return None 
 
 def addretraining(id):
-    cust_list = list(cust_name=cust_id_x.strip().lower(), newflag=newflag, done=True)    
+    cust_list = list(cust_name=id.strip().lower(), newflag=None, retrainflag=None, done=True)    
     if len(cust_list[0]) > 0 : 
         custdata = cust_list[0][0]
         update(custdata['cust_name'], language=custdata['language'], intent_threshold=custdata['intent_threshold'], organization=custdata['organization'], 

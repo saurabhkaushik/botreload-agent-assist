@@ -24,7 +24,7 @@ class TrainingDataAnalyzer(object):
         next_page_token = 0
         token = None
         while next_page_token != None:
-            ticket_logs, next_page_token = trainlog.list(cursor=token, cust_id='', log_type=None, done=True)
+            ticket_logs, next_page_token = trainlog.list(cursor=token, cust_id='', done=True)
             token = next_page_token
             for ticket_log in ticket_logs:
                 trainlog.create(ticket_log['type'], ticket_log['json_data'], created=ticket_log['created'], done=True, cust_id='default')
