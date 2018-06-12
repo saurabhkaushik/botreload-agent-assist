@@ -65,9 +65,16 @@ def authenticate(cust_id_x, newflag=None):
         return cust_list[0][0]
     return None 
 
+def addretraining(id):
+    cust_list = list(cust_name=cust_id_x.strip().lower(), newflag=newflag, done=True)    
+    if len(cust_list[0]) > 0 : 
+        custdata = cust_list[0][0]
+        update(custdata['cust_name'], language=custdata['language'], intent_threshold=custdata['intent_threshold'], organization=custdata['organization'], 
+                        email_id=custdata['email_id'], password=custdata['password'], newflag=custdata['newflag'], retrainflag=True, done=custdata['done'], id=id)
+    
 # [START update]
-def update(cust_name, language='en', intent_threshold=100, organization='', 
-    email_id='', password ='', newflag=False, done=False, id=None):
+def update(cust_name, language='en', intent_threshold=100, organization='',
+           email_id='', password ='', newflag=False, retrainflag=False, done=False, id=None):
     ds = get_client()
     
     if id:
@@ -86,6 +93,7 @@ def update(cust_name, language='en', intent_threshold=100, organization='',
             'email_id' : email_id,
             'password' : password,
             'newflag' : newflag,
+            'retrainflag': retrainflag,
             'created': datetime.datetime.utcnow(),
             'done': done
         })

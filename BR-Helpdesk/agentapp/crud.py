@@ -73,6 +73,25 @@ def doregister():
     return render_template("register.html", error_msg='Error: Invalid User Organization')
 # [END doregister]
 
+@crud.route("/retrain", methods=['GET', 'POST'])
+def doretrain():    
+    cust_id = request.args.get('cust_id', None)
+    
+    if cust_id == None or cust_id == '': 
+        logging.error('\'' + cust_id + '\' is invalid customer subdomain. ')
+        return render_template("register.html", error_msg='Error: Invalid User Organization')
+    cust_id = cust_id.strip().lower()
+
+    cust = getCustomerModel().authenticate(cust_id)
+
+    if cust == None: 
+        logging.error('\'' + cust_id + '\' is invalid customer Organization. ')
+        return render_template("login.html", error_msg='Error: Invalid User Organization')        
+    else: 
+        getCustomerModel().addretraining(cust_id)
+        return redirect(url_for('.list', cust_id=cust_id))
+# [END doregister]
+
 # [START list]
 @crud.route("/list")
 def list():    
@@ -130,7 +149,7 @@ def add():
     if request.method == 'POST':
         data = request.form.to_dict(flat=True)
 
-        book = getResponseModel().create(data['resp_name'], data['resp_name'], data['response_text'], data['tags'], data['tags'], modifiedflag=True, done=True, id=None, cust_id=cust_id)
+        book = getResponseModel().create(data['resp_name'], data['resp_name'].replace(" ", "_"), data['response_text'], data['tags'], data['tags'], modifiedflag=True, done=True, id=None, cust_id=cust_id)
         traindata = getTrainingModel().create(data['tags'], data['response_text'], '', query_category='', resp_category=data['resp_name'], done=True, id=None, cust_id=cust_id)
         return redirect(url_for('.view', cust_id=cust_id, id=book['id']))
 
@@ -155,7 +174,7 @@ def edit(id):
     if request.method == 'POST':
         data = request.form.to_dict(flat=True)
         orgdata = getResponseModel().read(id, cust_id=cust_id)
-        book = getResponseModel().update(data['resp_name'], data['resp_name'], data['response_text'], data['tags'], data['tags'], modifiedflag=True, done=True, id=id, cust_id=cust_id)
+        book = getResponseModel().update(data['resp_name'], orgdata['res_category'], data['response_text'], data['tags'], orgdata['resp_tags'], modifiedflag=True, done=True, id=id, cust_id=cust_id)
         print (orgdata['resp_name'])
         trainlist = getTrainingModel().list_by_respcategory(orgdata['resp_name'], cust_id=cust_id)
         for resp in trainlist: 
