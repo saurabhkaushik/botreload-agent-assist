@@ -63,17 +63,17 @@ def read(id):
     return from_datastore(results)
 
 def authenticate(cust_id_x, newflag=None): 
-    cust_list = list(cust_name=cust_id_x.strip().lower(), newflag=None, retrainflag=None, done=True)    
+    cust_list = list(cust_name=cust_id_x.strip().lower(), done=True)    
     if len(cust_list[0]) > 0 : 
         return cust_list[0][0]
     return None 
 
-def addretraining(id):
-    cust_list = list(cust_name=id.strip().lower(), newflag=None, retrainflag=None, done=True)    
+def addretraining(cust_id):
+    cust_list = list(cust_name=cust_id.strip().lower(), done=True)    
     if len(cust_list[0]) > 0 : 
         custdata = cust_list[0][0]
         update(custdata['cust_name'], language=custdata['language'], intent_threshold=custdata['intent_threshold'], organization=custdata['organization'], 
-                        email_id=custdata['email_id'], password=custdata['password'], newflag=custdata['newflag'], retrainflag=True, done=custdata['done'], id=id)
+                        email_id=custdata['email_id'], password=custdata['password'], newflag=custdata['newflag'], retrainflag=True, done=custdata['done'], id=custdata['id'])
     
 # [START update]
 def update(cust_name, language='en', intent_threshold=100, organization='',

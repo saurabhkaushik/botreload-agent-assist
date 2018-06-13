@@ -149,7 +149,7 @@ def add():
     if request.method == 'POST':
         data = request.form.to_dict(flat=True)
 
-        book = getResponseModel().create(data['resp_name'], data['resp_name'].replace(" ", "_"), data['response_text'], data['tags'], data['tags'], modifiedflag=True, done=True, id=None, cust_id=cust_id)
+        book = getResponseModel().create(data['resp_name'], data['resp_name'].strip().replace(" ", "_"), data['response_text'], data['tags'], data['tags'], modifiedflag=True, done=True, id=None, cust_id=cust_id)
         traindata = getTrainingModel().create(data['tags'], data['response_text'], '', query_category='', resp_category=data['resp_name'], done=True, id=None, cust_id=cust_id)
         return redirect(url_for('.view', cust_id=cust_id, id=book['id']))
 
