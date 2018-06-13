@@ -105,8 +105,7 @@ class IntentExtractor_resp(object):
             training_logs, next_page_token = traindata.list(cursor=token, feedback_flag=False, cust_id=cust_id)
             token = next_page_token
             for training_log in training_logs: 
-                strx = self.utilclass.cleanData(training_log['tags']  + ' . ' + training_log['query'] )
-                strx = self.utilspace.preprocessText(strx)
+                strx = training_log['tags']  + ' . ' + training_log['query'] 
                 predicted = self.getPredictedIntent(strx, cust_id)  
                 if len(predicted) < 1: 
                     predicted = ['Default']
