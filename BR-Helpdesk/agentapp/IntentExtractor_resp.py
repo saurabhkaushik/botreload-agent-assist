@@ -66,10 +66,10 @@ class IntentExtractor_resp(object):
         #                ("extra trees", ExtraTreesClassifier(n_estimators=200))])
         #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", TfidfEmbeddingVectorizer(w2v)), 
         #                ("MultinomialNB", MultinomialNB())])
-        self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
-                       ("SVC", LogisticRegression(random_state=0))]) 
         #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
-        #               ("SVC", SVC(kernel='linear', probability=True))])
+        #               ("SVC", LogisticRegression(random_state=0))]) 
+        self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
+                       ("SVC", SVC(kernel='linear', probability=True))])
         self.etree_w2v_tfidf.fit(self.X, self.y)
         
         logging.info ("Total Training Samples : %s" % len(self.y))
