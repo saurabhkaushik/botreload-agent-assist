@@ -4,12 +4,15 @@ from agentapp.StorageOps import StorageOps
 from agentapp.UtilityClass import UtilityClass
 from agentapp.tickets_learner import tickets_learner
 from agentapp.TfidfVectorizer import TfidfEmbeddingVectorizer, MeanEmbeddingVectorizer
+from sklearn.linear_model import LogisticRegression
 
 from gensim.models.word2vec import Word2Vec 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import  f1_score, precision_score, recall_score
+from sklearn.svm import LinearSVC
+
 import re 
 import numpy as np
 from pandas_ml import ConfusionMatrix 
@@ -17,7 +20,7 @@ import csv
 from collections import defaultdict
 import logging
 import pandas as pd
-#from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
@@ -63,13 +66,16 @@ class IntentExtractor(object):
             return
         self.model = Word2Vec(self.X, size=100, window=5, min_count=1, workers=3)
         self.model.wv.index2word
+        
         w2v = {w: vec for w, vec in zip(self.model.wv.index2word, self.model.wv.syn0)}
-        '''self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
-                        ("extra trees", ExtraTreesClassifier(n_estimators=200))])
-        self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", TfidfEmbeddingVectorizer(w2v)), 
-                        ("MultinomialNB", MultinomialNB())])'''
+        #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
+        #                ("extra trees", ExtraTreesClassifier(n_estimators=200))])
+        #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", TfidfEmbeddingVectorizer(w2v)), 
+        #                ("MultinomialNB", MultinomialNB())])
         self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
-                        ("SVC", SVC(kernel='linear', probability=True))])
+                       ("SVC", LogisticRegression(random_state=0))]) 
+        #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
+        #               ("SVC", SVC(kernel='linear', probability=True))])
         self.etree_w2v_tfidf.fit(self.X, self.y)
         
         pickle_out = pickle.dumps(self.etree_w2v_tfidf)
