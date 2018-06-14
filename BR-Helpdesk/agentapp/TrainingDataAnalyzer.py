@@ -201,8 +201,8 @@ class TrainingDataAnalyzer(object):
                 tags = ', '.join(intents_data_json['requester']['tags']) 
                 response = ''
                 id = intents_data_json['id']
-                if len(intents_data_json['comments']) > 0:
-                    response = intents_data_json['comments'][0]['value']
+                if len(intents_data_json['comments']) > 1:
+                    response = intents_data_json['comments'][1]['value']
                     response = cleanhtml (response)
                 traindata.create(tags, str(subject + ' . ' + description), response, id = id, done=False, cust_id=cust_id)
                 trainlog.delete(intent_log['id'], cust_id=cust_id)

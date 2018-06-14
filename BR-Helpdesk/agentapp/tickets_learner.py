@@ -93,7 +93,7 @@ class tickets_learner(object):
             for resp_list in ds_response: 
                 if (resp_list != None) and (len(resp_list) > 0) :
                     for resp_item in resp_list:
-                        if resp_item['resp_name'] == row['Resp_Class']: 
+                        if resp_item['res_category'] == row['Resp_Class']: 
                             comments_struct.append({'id': resp_item['id'], 'name' : resp_item['resp_name'], 'comment': resp_item['response_text'], 'prob': int(row['Resp_Prob']*100)}) 
             if (i >= 4):
                 break

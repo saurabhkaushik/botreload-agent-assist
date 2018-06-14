@@ -75,8 +75,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         
         get_model().create('intent', json.dumps(request.json), done=True, cust_id=cust_id)
         len_comment = len(received_data['comments']) 
-        if ((len_comment > 0) and (received_data['requester']['email'] == received_data['comments'][0]['author']['email'])):
-            intent_input = utilclass.cleanhtml(received_data['comments'][0]['value'])
+        if ((len_comment > 1) and (received_data['requester']['email'] == received_data['comments'][1]['author']['email'])):
+            intent_input = utilclass.cleanhtml(received_data['comments'][1]['value'])
         else:
             intent_input = utilclass.cleanhtml(received_data['description'] + '. ' + received_data['subject'])
             
