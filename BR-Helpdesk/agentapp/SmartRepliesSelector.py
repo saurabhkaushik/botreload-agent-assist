@@ -51,8 +51,8 @@ class SmartRepliesSelector(object):
             logging.error("generateNewResponse : " + str(err))
             return 
         lang= getCustomerModel().getLanguage(cust_id)
-        X_q = self.ticket_pd['query'].apply(lambda x: self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True))
-        X_q = X_q.apply(lambda x: self.utilspace.preprocessText(x))
+        X_q = self.ticket_pd['query'].apply(lambda x: self.utilspace.preprocessText(x, lang=lang, ner=True)) 
+        X_q = X_q.apply(lambda x: self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True, tag_remove=True))
         query_clstr_itr = int (math.sqrt(len(X_q) / 2)) #int (len(X_q) / 10) 
         print ('Query Cluster Size : ', query_clstr_itr)
         if (query_clstr_itr <= 1): 
@@ -69,13 +69,15 @@ class SmartRepliesSelector(object):
                 continue
             if resp_clst_itr > 5:
                 resp_clst_itr = 5
-            qx = query_sub['response'].apply(lambda x: self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True))
-            qx = qx.apply(lambda x: self.utilspace.preprocessText(x))
-            query_sub['response_cluster'], query_sub['select_response'], query_sub['response_tags'], query_sub['response_summary'] = self.getKMeanClusters_resp(cust_id, qx, query_sub['response'], resp_clst_itr) 
+            X_r = query_sub['response'].apply(lambda x: self.utilspace.preprocessText(x, lang=lang, ner=True))
+            X_r2 = X_r.apply(lambda x: self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True, tag_remove=True))
+            
+            query_sub['response_cluster'], query_sub['select_response'], query_sub['response_tags'], query_sub['response_summary'], query_sub['response_title'] = self.getKMeanClusters_resp(cust_id, X_r2, X_r, resp_clst_itr) 
             for index, items in query_sub.iterrows(): 
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_cluster'] = int (items['response_cluster'])
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'select_response'] = items['select_response']
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_summary'] = items['response_summary']
+                self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_title'] = items['response_title']
                 self.ticket_pd.loc[(self.ticket_pd['id'] == items['id']), 'response_tags'] = items['response_tags']
         print (self.ticket_pd)
         logging.info('generateNewResponse : Completed : ' + str(cust_id))
@@ -104,7 +106,8 @@ class SmartRepliesSelector(object):
         rep_index = int(last_id) + 1
         for index, item in self.ticket_pd.iterrows(): 
             if item['select_response'] == 'true' and item['select_tags'].strip() != '' and item['response_summary'].strip() != '' and item['response_tags'] != '': 
-                resp_model.create((cust_id + '_Response_' + str(rep_index)), (cust_id + '_Response_' + str(rep_index)), item['response_summary'], item['select_tags'], item['response_tags'], done=True, id=rep_index, cust_id=cust_id)
+                resptitle = item['response_title'] if (item['response_title'] != '') else (cust_id + '_Response_' + str(rep_index))
+                resp_model.create(resptitle, str(cust_id + '_Response_' + str(rep_index)), item['response_summary'], item['select_tags'], item['response_tags'], done=True, id=rep_index, cust_id=cust_id)
                 rep_index += 1 
             
         csvfile = self.ticket_pd.to_csv()        
@@ -196,27 +199,43 @@ class SmartRepliesSelector(object):
             else :
                 selected_resp.append('false')
 
-        X2_in = X2_in.apply(lambda x: self.utilspace.preprocessText(x, lowercase=False, no_punct=False))       
         input_x2 = X2_in.tolist()
         txtforsum = []
         sumresponse = []
+        sumtitle = []
         for i in range(true_k):
             for j in range(len(prediction)):
                 if i == prediction[j]: 
                     txtforsum.append(input_x2[j]) 
-            sumresponse.append(self.summarizationtext(txtforsum))
+            sumresp = self.summarizationtext(txtforsum)
+            sumresponse.append(sumresp)
+            sumtitle.append(self.summarizationtitle(sumresp))
         outsumresp = []
+        outsumtitle = []
         for i in range(len(prediction)):
             outsumresp.append(sumresponse[prediction[i]])
-        return prediction, selected_resp, selected_tags, outsumresp 
+            outsumtitle.append(sumtitle[prediction[i]])
+        return prediction, selected_resp, selected_tags, outsumresp, outsumtitle 
     
     def summarizationtext(self, textlist):       
-        ratio_c = 1 / len(textlist)
+        #ratio_c = 1 / len(textlist)
         intext = " ".join(textlist) 
         sumtext = ''
         if len (intext) > 10:
             try: 
-                sumtext = summarize(intext, word_count=50) #ratio=ratio_c)
+                sumtext = summarize(intext, word_count=50) 
+                sumtext = sumtext.strip().replace(".", ". ")
             except ValueError as err: 
                 logging.error('summarizationtext : ' + str(err))
-        return sumtext  
+        return sumtext 
+    
+    def summarizationtitle(self, sumtext):       
+        sumtitle = ''
+        print ('summarizationtitle : ', sumtext)
+        if len (sumtext) > 10: 
+            try: 
+                sumtitle = summarize(sumtext, word_count=4) 
+                sumtitle = sumtitle.strip().lower().replace(" ", "_")
+            except ValueError as err: 
+                logging.error('summarizationtext : ' + str(err))
+        return sumtitle 

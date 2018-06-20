@@ -35,7 +35,7 @@ class IntentExtractor_resp(object):
         self.X, self.y = [], []        
         tickets_learn = tickets_learner()
         ticket_data = tickets_learn.getResponseData(cust_id=cust_id)
-        self.lang = getCustomerModel().getLanguage(cust_id)
+        lang = getCustomerModel().getLanguage(cust_id)
         xX = []
         yY = []
         for linestms in ticket_data:           
@@ -43,8 +43,8 @@ class IntentExtractor_resp(object):
                 tempxX = linestm['tags'].strip()
                 if (tempxX != ''):
                     strx = str(linestm['tags']).strip()
-                    strx = self.utilspace.preprocessText(strx)
-                    strx = str(self.utilclass.cleanData(strx, lang=self.lang, lowercase=True, remove_stops=True))                
+                    strx = self.utilspace.preprocessText(strx, lang=lang, ner=True)
+                    strx = str(self.utilclass.cleanData(strx, lang=lang, lowercase=True, remove_stops=True, tag_remove=True))               
                     xX.append(strx.strip().split())
                     yY.append(str(linestm['res_category']).strip())
         self.X = xX
@@ -83,9 +83,9 @@ class IntentExtractor_resp(object):
             logging.info('Cant process as no Training ')
             return
         self.test_X = []
-        self.lang = getCustomerModel().getLanguage(cust_id)
-        strx = self.utilclass.cleanData(textinput, lang=self.lang, lowercase=True, remove_stops=True)
-        strx = self.utilspace.preprocessText(strx)
+        lang = getCustomerModel().getLanguage(cust_id)
+        strx = self.utilclass.cleanData(textinput, lang=lang, lowercase=True, remove_stops=True, tag_remove=True)
+        #strx = self.utilspace.preprocessText(strx)
         self.test_X.append(strx.strip().split())
         self.predicted = []
         try:
@@ -99,7 +99,7 @@ class IntentExtractor_resp(object):
         logging.info("getPredictedIntent_list : Started " + str(cust_id))
         
         self.lang = getCustomerModel().getLanguage(cust_id)
-        X_in = X_in.apply(lambda x : self.utilclass.cleanData(x, lang=self.lang, lowercase=True, remove_stops=True).strip().split())
+        X_in = X_in.apply(lambda x : self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True, tag_remove=True).strip().split())
         X_list = X_in.tolist()
         predicted_list= []
         try:

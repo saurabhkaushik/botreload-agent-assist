@@ -15,3 +15,4 @@ six>=1.11.0
 google-cloud-datastore>=1.6.0
 google-cloud-storage>=0.0
 textacy>=0.0
+spacy>=0.0 

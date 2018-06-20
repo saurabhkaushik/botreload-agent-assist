@@ -18,27 +18,8 @@ langsup = {'da' : 'danish', 'nl' : 'dutch', 'en': 'english', 'fi': 'finnish', 'f
            'sv': 'swedish', 'tr': 'turkish'}
 
 class UtilityClass: 
-    
-    def replaceSynm(self, txt):
-        word_lst = nltk.word_tokenize(str(txt))
-        chnge_word_lst = list()
-        train_vocab = self.tfidf_transformer.vocabulary_
-        for word in word_lst:
-            word_prsnt = word in train_vocab
-            if word_prsnt:
-                chnge_word_lst.append(word)
-            else:
-                synm = self.findClosestSyn(word, train_vocab)
-                if synm != None:
-                    # add synonym
-                    chnge_word_lst.append(synm)
-                else:
-                    # leave the word as it is
-                    chnge_word_lst.append(word)
 
-        return ' '.join(chnge_word_lst)
-
-    def cleanData(self, text, lang = 'en', lowercase=False, remove_stops=False, stemming=False, lemmatization=False):
+    def cleanData(self, text, lang = 'en', lowercase=False, remove_stops=False, stemming=False, lemmatization=False, tag_remove=False):
         lowercase = True
         remove_stops = True
         stemming = True
@@ -59,15 +40,15 @@ class UtilityClass:
         if remove_stops:
             txt = " ".join([w for w in txt.split() if w not in stops])
 
-        # Lemmatization
         if lemmatization:
             txt = " ".join([lemma.lemmatize(w) for w in txt.split()])
 
         if stemming:
             txt = " ".join([st.stem(w) for w in txt.split()])
 
-        for i in range(len(junk_list)):
-            txt = txt.replace(junk_list[i], '')
+        if tag_remove: 
+            for i in range(len(junk_list)):
+                txt = txt.replace(junk_list[i], '')
 
         return txt    
     
@@ -82,3 +63,22 @@ class UtilityClass:
         tokens = tokenizer.tokenize(sentence)
         filtered_words = [w for w in tokens if not w in stopwords.words('english')]
         return " ".join(filtered_words)
+    
+    def replaceSynm(self, txt):
+        word_lst = nltk.word_tokenize(str(txt))
+        chnge_word_lst = list()
+        train_vocab = self.tfidf_transformer.vocabulary_
+        for word in word_lst:
+            word_prsnt = word in train_vocab
+            if word_prsnt:
+                chnge_word_lst.append(word)
+            else:
+                synm = self.findClosestSyn(word, train_vocab)
+                if synm != None:
+                    # add synonym
+                    chnge_word_lst.append(synm)
+                else:
+                    # leave the word as it is
+                    chnge_word_lst.append(word)
+
+        return ' '.join(chnge_word_lst)
