@@ -89,7 +89,8 @@ def doretrain():
         return render_template("login.html", error_msg='Error: Invalid User Organization')        
     else: 
         getCustomerModel().addretraining(cust_id)
-        return redirect(url_for('.list', cust_id=cust_id))
+        #return render_template("list.html", error_msg='Thanks for submitting data. Soon, we will retain the model and notify you.', cust_id=cust_id)  
+        return redirect(url_for('.list', error_msg='Thanks for submitting data. Soon, we will retain the model and notify you.', cust_id=cust_id))
 # [END doregister]
 
 # [START list]
@@ -97,6 +98,9 @@ def doretrain():
 def list():    
     token = request.args.get('page_token', None)
     cust_id = request.args.get('cust_id', None)
+    error_msg = request.args.get('error_msg', None)
+    if error_msg == None:
+        error_msg = ''
     if cust_id == None or cust_id == '': 
         return render_template("login.html")
     cust_id = cust_id.strip().lower()
@@ -112,7 +116,7 @@ def list():
     books, next_page_token = getResponseModel().list(cursor=token, cust_id=cust_id, done=True, modifiedflag=None, defaultflag=None)
 
     return render_template(
-        "list.html", cust_id=cust_id,
+        "list.html", cust_id=cust_id, error_msg=error_msg, 
         books=books,
         next_page_token=next_page_token)
 # [END list]

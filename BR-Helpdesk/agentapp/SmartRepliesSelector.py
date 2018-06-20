@@ -50,7 +50,8 @@ class SmartRepliesSelector(object):
         except KeyError as err:
             logging.error("generateNewResponse : " + str(err))
             return 
-        X_q = self.ticket_pd['query'].apply(lambda x: self.utilclass.cleanData(x, lowercase=True, remove_stops=True))
+        lang= getCustomerModel().getLanguage(cust_id)
+        X_q = self.ticket_pd['query'].apply(lambda x: self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True))
         X_q = X_q.apply(lambda x: self.utilspace.preprocessText(x))
         query_clstr_itr = int (math.sqrt(len(X_q) / 2)) #int (len(X_q) / 10) 
         print ('Query Cluster Size : ', query_clstr_itr)
@@ -68,7 +69,7 @@ class SmartRepliesSelector(object):
                 continue
             if resp_clst_itr > 5:
                 resp_clst_itr = 5
-            qx = query_sub['response'].apply(lambda x: self.utilclass.cleanData(x, lowercase=True, remove_stops=True))
+            qx = query_sub['response'].apply(lambda x: self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True))
             qx = qx.apply(lambda x: self.utilspace.preprocessText(x))
             query_sub['response_cluster'], query_sub['select_response'], query_sub['response_tags'], query_sub['response_summary'] = self.getKMeanClusters_resp(cust_id, qx, query_sub['response'], resp_clst_itr) 
             for index, items in query_sub.iterrows(): 
@@ -107,7 +108,7 @@ class SmartRepliesSelector(object):
                 rep_index += 1 
             
         csvfile = self.ticket_pd.to_csv()        
-        storageOps.put_bucket(csvfile, str("SR_CSV_" + str(cust_id))) 
+        storageOps.put_bucket(csvfile, str("SmartReply_DataFrame_" + str(cust_id))) 
         logging.info ('populateResponseData : Completed ' + str(cust_id))
         return
     
@@ -116,24 +117,26 @@ class SmartRepliesSelector(object):
         selected_resp = []
         selected_tags = []
         prediction = []
-        vectorizer = TfidfVectorizer(stop_words='english', analyzer='word')
+        vectorizer = TfidfVectorizer(analyzer='word') # stop_words='english', 
         try:
             X = vectorizer.fit_transform(X_in)
         except ValueError as err: 
             logging.error("getKMeanClusters : " , err)
             return prediction, selected_resp, selected_tags
         model = KMeans(n_clusters=true_k, init='k-means++', max_iter=100, n_init=1)
-        model.fit(X)  
-        prediction = model.predict(X)
-         
+        prediction = model.fit_predict(X)  
+        
         closest, _ = pairwise_distances_argmin_min(model.cluster_centers_, X)
         
         order_centroids = model.cluster_centers_.argsort()[:, ::-1]
         terms = vectorizer.get_feature_names()
+        no_terms = int (len(terms) / (true_k * 10))
+        print ('Total Terms : ', len(terms))        
+        print ('No of Terms', no_terms)
         tags_clurt = []
         for i in range(true_k):
             tags_temp = []
-            for ind in order_centroids[i, :20]:
+            for ind in order_centroids[i, :no_terms]:
                 tags_temp.append(terms[ind].lower().strip())
             tags_clurt.append(tags_temp)
         
@@ -141,7 +144,7 @@ class SmartRepliesSelector(object):
         input_x = X_in.tolist()
         for i in range(len(prediction)):  
             qtags = '' 
-            for resp_tags in tags_clurt[prediction[i]]:
+            for resp_tags in tags_clurt[prediction[i]]:  
                 if resp_tags in input_x[i]:
                     qtags += resp_tags + ' '
             selected_tags.append(qtags.strip())
@@ -157,24 +160,26 @@ class SmartRepliesSelector(object):
         selected_resp = []
         selected_tags = []
         prediction = []
-        vectorizer = TfidfVectorizer(stop_words='english', analyzer='word')
+        vectorizer = TfidfVectorizer(analyzer='word') #stop_words='english'
         try:
             X = vectorizer.fit_transform(X_in)
         except ValueError as err: 
             logging.error("getKMeanClusters : " , err)
             return prediction, selected_resp, selected_tags
         model = KMeans(n_clusters=true_k, init='k-means++', max_iter=100, n_init=1)
-        model.fit(X)  
-        prediction = model.predict(X)
+        prediction = model.fit_predict(X) 
          
         closest, _ = pairwise_distances_argmin_min(model.cluster_centers_, X)
         
         order_centroids = model.cluster_centers_.argsort()[:, ::-1]
         terms = vectorizer.get_feature_names()
         tags_clurt = []
+        no_terms = int (len(terms) / (true_k * 10))
+        print ('Total Terms : ', len(terms))        
+        print ('No of Terms', no_terms)
         for i in range(true_k):
             tags_temp = []
-            for ind in order_centroids[i, :20]:
+            for ind in order_centroids[i, :no_terms]:
                 tags_temp.append(terms[ind].lower().strip())
             tags_clurt.append(tags_temp)
         
@@ -213,5 +218,5 @@ class SmartRepliesSelector(object):
             try: 
                 sumtext = summarize(intext, word_count=50) #ratio=ratio_c)
             except ValueError as err: 
-                logging.error(err)
+                logging.error('summarizationtext : ' + str(err))
         return sumtext  

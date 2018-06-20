@@ -10,9 +10,12 @@ from nltk.corpus import wordnet as wn
 from nltk.stem.wordnet import WordNetLemmatizer
 nltk.download('stopwords')
 st = PorterStemmer()
-stops = set(stopwords.words("english"))
-cust_name_list = ['GSK', 'gsk', 'Novartis','novartis']
+
+junk_list = ['NAME', 'EMAIL', 'NUMBER','URL']
 lemma = WordNetLemmatizer()
+langsup = {'da' : 'danish', 'nl' : 'dutch', 'en': 'english', 'fi': 'finnish', 'fr' : 'french', 'de' : 'german', 
+           'hu' : 'hungarian', 'it': 'italian', 'no': 'norwegian', 'pt':  'portuguese', 'ru': 'russian', 'es': 'spanish', 
+           'sv': 'swedish', 'tr': 'turkish'}
 
 class UtilityClass: 
     
@@ -35,11 +38,13 @@ class UtilityClass:
 
         return ' '.join(chnge_word_lst)
 
-
-    def cleanData(self, text, lowercase=False, remove_stops=False, stemming=False, lemmatization=False):
+    def cleanData(self, text, lang = 'en', lowercase=False, remove_stops=False, stemming=False, lemmatization=False):
         lowercase = True
         remove_stops = True
         stemming = True
+        stops = set(stopwords.words("english"))
+        if lang in langsup.keys():
+            stops = set(stopwords.words(langsup[lang]))
 
         #txt = str(text.encode('utf-8').strip())
         txt = str(text)
@@ -61,8 +66,8 @@ class UtilityClass:
         if stemming:
             txt = " ".join([st.stem(w) for w in txt.split()])
 
-        for i in range(len(cust_name_list)):
-            txt = txt.replace(cust_name_list[i], 'Customer')
+        for i in range(len(junk_list)):
+            txt = txt.replace(junk_list[i], '')
 
         return txt    
     

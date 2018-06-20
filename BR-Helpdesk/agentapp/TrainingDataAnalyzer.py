@@ -186,11 +186,11 @@ class TrainingDataAnalyzer(object):
         next_page_token = 0
         token = None        
         while next_page_token != None:             
-            intent_logs, next_page_token = trainlog.list(log_type='intent', cursor=token, cust_id=cust_id, done=True)
+            intent_logs, next_page_token = trainlog.list(log_type='intent', cursor=token, cust_id=cust_id, done=None)
             token = next_page_token
             for intent_log in intent_logs: 
                 intents_data = intent_log["json_data"] 
-                intents_data_json = json.loads(intents_data)
+                intents_data_json = json.loads(intents_data)                
                 try:                     
                     description = intents_data_json['description']
                 except KeyError as err: 
@@ -201,9 +201,13 @@ class TrainingDataAnalyzer(object):
                 tags = ', '.join(intents_data_json['requester']['tags']) 
                 response = ''
                 id = intents_data_json['id']
-                if len(intents_data_json['comments']) > 1:
-                    response = intents_data_json['comments'][1]['value']
-                    response = cleanhtml (response)
+                comment_len = len(intents_data_json['comments'])
+                if comment_len > 1:
+                    for i in range(comment_len-1, -1, -1): 
+                        if intents_data_json['comments'][i]['author']['email'] != intents_data_json['requester']['email']:
+                            response = intents_data_json['comments'][i]['value']
+                            response = cleanhtml (response)
+                            break
                 traindata.create(tags, str(subject + ' . ' + description), response, id = id, done=False, cust_id=cust_id)
                 trainlog.delete(intent_log['id'], cust_id=cust_id)
                 print('Creating for Intent : ' , intents_data_json['id'], cust_id)

@@ -1,4 +1,4 @@
-from agentapp.model_select import get_model, getTrainingModel, getResponseModel
+from agentapp.model_select import get_model, getTrainingModel, getResponseModel, getCustomerModel
 from agentapp.tickets_learner import tickets_learner
 from agentapp.StorageOps import StorageOps
 from agentapp.UtilityClass import UtilityClass
@@ -41,16 +41,19 @@ class IntentExtractor(object):
         tickets_learn = tickets_learner()
         ticket_data = tickets_learn.getTrainingData(cust_id=cust_id)
         
+        from agentapp.UtilityClass_spacy import UtilityClass_spacy
+        utilspace = UtilityClass_spacy()
+        self.lang = getCustomerModel().getLanguage(cust_id)
         xX = []
         yY = []
         for linestms in ticket_data:           
             for linestm in linestms:
                 strx = str(linestm['tags'] + ' . ' + linestm['query']).strip()
-                strx = self.utilclass.cleanData(strx, lowercase=True, remove_stops=True).strip()
-                #strx = util_space.preprocessText(strx)
+                strx = utilspace.preprocessText(strx)
+                strx = str(self.utilclass.cleanData(strx, lang=self.lang, lowercase=True, remove_stops=True))               
                 if (strx != ''):
-                    xX.append(strx.split())
-                    yY.append(linestm['resp_category'].strip())
+                    xX.append(strx.strip().split())
+                    yY.append(str(linestm['resp_category']).strip())
         self.X = xX
         self.y = yY
         
@@ -90,7 +93,8 @@ class IntentExtractor(object):
         pickle_out = self.storage.get_bucket(cust_id)
         self.etree_w2v_tfidf = pickle.loads(pickle_out)
         self.test_X = []
-        strx = self.utilclass.cleanData(textinput, lowercase=True, remove_stops=True)
+        self.lang = getCustomerModel().getLanguage(cust_id)
+        strx = self.utilclass.cleanData(textinput, lang=self.lang, lowercase=True, remove_stops=True)
         #strx = self.utilclass.preprocessText(strx)
         self.test_X.append(strx.strip().split())
         #self.predicted = self.etree_w2v_tfidf.predict(self.test_X) 
@@ -110,14 +114,15 @@ class IntentExtractor(object):
         pickle_out = self.storage.get_bucket(cust_id)
         self.etree_w2v_tfidf = pickle.loads(pickle_out)
         self.test_X = []
-        strx = self.utilclass.cleanData(textinput, lowercase=True, remove_stops=True)
+        self.lang = getCustomerModel().getLanguage(cust_id)
+        strx = self.utilclass.cleanData(textinput, lang=self.lang, lowercase=True, remove_stops=True)
         #strx = self.utilclass.preprocessText(strx)
         self.test_X.append(strx.strip().split())
         self.predicted = []
         try:
             self.predicted = self.etree_w2v_tfidf.predict(self.test_X) 
         except ValueError as err: 
-            logging.error(str(err))
+            logging.error('getPredictedIntent : ' + str(err))
         logging.info("getPredictedIntent : Completed " + str(cust_id))
         return self.predicted
     
@@ -125,15 +130,14 @@ class IntentExtractor(object):
         logging.info("getPredictedIntent_list : Started " + str(cust_id))
         pickle_out = self.storage.get_bucket(cust_id)
         self.etree_w2v_tfidf = pickle.loads(pickle_out)
-
-        X_in = X_in.apply(lambda x : self.utilclass.cleanData(x, lowercase=True, remove_stops=True).strip().split())
+        self.lang = getCustomerModel().getLanguage(cust_id)
+        X_in = X_in.apply(lambda x : self.utilclass.cleanData(x, lang=self.lang, lowercase=True, remove_stops=True).strip().split())
         X_list = X_in.tolist()
         predicted_list= []
         try:
             predicted_list = self.etree_w2v_tfidf.predict(X_list) 
         except ValueError as err: 
-            logging.error(str(err))
-            return None 
+            logging.error('getPredictedIntent_list : ' + str(err))            
         predict_df = pd.Series(predicted_list)
         logging.info("getPredictedIntent_list : Completed " + str(cust_id))
         return predict_df
@@ -143,12 +147,13 @@ class IntentExtractor(object):
         traindata = getTrainingModel() 
         next_page_token = 0
         token = None 
+        self.lang = getCustomerModel().getLanguage(cust_id)
         while next_page_token != None:             
             training_logs, next_page_token = traindata.list(cursor=token, cust_id=cust_id, feedback_flag=False, done=False)
             token = next_page_token
             for training_log in training_logs: 
                 strx = training_log['query'] + ' . ' + training_log['tags']
-                strx = self.utilclass.cleanData(strx, lowercase=True, remove_stops=True)
+                strx = self.utilclass.cleanData(strx, lang=self.lang, lowercase=True, remove_stops=True)
                 predicted = self.getPredictedIntent(strx, cust_id)  
                 if len(predicted) < 1: 
                     predicted = ['Default']
@@ -164,13 +169,13 @@ class IntentExtractor(object):
         
         tickets_learn = tickets_learner()
         ticket_data = tickets_learn.getTrainingData(cust_id=cust_id)
-    
+        self.lang = getCustomerModel().getLanguage(cust_id)
         xX = []
         yY = []
         for linestms in ticket_data:           
             for linestm in linestms:
                 logging.debug (str(linestm['tags'] + ', ' + linestm['query']) + " =>  " + linestm['response'])
-                strx = self.utilclass.cleanData(str(linestm['tags'] + ', ' + linestm['query']))
+                strx = self.utilclass.cleanData(str(linestm['tags'] + ', ' + linestm['query']), lang=self.lang)
                 xX.append(strx.strip().split())
                 yY.append(linestm['resp_category'].strip()) 
         self.test_X = xX

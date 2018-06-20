@@ -51,13 +51,14 @@ class ModelEvaluate(object):
         intenteng = IntentExtractor()
         #self.ticket_pd['TrainingModel_intent'] = self.ticket_pd['query_tag'].apply(lambda x: ''.join(intenteng.getPredictedIntent(x, cust_id)))
         
-        self.ticket_pd['TrainingModel_intent'] = intenteng.getPredictedIntent_list(self.ticket_pd['query_tag'], cust_id)
+        self.ticket_pd['TrainingModel_intent'] = intenteng.getPredictedIntent_list(self.ticket_pd['query'], cust_id)
         
         intenteng_resp = IntentExtractor_resp()
         intenteng_resp.prepareTrainingData(cust_id)
         intenteng_resp.startTrainingProcess(cust_id)
-        self.ticket_pd['ResponseModel_intent'] = self.ticket_pd['query'].apply(lambda x: ''.join(intenteng_resp.getPredictedIntent(x, cust_id)))
+        #self.ticket_pd['ResponseModel_intent'] = self.ticket_pd['query'].apply(lambda x: ''.join(intenteng_resp.getPredictedIntent(x, cust_id)))
 
+        self.ticket_pd['ResponseModel_intent'] = intenteng_resp.getPredictedIntent_list(self.ticket_pd['query'], cust_id)
         self.ticket_pd['intent_tags'] = self.ticket_pd['resp_category'].apply (lambda x: tickets_learn.get_response_mapping_tags(x, cust_id, 'tags').lower().split())
         self.ticket_pd['response_tags'] =  self.ticket_pd['ResponseModel_intent'].apply (lambda x: tickets_learn.get_response_mapping_tags(x, cust_id, 'resp_tags').lower().split())
         
@@ -67,11 +68,11 @@ class ModelEvaluate(object):
         self.ticket_pd['query_list'] = self.ticket_pd['query_list'].apply (lambda x: self.applystem(x))
         self.ticket_pd['response_list'] = self.ticket_pd['response_list'].apply (lambda x: self.applystem(x))
                 
-        self.ticket_pd['no_in_query_list'] = self.ticket_pd.apply (lambda x: self.matchword(x['query_list'], x['intent_tags']), axis=1) 
-        self.ticket_pd['no_in_response_list'] = self.ticket_pd.apply (lambda x: self.matchword(x['response_list'], x['response_tags']), axis=1) 
+        self.ticket_pd['match_in_query_list'] = self.ticket_pd.apply (lambda x: self.matchword(x['query_list'], x['intent_tags']), axis=1) 
+        self.ticket_pd['match_in_response_list'] = self.ticket_pd.apply (lambda x: self.matchword(x['response_list'], x['response_tags']), axis=1) 
         
         csvfile = self.ticket_pd.to_csv()
-        self.storage.put_bucket(csvfile, str("SR_Evalaute_" + str(cust_id))) 
+        self.storage.put_bucket(csvfile, str("TrainingModel_Evaluate_" + str(cust_id))) 
         logging.info("startEvaluation : Completed : " + str(cust_id))
         return
     
