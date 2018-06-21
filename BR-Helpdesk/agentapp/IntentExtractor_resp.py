@@ -1,30 +1,27 @@
+from agentapp.model_select import get_model, getTrainingModel, getResponseModel, getCustomerModel
+from agentapp.tickets_learner import tickets_learner
+from agentapp.UtilityClass import UtilityClass
+from agentapp.UtilityClass_spacy import UtilityClass_spacy
+from agentapp.tickets_learner import tickets_learner
+from agentapp.TfidfVectorizer import TfidfEmbeddingVectorizer, MeanEmbeddingVectorizer
+
 from gensim.models.word2vec import Word2Vec 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.pipeline import Pipeline
-from agentapp.UtilityClass import UtilityClass
-from agentapp.UtilityClass_spacy import UtilityClass_spacy
-import re 
-import numpy as np
 from pandas_ml import ConfusionMatrix 
 from sklearn.metrics import  f1_score, precision_score, recall_score
-import csv
-from collections import defaultdict
-from agentapp.model_select import get_model, getTrainingModel, getResponseModel, getCustomerModel
-from agentapp.tickets_learner import tickets_learner
-from flask import current_app
-import logging
-#from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
-import nltk
-nltk.download('stopwords')
-from nltk.tokenize import RegexpTokenizer
-from nltk.corpus import stopwords
-from agentapp.tickets_learner import tickets_learner
+
+import csv
+import re 
+import numpy as np
+import logging
 import pickle
-from agentapp.TfidfVectorizer import TfidfEmbeddingVectorizer, MeanEmbeddingVectorizer
 import pandas as pd
+
 class IntentExtractor_resp(object): 
     def __init__(self):
         self.utilclass = UtilityClass()
@@ -98,7 +95,7 @@ class IntentExtractor_resp(object):
     def getPredictedIntent_list(self, X_in, cust_id): 
         logging.info("getPredictedIntent_list : Started " + str(cust_id))
         
-        self.lang = getCustomerModel().getLanguage(cust_id)
+        lang = getCustomerModel().getLanguage(cust_id)
         X_in = X_in.apply(lambda x : self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True, tag_remove=True).strip().split())
         X_list = X_in.tolist()
         predicted_list= []

@@ -186,7 +186,7 @@ class TrainingDataAnalyzer(object):
         next_page_token = 0
         token = None        
         while next_page_token != None:             
-            intent_logs, next_page_token = trainlog.list(log_type='intent', cursor=token, cust_id=cust_id, done=None)
+            intent_logs, next_page_token = trainlog.list(log_type='intent', cursor=token, cust_id=cust_id, done=False)
             token = next_page_token
             for intent_log in intent_logs: 
                 intents_data = intent_log["json_data"] 

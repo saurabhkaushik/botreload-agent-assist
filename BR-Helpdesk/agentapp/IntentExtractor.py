@@ -4,30 +4,23 @@ from agentapp.StorageOps import StorageOps
 from agentapp.UtilityClass import UtilityClass
 from agentapp.tickets_learner import tickets_learner
 from agentapp.TfidfVectorizer import TfidfEmbeddingVectorizer, MeanEmbeddingVectorizer
-from sklearn.linear_model import LogisticRegression
 
 from gensim.models.word2vec import Word2Vec 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import  f1_score, precision_score, recall_score
-from sklearn.svm import LinearSVC
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from pandas_ml import ConfusionMatrix 
 
 import re 
 import numpy as np
-from pandas_ml import ConfusionMatrix 
 import csv
-from collections import defaultdict
 import logging
 import pandas as pd
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.svm import SVC
-from nltk.tokenize import RegexpTokenizer
-from nltk.corpus import stopwords
-
-import nltk
 import pickle
-nltk.download('stopwords')
 
 class IntentExtractor(object): 
 
@@ -49,7 +42,7 @@ class IntentExtractor(object):
         for linestms in ticket_data:           
             for linestm in linestms:
                 strx = str(linestm['tags'] + ' . ' + linestm['query']).strip()
-                strx = self.utilspace.preprocessText(strx, lang=lang, ner=True)
+                strx = utilspace.preprocessText(strx, lang=lang, ner=True)
                 strx = str(self.utilclass.cleanData(strx, lang=lang, lowercase=True, remove_stops=True, tag_remove=True))               
                 if (strx != ''):
                     xX.append(strx.strip().split())

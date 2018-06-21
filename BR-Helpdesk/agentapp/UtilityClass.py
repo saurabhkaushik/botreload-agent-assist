@@ -23,9 +23,10 @@ class UtilityClass:
         lowercase = True
         remove_stops = True
         stemming = True
-        stops = set(stopwords.words("english"))
+        langx = "english"
         if lang in langsup.keys():
-            stops = set(stopwords.words(langsup[lang]))
+            langx = langsup[lang]
+        stops = set(stopwords.words(langx))
 
         #txt = str(text.encode('utf-8').strip())
         txt = str(text)
@@ -57,11 +58,14 @@ class UtilityClass:
         cleantext = re.sub(cleanr, '', raw_html)
         return cleantext
     
-    def preprocess(self, sentence):
+    def preprocess(self, sentence, lang = 'en'):
         sentence = sentence.lower()
         tokenizer = RegexpTokenizer(r'\w+')
         tokens = tokenizer.tokenize(sentence)
-        filtered_words = [w for w in tokens if not w in stopwords.words('english')]
+        langx = "english"
+        if lang in langsup.keys():
+            langx = langsup[lang]     
+        filtered_words = [w for w in tokens if not w in stopwords.words(langx)]
         return " ".join(filtered_words)
     
     def replaceSynm(self, txt):

@@ -1,21 +1,20 @@
 from textacy.preprocess import preprocess_text
 from agentapp.UtilityClass import UtilityClass
-import spacy
+#import spacy
 
 langsup = {'da' : 'danish', 'nl' : 'dutch', 'en': 'english', 'fi': 'finnish', 'fr' : 'french', 'de' : 'german', 
            'hu' : 'hungarian', 'it': 'italian', 'no': 'norwegian', 'pt':  'portuguese', 'ru': 'russian', 'es': 'spanish', 
            'sv': 'swedish', 'tr': 'turkish'}
-junk_list = ['NAME', 'EMAIL', 'NUMBER','URL']
 
 class UtilityClass_spacy:  
     
     def preprocessText(self, strtxt, lang = 'en', ner=False): 
         self.utilclass = UtilityClass()
         posttxt = str(strtxt)
-        ner=False
+        '''
         if ner: 
             posttxt = self.processNER(posttxt, lang=lang)
-
+        '''
         posttxt = preprocess_text(posttxt,
                            fix_unicode=True,
                            lowercase=False,
@@ -29,7 +28,7 @@ class UtilityClass_spacy:
                            no_contractions=False,
                            no_accents=False)   
         return posttxt
-
+    '''
     def processNER(self, textstr, lang = 'en'):
         nlp = spacy.load('en_core_web_sm')
         doc = nlp(textstr)
@@ -37,3 +36,4 @@ class UtilityClass_spacy:
         for ent in doc.ents:
             textout = textstr.replace(ent.text, str(ent.label_))
         return textout 
+    '''
