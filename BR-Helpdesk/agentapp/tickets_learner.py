@@ -80,6 +80,16 @@ class tickets_learner(object):
                 return resp[0][tags]
         return ''
 
+    def get_response_map(self, cust_id, tags):
+        logging.info ('get_response_map : ' + str(cust_id))
+        ds_response = getResponseModel().list(cust_id=cust_id, done=True)
+        resp_map = {}
+        for resp_list in ds_response: 
+            if (resp_list != None) and (len(resp_list) > 0) :
+                for resp in resp_list:
+                    resp_map[resp['res_category']] = resp[tags]              
+        return resp_map
+    
     def formatOutput(self, predicted_intent, cust_id): 
         logging.info ('formatOutput : ' + str(cust_id))
         tickets_learn = tickets_learner()

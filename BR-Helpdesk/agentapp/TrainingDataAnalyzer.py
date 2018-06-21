@@ -186,7 +186,7 @@ class TrainingDataAnalyzer(object):
         next_page_token = 0
         token = None        
         while next_page_token != None:             
-            intent_logs, next_page_token = trainlog.list(log_type='intent', cursor=token, cust_id=cust_id, done=False)
+            intent_logs, next_page_token = trainlog.list(log_type='intent', cursor=token, cust_id=cust_id, done=True)
             token = next_page_token
             for intent_log in intent_logs: 
                 intents_data = intent_log["json_data"] 
@@ -204,7 +204,15 @@ class TrainingDataAnalyzer(object):
                 comment_len = len(intents_data_json['comments'])
                 if comment_len > 1:
                     for i in range(comment_len-1, -1, -1): 
-                        if intents_data_json['comments'][i]['author']['email'] != intents_data_json['requester']['email']:
+                        requester_email = '' 
+                        commentor_email = ''  
+                        try: 
+                            requester_email = intents_data_json['requester']['email']
+                            commentor_email = intents_data_json['comments'][i]['author']['email'] 
+                        except KeyError as err: 
+                            logging.error(err)
+                            break  
+                        if requester_email != commentor_email:
                             response = intents_data_json['comments'][i]['value']
                             response = cleanhtml (response)
                             break

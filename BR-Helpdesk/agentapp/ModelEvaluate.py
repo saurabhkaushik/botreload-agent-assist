@@ -46,7 +46,7 @@ class ModelEvaluate(object):
             logging.error("startEvaluation : " + str(err))
             return 
 
-        self.ticket_pd['query_tag'] = self.ticket_pd[['query', 'tags']].apply(lambda x: ' . '.join(x), axis=1) 
+        #self.ticket_pd['query_tag'] = self.ticket_pd[['query', 'tags']].apply(lambda x: ' . '.join(x), axis=1) 
         
         intenteng = IntentExtractor()
         #self.ticket_pd['TrainingModel_intent'] = self.ticket_pd['query_tag'].apply(lambda x: ''.join(intenteng.getPredictedIntent(x, cust_id)))
@@ -56,32 +56,58 @@ class ModelEvaluate(object):
         intenteng_resp = IntentExtractor_resp()
         intenteng_resp.prepareTrainingData(cust_id)
         intenteng_resp.startTrainingProcess(cust_id)
+        
         #self.ticket_pd['ResponseModel_intent'] = self.ticket_pd['query'].apply(lambda x: ''.join(intenteng_resp.getPredictedIntent(x, cust_id)))
 
         self.ticket_pd['ResponseModel_intent'] = intenteng_resp.getPredictedIntent_list(self.ticket_pd['query'], cust_id)
-        self.ticket_pd['intent_tags'] = self.ticket_pd['resp_category'].apply (lambda x: tickets_learn.get_response_mapping_tags(x, cust_id, 'tags').lower().split())
-        self.ticket_pd['response_tags'] =  self.ticket_pd['ResponseModel_intent'].apply (lambda x: tickets_learn.get_response_mapping_tags(x, cust_id, 'resp_tags').lower().split())
         
-        self.ticket_pd['query_list'] = self.ticket_pd['query_tag'].apply (lambda x:x.lower().split())
+        respmap = tickets_learn.get_response_map(cust_id, 'tags')
+        resptagmap = tickets_learn.get_response_map(cust_id, 'resp_tags')
+        
+        self.ticket_pd['intent_tags'] = self.ticket_pd['TrainingModel_intent'].apply (lambda x: self.getMatch(respmap, x).lower().split())
+        self.ticket_pd['response_tags'] =  self.ticket_pd['TrainingModel_intent'].apply (lambda x: self.getMatch(resptagmap, x).lower().split())
+        
+        self.ticket_pd['query_list'] = self.ticket_pd['query'].apply (lambda x:x.lower().split())
         self.ticket_pd['response_list'] = self.ticket_pd['response'].apply (lambda x:x.lower().split())
 
         self.ticket_pd['query_list'] = self.ticket_pd['query_list'].apply (lambda x: self.applystem(x))
         self.ticket_pd['response_list'] = self.ticket_pd['response_list'].apply (lambda x: self.applystem(x))
                 
-        self.ticket_pd['match_in_query_list'] = self.ticket_pd.apply (lambda x: self.matchword(x['query_list'], x['intent_tags']), axis=1) 
-        self.ticket_pd['match_in_response_list'] = self.ticket_pd.apply (lambda x: self.matchword(x['response_list'], x['response_tags']), axis=1) 
+        self.ticket_pd['intent_tags_in_query_list'] = self.ticket_pd.apply (lambda x: self.matchword(x['query_list'], x['intent_tags']), axis=1) 
+        self.ticket_pd['resp_tags_in_response_list'] = self.ticket_pd.apply (lambda x: self.matchword(x['response_list'], x['response_tags']), axis=1) 
+
+        self.ticket_pd['percentage_match_in_query_list'] = self.ticket_pd.apply (lambda x: self.percentmatchword(x['query_list'], x['intent_tags']), axis=1) 
+        self.ticket_pd['percentage_match_in_response_list'] = self.ticket_pd.apply (lambda x: self.percentmatchword(x['response_list'], x['response_tags']), axis=1) 
         
         csvfile = self.ticket_pd.to_csv()
         self.storage.put_bucket(csvfile, str("TrainingModel_Evaluate_" + str(cust_id))) 
         logging.info("startEvaluation : Completed : " + str(cust_id))
         return
     
+    def getMatch (self, xmap, val): 
+        tags = ''
+        try: 
+            tags = xmap[val]
+        except KeyError as err: 
+            logging.error(err)
+        return tags 
+        
     def matchword(self, X, Y): 
         strx = []
         for items in X: 
             if items in Y: 
                 strx.append(items)
         return strx
+    
+    def percentmatchword(self, X, Y): 
+        strx = []
+        tot_words = len(X) + len(Y)
+        mat_words = 0
+        for items in X: 
+            if items in Y: 
+                mat_words += 1 
+        centmatch = int((mat_words * 100)/tot_words)
+        return centmatch
     
     def applystem(self, X):
         ps = PorterStemmer()
@@ -92,15 +118,11 @@ class ModelEvaluate(object):
     
     def createConfusionMatrix(self, cust_id):
         logging.info("createConfusionMatrix : Started " + str(cust_id))
-        logging.info("Mean Response Model and Training Model : \n" + str(np.mean(self.ticket_pd['ResponseModel_intent'] == self.ticket_pd['TrainingModel_intent'])))
-        logging.info("Mean Processed and Current Model : \n" + str(np.mean(self.ticket_pd['ResponseModel_intent'] == self.ticket_pd['resp_category'])))
+        logging.info("Mean Intent Model vs Response Model : \n" + str(np.mean(self.ticket_pd['TrainingModel_intent'] == self.ticket_pd['ResponseModel_intent'])))
+        logging.info("Mean Intent Model vs Saved Model : \n" + str(np.mean(self.ticket_pd['TrainingModel_intent'] == self.ticket_pd['resp_category'])))
 
-        '''
-        cm = ConfusionMatrix(self.ticket_pd['ResponseModel_intent'], self.ticket_pd['TrainingModel_intent'])
-       
-        logging.info("f1_score : " + str(f1_score(self.ticket_pd['ResponseModel_intent'], self.ticket_pd['TrainingModel_intent'], average="macro", labels=np.unique(self.ticket_pd['TrainingModel_intent']))))
-        logging.info("precision_score : " + str(precision_score(self.ticket_pd['ResponseModel_intent'], self.ticket_pd['TrainingModel_intent'], average="macro", labels=np.unique(self.ticket_pd['TrainingModel_intent']))))
-        logging.info("recall_score : " + str(recall_score(self.ticket_pd['ResponseModel_intent'], self.ticket_pd['TrainingModel_intent'], average="macro")))
-        '''
+        logging.info("Average Percentage Match in query : \n" + str(self.ticket_pd['percentage_match_in_query_list'].mean()))
+        logging.info("Average Percentage Match in query : \n" + str(self.ticket_pd['percentage_match_in_response_list'].mean()))
+
         logging.info("createConfusionMatrix : Completed " + str(cust_id))        
         return 
