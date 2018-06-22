@@ -93,12 +93,11 @@ class SmartRepliesSelector(object):
         
         resp_model = getResponseModel()
         storageOps = StorageOps()
-        next_page_token = 0
-        token = None
+
         last_id = 9999
-        while next_page_token != None:             
-            resp_logs, next_page_token = resp_model.list(cursor=token, modifiedflag=False, defaultflag=False, cust_id=cust_id, done=True)
-            token = next_page_token
+        tickets_learn = tickets_learner()
+        resp_data = tickets_learn.getResponseData(cust_id=cust_id, modifiedflag=False, defaultflag=False)
+        for resp_logs in resp_data: 
             for resp_log in resp_logs:
                 resp_model.delete(resp_log['id'], cust_id)
                 last_id = resp_log['id']
@@ -109,12 +108,35 @@ class SmartRepliesSelector(object):
                 resptitle = item['response_title'] if (item['response_title'] != '') else (cust_id + '_Response_' + str(rep_index))
                 resp_model.create(resptitle, str(cust_id + '_Response_' + str(rep_index)), item['response_summary'], item['select_tags'], item['response_tags'], done=True, id=rep_index, cust_id=cust_id)
                 rep_index += 1 
-            
+
+        self.removeRespDuplicate(cust_id)   
+
         csvfile = self.ticket_pd.to_csv()        
         storageOps.put_bucket(csvfile, str("SmartReply_DataFrame_" + str(cust_id))) 
         logging.info ('populateResponseData : Completed ' + str(cust_id))
         return
-    
+
+    def removeRespDuplicate(self, cust_id):
+        logging.info ('removeRespDuplicate : Started ' + str(cust_id)) 
+        tickets_learn = tickets_learner()
+        resp_model = getResponseModel()
+        resp_data = tickets_learn.getResponseData(cust_id=cust_id)
+        for resp_logs in resp_data: 
+            for resp_logx in resp_logs:
+                for resp_logy in resp_logs:
+                    if (resp_logx['id'] == resp_logy['id'] or resp_logx['modifiedflag'] == True or resp_logx['defaultflag'] == True): 
+                        continue
+                    respx_list = resp_logx['tags'].split()
+                    respy_list = resp_logy['tags'].split()
+                    count = 0
+                    for items in respx_list:
+                        if items in respy_list: 
+                            count +=1
+                    if (count == len(respx_list)): 
+                        resp_model.delete(resp_logx['id'], cust_id)
+                        logging.info('Deleting Duplicate Response id : ' + str(resp_logx['id']) + ' Over ' + str(resp_logy['id']))
+        logging.info ('removeRespDuplicate : Completed ' + str(cust_id) )
+                      
     def getKMeanClusters(self, cust_id, X_in, true_k):
         #logging.info("getKMeanClusters : " + str(cust_id))
         selected_resp = []

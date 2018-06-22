@@ -19,13 +19,13 @@ class tickets_learner(object):
             ticket_data.append(ticket_logs)
         return ticket_data 
     
-    def getResponseData(self, cust_id):   
+    def getResponseData(self, cust_id, modifiedflag=None, defaultflag=None):   
         logging.info ('getResponseData : ' + str(cust_id))
         resp_data = []
         next_page_token = 0
         token = None
         while next_page_token != None:             
-            resp_logs, next_page_token = getResponseModel().list(cursor=token, cust_id=cust_id, done=True)
+            resp_logs, next_page_token = getResponseModel().list(cursor=token, modifiedflag=modifiedflag, defaultflag=defaultflag, cust_id=cust_id, done=True)
             token = next_page_token
             resp_data.append(resp_logs)
         return resp_data 

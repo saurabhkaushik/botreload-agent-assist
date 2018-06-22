@@ -112,13 +112,12 @@ class IntentExtractor_resp(object):
         if len(self.y) < 1: 
             logging.info('Cant process as no Training ')
             return
-        traindata = getTrainingModel() 
-        next_page_token = 0
-        token = None 
-        while next_page_token != None:             
-            training_logs, next_page_token = traindata.list(cursor=token, feedback_flag=False, cust_id=cust_id)
-            token = next_page_token
-            for training_log in training_logs: 
+        tickets_learn = tickets_learner()
+        ticket_data = tickets_learn.getTrainingData(cust_id=cust_id)
+        lang = getCustomerModel().getLanguage(cust_id)
+        traindata = getTrainingModel()
+        for linestms in ticket_data:           
+            for training_log in linestms: 
                 strx = training_log['tags']  + ' . ' + training_log['query'] 
                 predicted = self.getPredictedIntent(strx, cust_id)  
                 if len(predicted) < 1: 
