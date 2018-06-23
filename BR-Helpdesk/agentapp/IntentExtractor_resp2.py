@@ -37,8 +37,9 @@ class IntentExtractor_resp(object):
         yY = []
         for linestms in ticket_data:           
             for linestm in linestms:
-                strx = str(linestm['tags'] + linestm['resp_name'] + linestm['resp_tags'] + linestm['response_text']).strip()
-                if (strx != ''):                    
+                tempxX = linestm['tags'].strip()
+                if (tempxX != ''):
+                    strx = str(linestm['tags']).strip()
                     strx = self.utilspace.preprocessText(strx, lang=lang, ner=True)
                     strx = str(self.utilclass.cleanData(strx, lang=lang, lowercase=True, remove_stops=True, tag_remove=True))               
                     xX.append(strx.strip().split())
@@ -112,7 +113,7 @@ class IntentExtractor_resp(object):
             logging.info('Cant process as no Training ')
             return
         tickets_learn = tickets_learner()
-        ticket_data = tickets_learn.getTrainingData(cust_id=cust_id, done=None)
+        ticket_data = tickets_learn.getTrainingData(cust_id=cust_id)
         lang = getCustomerModel().getLanguage(cust_id)
         traindata = getTrainingModel()
         for linestms in ticket_data:           

@@ -14,6 +14,9 @@ from sklearn.metrics import  f1_score, precision_score, recall_score
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+
 
 import csv
 import re 
@@ -37,8 +40,9 @@ class IntentExtractor_resp(object):
         yY = []
         for linestms in ticket_data:           
             for linestm in linestms:
-                strx = str(linestm['tags'] + linestm['resp_name'] + linestm['resp_tags'] + linestm['response_text']).strip()
-                if (strx != ''):                    
+                tempxX = linestm['tags'].strip()
+                if (tempxX != ''):
+                    strx = str(linestm['tags'] + linestm['resp_name'] + linestm['resp_tags'] + linestm['response_text'] ).strip()
                     strx = self.utilspace.preprocessText(strx, lang=lang, ner=True)
                     strx = str(self.utilclass.cleanData(strx, lang=lang, lowercase=True, remove_stops=True, tag_remove=True))               
                     xX.append(strx.strip().split())
@@ -65,8 +69,17 @@ class IntentExtractor_resp(object):
         #                ("MultinomialNB", MultinomialNB())])
         #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
         #               ("SVC", LogisticRegression(random_state=0))]) 
-        self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
-                       ("SVC", SVC(kernel='linear', probability=True))])
+        count_vect = CountVectorizer()
+        X_train_counts = count_vect.fit_transform(self.X)
+        X_train_counts.shape
+        
+        tfidf_transformer = TfidfTransformer()
+        X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
+        X_train_tfidf.shape
+        self.X = X_train_tfidf
+        self.etree_w2v_tfidf = Pipeline([('vect', CountVectorizer()), ('tfidf', TfidfTransformer()), ('clf', SVC(kernel='linear', probability=True))]) 
+        #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
+        #               ("SVC", SVC(kernel='linear', probability=True))])
         self.etree_w2v_tfidf.fit(self.X, self.y)
         
         logging.info ("Total Training Samples : %s" % len(self.y))

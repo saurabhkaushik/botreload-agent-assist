@@ -89,7 +89,7 @@ class ModelEvaluate(object):
         try: 
             tags = xmap[val]
         except KeyError as err: 
-            logging.error(err)
+            logging.error('getMatch :' + str(err))
         return tags 
         
     def matchword(self, X, Y): 
@@ -103,6 +103,8 @@ class ModelEvaluate(object):
         strx = []
         tot_words = len(X) + len(Y)
         mat_words = 0
+        if tot_words < 1: 
+            return 0
         for items in X: 
             if items in Y: 
                 mat_words += 1 
