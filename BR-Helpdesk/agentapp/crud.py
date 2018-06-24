@@ -1,10 +1,11 @@
 from agentapp.model_select import getResponseModel, getTrainingModel, getCustomerModel
 from agentapp.tickets_learner import tickets_learner
+from agentapp.EmailSender import EmailSender
 from flask import Blueprint, redirect, render_template, request, url_for
 import logging 
-crud = Blueprint('crud', __name__)
-
 from agentapp.IntentExtractor import IntentExtractor
+
+crud = Blueprint('crud', __name__)
 intenteng = IntentExtractor()
 
 # [START login]
@@ -54,6 +55,9 @@ def doregister():
     lang_type = request.args.get('lang_type', None)
     email_id = request.args.get('email_id', None)
     password_ = request.args.get('password', None)
+    
+    #emailsender = EmailSender()
+    #emailsender.send()
     
     if cust_id == None or cust_id == '': 
         logging.error('\'' + cust_id + '\' is invalid customer subdomain. ')
