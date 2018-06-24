@@ -15,7 +15,7 @@
 
   <div class="form-group">
     <label for="description">Response Text</label>
-    <textarea name="response_text" id="response_text" class="form-control">{{book.response_text}}</textarea>
+    <textarea name="response_text" id="response_text" class="form-control" rows="5">{{book.response_text}}</textarea>
   </div>
 
   <div class="form-group">
@@ -23,6 +23,10 @@
     <textarea name="tags" id="tags" class="form-control">{{book.tags}}</textarea>
   </div>
   <button type="submit" class="btn btn-success">Save</button>
+	 <a href="/smartreply/{{book.id}}/delete?cust_id={{cust_id}}" class="btn btn-danger btn-sm">
+	 	<i class="glyphicon glyphicon-trash"></i>
+	 	Delete 
+	</a>
 </form>
 
 {% endblock %}

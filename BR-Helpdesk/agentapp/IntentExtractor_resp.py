@@ -122,7 +122,7 @@ class IntentExtractor_resp(object):
                 strx = training_log['tags']  + ' . ' + training_log['query'] 
                 predicted = self.getPredictedIntent(strx, cust_id)  
                 if len(predicted) < 1: 
-                    predicted = ['Default']
+                    predicted = ['default']
                 traindata.update(training_log['tags'], training_log['query'], training_log['response'], query_category=training_log['query_category'], 
                     done=True, id = training_log['id'], resp_category=predicted[0], cust_id=cust_id)
                 print ('processing training data :', training_log['id'])
