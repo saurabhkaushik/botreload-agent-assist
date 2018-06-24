@@ -1,31 +1,31 @@
-"Informa√ß√µes do produto, informa√ß√£o sobre produtos, planejamento de compra",,Product_Initial_Info
-"Custo, pre√ßo, taxas, imposto",,Product_Price
-"Pr√©-Venda Pergunta, Antes da compra, antes das vendas,",,Product_PreSales
-"Status do pedido, a fim Informa√ß√µes",,Order_info
-"Ordem de devolu√ß√£o, o transporte de volta,",,Product_Return
+"InformaÁıes do produto, informaÁ„o sobre produtos, planejamento de compra",,Product_Initial_Info
+"Custo, preÁo, taxas, imposto",,Product_Price
+"PrÈ-Venda Pergunta, Antes da compra, antes das vendas,",,Product_PreSales
+"Status do pedido, a fim InformaÁıes",,Order_info
+"Ordem de devoluÁ„o, o transporte de volta,",,Product_Return
 "Envio / entrega, entrega do produto,",,Product_Delivery_Status
-quest√£o fornecedor,,Vendor_Issue
-quest√£o da filial,,Affiliate_Issue
+quest„o fornecedor,,Vendor_Issue
+quest„o da filial,,Affiliate_Issue
 Disponibilidade de produto,,Product_Availability
-"Problema t√©cnico, n√£o trabalhando,",,Technical_Issue
+"Problema tÈcnico, n„o trabalhando,",,Technical_Issue
 "Defeituoso, quebrado, mau funcionamento",,Product_Defective
 "Cancelar meu pedido, cancelar a entrega do produto",,Order_Cancel_Request
-Restitui√ß√£o,,Product_Refund_Request
+RestituiÁ„o,,Product_Refund_Request
 "Comece a minha assinatura, Assinar me,",,Subscription_new
-Renova√ß√£o da inscri√ß√£o,,Subscription_Renewal
+RenovaÁ„o da inscriÁ„o,,Subscription_Renewal
 rompimento,,Service_Disruption
 "Unsubscribe, Cancelamento, Descontinuar",,Service_Cancel_request
-"Bug, Edi√ß√£o,",,Software_bug
-"Solicita√ß√£o de recurso, New Feature,",,Software_Feature_Request
+"Bug, EdiÁ„o,",,Software_bug
+"SolicitaÁ„o de recurso, New Feature,",,Software_Feature_Request
 "venda, vendas, desconto,",,Software_Sales_Billing
-"Como, instru√ß√£o, manual, guia,",,Software_How_To
-"Quest√£o t√©cnica, n√£o √© poss√≠vel corrigi-lo, n√£o √© poss√≠vel abri-lo, Debug",,Software_Technical_Issue
+"Como, instruÁ„o, manual, guia,",,Software_How_To
+"Quest„o tÈcnica, n„o È possÌvel corrigi-lo, n„o È possÌvel abri-lo, Debug",,Software_Technical_Issue
 "Assinatura Anular, Cancelamento",,Software_Cancellation
-"Queixa, Quest√µes,",,Phase_complaint
+"Queixa, Questıes,",,Phase_complaint
 "Consulta, Esclarecimentos, pergunta, resposta,",,Software_Query
-"SME ajuda, necessidade t√©cnico, precisa Expert, Precisa de PME, Need Especialista.",,Request_for_Expert
-"SLA viola√ß√£o, Longer Response, n√£o ouviu, enquanto se aguarda por muito tempo,",,Phase_sla_breach
-"Estado do meu bilhete, Qualquer Update, Esperando resolu√ß√£o, tempo longo,",,Phase_Resolution_Wait
+"SME ajuda, necessidade tÈcnico, precisa Expert, Precisa de PME, Need Especialista.",,Request_for_Expert
+"SLA violaÁ„o, Longer Response, n„o ouviu, enquanto se aguarda por muito tempo,",,Phase_sla_breach
+"Estado do meu bilhete, Qualquer Update, Esperando resoluÁ„o, tempo longo,",,Phase_Resolution_Wait
 "Foda-se, Stupid, Caramba, Asshole,",,Response_to_Diffuse_Situation
 "Frustrado,",,Response_to_Angry_situation
-"Trabalhou, trabalhando agora, Obrigado pela ajuda, Feche a Ticket, Feche o bilhete, ele est√° trabalhando, Satisfa√ß√£o",,Phase_Feedback
+"Trabalhou, trabalhando agora, Obrigado pela ajuda, Feche a Ticket, Feche o bilhete, ele est· trabalhando, SatisfaÁ„o",,Phase_Feedback

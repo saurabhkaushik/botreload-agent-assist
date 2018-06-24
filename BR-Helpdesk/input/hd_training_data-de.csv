@@ -1,31 +1,31 @@
-"Produkt-Info, Informationen Ã¼ber Produkt, zu Planung kaufen",,Product_Initial_Info
+"Produkt-Info, Informationen über Produkt, zu Planung kaufen",,Product_Initial_Info
 "Kosten, Preis, Kosten, Steuer",,Product_Price
 "Pre-Sale Frage, Vor dem Kauf Vor dem Verkauf,",,Product_PreSales
 "Bestell-Status, Bestell-Info",,Order_info
-"Bestellen Sie Return, Versand zurÃ¼ck,",,Product_Return
+"Bestellen Sie Return, Versand zurück,",,Product_Return
 "Versand / Lieferung, Produktlieferung,",,Product_Delivery_Status
 Vendor Ausgabe,,Vendor_Issue
 Affiliate-Ausgabe,,Affiliate_Issue
-ProduktverfÃ¼gbarkeit,,Product_Availability
+Produktverfügbarkeit,,Product_Availability
 "Technisches Problem, nicht funktioniert,",,Technical_Issue
 "Defekte, Zerbrochen, Versagende",,Product_Defective
 "Meine Bestellung stornieren, stornieren Lieferung Produkt",,Order_Cancel_Request
-RÃ¼ckerstattung,,Product_Refund_Request
+Rückerstattung,,Product_Refund_Request
 "Starten Sie mein Abonnement, Abonnieren Sie mir,",,Subscription_new
-Abo-VerlÃ¤ngerung,,Subscription_Renewal
-StÃ¶rung,,Service_Disruption
+Abo-Verlängerung,,Subscription_Renewal
+Störung,,Service_Disruption
 "Abmelden, Stornierung, Unterbrechen",,Service_Cancel_request
 "Bug, Ausgabe,",,Software_bug
 "Feature Request, Neues Feature,",,Software_Feature_Request
 "Verkauf, Verkauf, Rabatt,",,Software_Sales_Billing
 "How To, Instruktion, Manuell, Guide,",,Software_How_To
-"Technisches Problem, kann nicht es beheben, kann nicht um es Ã¶ffnen, Debug",,Software_Technical_Issue
+"Technisches Problem, kann nicht es beheben, kann nicht um es öffnen, Debug",,Software_Technical_Issue
 "Annullieren, Stornierung",,Software_Cancellation
 "Beschwerde, Probleme,",,Phase_complaint
-"Abfrage, KlÃ¤rungen, Frage, Antwort,",,Software_Query
-"KMU-Hilfe, Techniker benÃ¶tigen, Expert benÃ¶tigen, KMU benÃ¶tigen, mÃ¼ssen Specialist.",,Request_for_Expert
-"SLA Verletzung, lÃ¤ngere Reaktions, nicht gehÃ¶rt haben, fÃ¼r lange Pending,",,Phase_sla_breach
-"Der Status meines Tickets, Alle aktualisieren, Warten auf AuflÃ¶sung, Lange,",,Phase_Resolution_Wait
+"Abfrage, Klärungen, Frage, Antwort,",,Software_Query
+"KMU-Hilfe, Techniker benötigen, Expert benötigen, KMU benötigen, müssen Specialist.",,Request_for_Expert
+"SLA Verletzung, längere Reaktions, nicht gehört haben, für lange Pending,",,Phase_sla_breach
+"Der Status meines Tickets, Alle aktualisieren, Warten auf Auflösung, Lange,",,Phase_Resolution_Wait
 "Ficken, Dumm, Verdammt, Arschloch,",,Response_to_Diffuse_Situation
 "Frustriert,",,Response_to_Angry_situation
-"Jetzt arbeitete, Arbeiten, Vielen Dank fÃ¼r die Hilfe, das Ticket schlieÃŸen, schlieÃŸen Sie das Ticket, es funktioniert, Zufriedenheit",,Phase_Feedback
+"Jetzt arbeitete, Arbeiten, Vielen Dank für die Hilfe, das Ticket schließen, schließen Sie das Ticket, es funktioniert, Zufriedenheit",,Phase_Feedback

@@ -1,31 +1,31 @@
-"La informaci√≥n del producto, informaci√≥n sobre productos, planificaci√≥n para la compra",,Product_Initial_Info
+"La informaciÛn del producto, informaciÛn sobre productos, planificaciÛn para la compra",,Product_Initial_Info
 "Coste, precio, cargos, impuestos",,Product_Price
 "Pre-Venta de preguntas, antes de la compra, antes de la venta,",,Product_PreSales
-"Estado del pedido, orden de Informaci√≥n",,Order_info
-"Pedido de devoluci√≥n, el env√≠o de vuelta,",,Product_Return
-"Env√≠o / Entrega del producto,",,Product_Delivery_Status
-cuesti√≥n proveedor,,Vendor_Issue
-cuesti√≥n de afiliados,,Affiliate_Issue
+"Estado del pedido, orden de InformaciÛn",,Order_info
+"Pedido de devoluciÛn, el envÌo de vuelta,",,Product_Return
+"EnvÌo / Entrega del producto,",,Product_Delivery_Status
+cuestiÛn proveedor,,Vendor_Issue
+cuestiÛn de afiliados,,Affiliate_Issue
 Disponibilidad de producto,,Product_Availability
-"Problema t√©cnico, que no trabaja,",,Technical_Issue
+"Problema tÈcnico, que no trabaja,",,Technical_Issue
 "Defectuoso, roto, mal funcionamiento",,Product_Defective
 "Cancelar mi pedido, cancelar la entrega del producto",,Order_Cancel_Request
 Reembolso,,Product_Refund_Request
-"Comienza mi suscripci√≥n, Suscribirme,",,Subscription_new
-Renovaci√≥n de la suscripci√≥n,,Subscription_Renewal
+"Comienza mi suscripciÛn, Suscribirme,",,Subscription_new
+RenovaciÛn de la suscripciÛn,,Subscription_Renewal
 Ruptura,,Service_Disruption
-"Darse de baja, cancelaci√≥n, Suspender",,Service_Cancel_request
-"Bug, Emisi√≥n,",,Software_bug
-"Pedido de funciones, Nueva funci√≥n,",,Software_Feature_Request
+"Darse de baja, cancelaciÛn, Suspender",,Service_Cancel_request
+"Bug, EmisiÛn,",,Software_bug
+"Pedido de funciones, Nueva funciÛn,",,Software_Feature_Request
 "venta, venta, descuento,",,Software_Sales_Billing
-"C√≥mo, instrucciones, manual, gu√≠a,",,Software_How_To
-"Problema t√©cnico, incapaz de solucionarlo, no se puede abrir, depurarla",,Software_Technical_Issue
-"Cancelar suscripci√≥n, cancelaci√≥n",,Software_Cancellation
+"CÛmo, instrucciones, manual, guÌa,",,Software_How_To
+"Problema tÈcnico, incapaz de solucionarlo, no se puede abrir, depurarla",,Software_Technical_Issue
+"Cancelar suscripciÛn, cancelaciÛn",,Software_Cancellation
 "Quejas, Problemas,",,Phase_complaint
 "Consulta, aclaraciones, preguntas, respuestas,",,Software_Query
-"SME ayuda, necesidad del t√©cnico, Necesidad de expertos, Need SME, Need especialista.",,Request_for_Expert
-"SLA incumplimiento, m√°s largo de respuesta, no ha o√≠do, a la espera por mucho tiempo,",,Phase_sla_breach
-"Estado de mi boleto, cualquier actualizaci√≥n, la espera de la resoluci√≥n, el tiempo largo,",,Phase_Resolution_Wait
+"SME ayuda, necesidad del tÈcnico, Necesidad de expertos, Need SME, Need especialista.",,Request_for_Expert
+"SLA incumplimiento, m·s largo de respuesta, no ha oÌdo, a la espera por mucho tiempo,",,Phase_sla_breach
+"Estado de mi boleto, cualquier actualizaciÛn, la espera de la resoluciÛn, el tiempo largo,",,Phase_Resolution_Wait
 "Joder, Stupid, Maldita, capullo,",,Response_to_Diffuse_Situation
 "Frustrado,",,Response_to_Angry_situation
-"Trabajado, Trabajar Ahora, gracias por la ayuda, Cerrar el billete, el billete Cierre, se est√° trabajando, Satisfacci√≥n",,Phase_Feedback
+"Trabajado, Trabajar Ahora, gracias por la ayuda, Cerrar el billete, el billete Cierre, se est· trabajando, SatisfacciÛn",,Phase_Feedback

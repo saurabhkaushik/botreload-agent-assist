@@ -56,8 +56,10 @@ class IntentExtractor_resp(object):
         if len(self.y) < 1: 
             logging.info('Cant process as no Training ')
             return
-        self.model = Word2Vec(self.X, size=100, window=5, min_count=1, workers=3)
+        dim_size = 100
+        self.model = Word2Vec(self.X, size=dim_size, window=5, min_count=1, workers=3)
         self.model.wv.index2word
+        
         w2v = {w: vec for w, vec in zip(self.model.wv.index2word, self.model.wv.syn0)}
         #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
         #                ("extra trees", ExtraTreesClassifier(n_estimators=200))])
@@ -65,7 +67,7 @@ class IntentExtractor_resp(object):
         #                ("MultinomialNB", MultinomialNB())])
         #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
         #               ("SVC", LogisticRegression(random_state=0))]) 
-        self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
+        self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v, dim_size)), 
                        ("SVC", SVC(kernel='linear', probability=True))])
         self.etree_w2v_tfidf.fit(self.X, self.y)
         
@@ -96,10 +98,10 @@ class IntentExtractor_resp(object):
         
         lang = getCustomerModel().getLanguage(cust_id)
         X_in = X_in.apply(lambda x : self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True, tag_remove=True).strip().split())
-        X_list = X_in.tolist()
+        
         predicted_list= []
         try:
-            predicted_list = self.etree_w2v_tfidf.predict(X_list) 
+            predicted_list = self.etree_w2v_tfidf.predict(X_in) 
         except ValueError as err: 
             logging.error('getPredictedIntent_list : ' + str(err))            
         predict_df = pd.Series(predicted_list)
@@ -116,7 +118,7 @@ class IntentExtractor_resp(object):
         lang = getCustomerModel().getLanguage(cust_id)
         traindata = getTrainingModel()
         for linestms in ticket_data:           
-            for training_log in linestms: 
+            for training_log in linestms:  
                 strx = training_log['tags']  + ' . ' + training_log['query'] 
                 predicted = self.getPredictedIntent(strx, cust_id)  
                 if len(predicted) < 1: 

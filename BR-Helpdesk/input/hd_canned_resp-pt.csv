@@ -1,72 +1,72 @@
-Product_Initial_Info,"Obrigado por entrar em contato para mais informaÃ§Ãµes sobre este produto.
-A seguir estÃ£o links relevantes para esta consulta.
-[InformaÃ§Ã£o do produto]
-Espero que isto ajude. Por favor, deixe-nos saber, se vocÃª precisar de informaÃ§Ãµes mais ou especÃ­fico.","InformaÃ§Ãµes do produto, informaÃ§Ã£o sobre produtos, planejamento de compra"
-Product_Price,"Obrigado por entrar em contato em relaÃ§Ã£o ao preÃ§o deste produto / serviÃ§o. Aqui estÃ£o os detalhes.
-[Info custo do produto]
-Espero que isto ajude. Por favor, deixe-nos saber, se vocÃª precisar de informaÃ§Ãµes mais ou especÃ­fico.","Custo, preÃ§o, taxas, imposto"
-Product_PreSales,"Obrigado por entrar em contato em relaÃ§Ã£o a comprar este produto.
-Aqui estÃ£o os detalhes.
-[InformaÃ§Ã£o do produto de vendas]
-Espero que isto ajude. Por favor, deixe-nos saber, se vocÃª precisar de informaÃ§Ãµes mais ou especÃ­fico.","PrÃ©-Venda Pergunta, Antes da compra, antes das vendas,"
-Order_info,"Obrigado por entrar em contato em relaÃ§Ã£o status do seu pedido produto.
-Aqui estÃ£o os detalhes.
-[Produtos Encomendar detalhes]
-Espero que isto ajude. Por favor, deixe-nos saber, se vocÃª precisar de informaÃ§Ãµes mais ou especÃ­fico.","Status do pedido, a fim InformaÃ§Ãµes"
-Product_Return,"Obrigado por entrar em contato no que diz respeito Ã  sua consulta no retorno de pedidos de produtos.
-Aqui estÃ£o os detalhes.
-[Product Detalhes sobre retorno]
-Espero que isto ajude. Por favor, deixe-nos saber, se vocÃª precisar de informaÃ§Ãµes mais ou especÃ­fico.","Ordem de devoluÃ§Ã£o, o transporte de volta,"
-Product_Delivery_Status,"Obrigado por entrar em contato em relaÃ§Ã£o entrega do seu pedido.
-Aqui estÃ£o os detalhes.
-[Product Status de Entrega Detalhes]
-Espero que isto ajude. Por favor, deixe-nos saber, se vocÃª precisar de informaÃ§Ãµes mais ou especÃ­fico.","Envio / entrega, entrega do produto,"
-Vendor_Issue,Muito em ouvir que vocÃª estÃ¡ tendo problema com o nosso fornecedor. Estamos indagando sobre este incidente e irÃ¡ atualizÃ¡-lo em breve.,questÃ£o fornecedor
-Affiliate_Issue,Muito em ouvir que vocÃª estÃ¡ tendo problema com a nossa filial. Estamos indagando sobre este incidente e irÃ¡ atualizÃ¡-lo em breve.,questÃ£o da filial
-Product_Availability,"Obrigado por entrar em contato no que diz respeito Ã  disponibilidade do produto.
-Aqui estÃ£o os detalhes.
-[Disponibilidade Detalhes do produto]
-Espero que isto ajude. Por favor, deixe-nos saber, se vocÃª precisar de informaÃ§Ãµes mais ou especÃ­fico.",Disponibilidade de produto
-Technical_Issue,Muito em ouvir que o seu estÃ£o tendo estas questÃµes tÃ©cnicas. Estamos em processo de resolvÃª-los e nÃ³s entraremos em contato com vocÃª em breve.,"Problema tÃ©cnico, nÃ£o trabalhando,"
-Product_Defective,Muito em ouvir que vocÃª recebeu este produto defeituoso. Estamos organizando pegar isso e vai voltar para vocÃª com mais status.,"Defeituoso, quebrado, mau funcionamento"
-Order_Cancel_Request,Lamento ouvir isso deseja cancelar esta ordem. Estamos trabalhando para cancelar a encomenda. IrÃ¡ atualizÃ¡-lo em breve sobre o seu estado.,"Cancelar meu pedido, cancelar a entrega do produto"
-Product_Refund_Request,"Recebemos o seu pedido de reembolso. Aqui estÃ£o as atualizaÃ§Ãµes sobre ele.
-[AtualizaÃ§Ã£o sobre RestituiÃ§Ã£o]
-Espero que isto ajude. Por favor, deixe-nos saber, se vocÃª precisar de informaÃ§Ãµes mais ou especÃ­fico.",RestituiÃ§Ã£o
-Subscription_new,"Obrigado por entrar em contato no que diz respeito inscriÃ§Ã£o para o nosso serviÃ§o.
-Aqui estÃ£o os detalhes.
-[ServiÃ§o de Assinatura Detalhes]
-Espero que isto ajude. Por favor, deixe-nos saber de qualquer outro requisito ou preocupaÃ§Ãµes.","Comece a minha assinatura, Assinar me,"
-Subscription_Renewal,"Obrigado por entrar em contato no que diz respeito renovaÃ§Ã£o da subscriÃ§Ã£o deste serviÃ§o.
-Aqui estÃ£o os detalhes.
-[ServiÃ§o de Assinatura Detalhes]
-Espero que isto ajude. Por favor, deixe-nos saber de qualquer outra exigÃªncia.",RenovaÃ§Ã£o da inscriÃ§Ã£o
-Service_Disruption,Muito em ouvir que vocÃª estÃ¡ enfrentando problema de interrupÃ§Ã£o do serviÃ§o. Estamos trabalhando nisso e vamos voltar para com a atualizaÃ§Ã£o mais especÃ­fico em breve.,rompimento
-Service_Cancel_request,"Muito em ouvir que vocÃª deseja cancelar a sua assinatura. Eu posso certamente fazer isso por vocÃª. VocÃª se importaria de me dizer por que estÃ¡ cancelando? Se ele tem a ver com a qualidade do produto ou serviÃ§o, gostarÃ­amos de saber porque estamos sempre nos esforÃ§ando para melhorar.","Unsubscribe, Cancelamento, Descontinuar"
-Software_bug,"Obrigado por relatar esse defeito em nosso produto. NÃ³s comeÃ§amos a trabalhar nele e logo, vamos atualizÃ¡-lo sobre a sua resoluÃ§Ã£o.","Bug, EdiÃ§Ã£o,"
-Software_Feature_Request,"GraÃ§as para sugerir-nos esta nova funcionalidade para o nosso produto. NÃ³s certamente apreciar o seu esforÃ§o e em breve, vamos voltar para vocÃª com o nosso plano em torno dele.","SolicitaÃ§Ã£o de recurso, New Feature,"
-Software_Sales_Billing,"Obrigado por entrar em contato em relaÃ§Ã£o Ã  venda de produtos.
-Aqui estÃ£o os detalhes.
-[Detalhes do Produto Vendas]
-Espero que isto ajude. Por favor, deixe-nos saber, se vocÃª precisar de informaÃ§Ãµes mais ou especÃ­fico.","venda, vendas, desconto,"
+Product_Initial_Info,"Obrigado por entrar em contato para mais informações sobre este produto.
+ A seguir estão links relevantes para esta consulta.
+ [Informação do produto]
+ Espero que isto ajude. Por favor, deixe-nos saber, se você precisar de informações mais ou específico.","Informações do produto, informação sobre produtos, planejamento de compra"
+Product_Price,"Obrigado por entrar em contato em relação ao preço deste produto / serviço. Aqui estão os detalhes.
+ [Info custo do produto]
+ Espero que isto ajude. Por favor, deixe-nos saber, se você precisar de informações mais ou específico.","Custo, preço, taxas, imposto"
+Product_PreSales,"Obrigado por entrar em contato em relação a comprar este produto.
+ Aqui estão os detalhes.
+ [Informação do produto de vendas]
+ Espero que isto ajude. Por favor, deixe-nos saber, se você precisar de informações mais ou específico.","Pré-Venda Pergunta, Antes da compra, antes das vendas,"
+Order_info,"Obrigado por entrar em contato em relação status do seu pedido produto.
+ Aqui estão os detalhes.
+ [Produtos Encomendar detalhes]
+ Espero que isto ajude. Por favor, deixe-nos saber, se você precisar de informações mais ou específico.","Status do pedido, a fim Informações"
+Product_Return,"Obrigado por entrar em contato no que diz respeito à sua consulta no retorno de pedidos de produtos.
+ Aqui estão os detalhes.
+ [Product Detalhes sobre retorno]
+ Espero que isto ajude. Por favor, deixe-nos saber, se você precisar de informações mais ou específico.","Ordem de devolução, o transporte de volta,"
+Product_Delivery_Status,"Obrigado por entrar em contato em relação entrega do seu pedido.
+ Aqui estão os detalhes.
+ [Product Status de Entrega Detalhes]
+ Espero que isto ajude. Por favor, deixe-nos saber, se você precisar de informações mais ou específico.","Envio / entrega, entrega do produto,"
+Vendor_Issue,Muito em ouvir que você está tendo problema com o nosso fornecedor. Estamos indagando sobre este incidente e irá atualizá-lo em breve.,questão fornecedor
+Affiliate_Issue,Muito em ouvir que você está tendo problema com a nossa filial. Estamos indagando sobre este incidente e irá atualizá-lo em breve.,questão da filial
+Product_Availability,"Obrigado por entrar em contato no que diz respeito à disponibilidade do produto.
+ Aqui estão os detalhes.
+ [Disponibilidade Detalhes do produto]
+ Espero que isto ajude. Por favor, deixe-nos saber, se você precisar de informações mais ou específico.",Disponibilidade de produto
+Technical_Issue,Muito em ouvir que o seu estão tendo estas questões técnicas. Estamos em processo de resolvê-los e nós entraremos em contato com você em breve.,"Problema técnico, não trabalhando,"
+Product_Defective,Muito em ouvir que você recebeu este produto defeituoso. Estamos organizando pegar isso e vai voltar para você com mais status.,"Defeituoso, quebrado, mau funcionamento"
+Order_Cancel_Request,Lamento ouvir isso deseja cancelar esta ordem. Estamos trabalhando para cancelar a encomenda. Irá atualizá-lo em breve sobre o seu estado.,"Cancelar meu pedido, cancelar a entrega do produto"
+Product_Refund_Request,"Recebemos o seu pedido de reembolso. Aqui estão as atualizações sobre ele.
+ [Atualização sobre Restituição]
+ Espero que isto ajude. Por favor, deixe-nos saber, se você precisar de informações mais ou específico.",Restituição
+Subscription_new,"Obrigado por entrar em contato no que diz respeito inscrição para o nosso serviço.
+ Aqui estão os detalhes.
+ [Serviço de Assinatura Detalhes]
+ Espero que isto ajude. Por favor, deixe-nos saber de qualquer outro requisito ou preocupações.","Comece a minha assinatura, Assinar me,"
+Subscription_Renewal,"Obrigado por entrar em contato no que diz respeito renovação da subscrição deste serviço.
+ Aqui estão os detalhes.
+ [Serviço de Assinatura Detalhes]
+ Espero que isto ajude. Por favor, deixe-nos saber de qualquer outra exigência.",Renovação da inscrição
+Service_Disruption,Muito em ouvir que você está enfrentando problema de interrupção do serviço. Estamos trabalhando nisso e vamos voltar para com a atualização mais específico em breve.,rompimento
+Service_Cancel_request,"Muito em ouvir que você deseja cancelar a sua assinatura. Eu posso certamente fazer isso por você. Você se importaria de me dizer por que está cancelando? Se ele tem a ver com a qualidade do produto ou serviço, gostaríamos de saber porque estamos sempre nos esforçando para melhorar.","Unsubscribe, Cancelamento, Descontinuar"
+Software_bug,"Obrigado por relatar esse defeito em nosso produto. Nós começamos a trabalhar nele e logo, vamos atualizá-lo sobre a sua resolução.","Bug, Edição,"
+Software_Feature_Request,"Graças para sugerir-nos esta nova funcionalidade para o nosso produto. Nós certamente apreciar o seu esforço e em breve, vamos voltar para você com o nosso plano em torno dele.","Solicitação de recurso, New Feature,"
+Software_Sales_Billing,"Obrigado por entrar em contato em relação à venda de produtos.
+ Aqui estão os detalhes.
+ [Detalhes do Produto Vendas]
+ Espero que isto ajude. Por favor, deixe-nos saber, se você precisar de informações mais ou específico.","venda, vendas, desconto,"
 Software_How_To,"Agradecemos seu contato com perguntas sobre [procedimento]!
-Aqui estÃ£o as instruÃ§Ãµes para a mesma:
-[InstruÃ§Ãµes detalhes]
-Se vocÃª tiver alguma dÃºvida ao longo do caminho, nÃ£o hesite em chegar.","Como, instruÃ§Ã£o, manual, guia,"
-Software_Technical_Issue,"Obrigado por relatar esse defeito em nosso produto. NÃ³s comeÃ§amos a trabalhar nele e logo, vamos atualizÃ¡-lo sobre a sua resoluÃ§Ã£o.","QuestÃ£o tÃ©cnica, nÃ£o Ã© possÃ­vel corrigi-lo, nÃ£o Ã© possÃ­vel abri-lo, Debug"
-Software_Cancellation,"Muito em ouvir que vocÃª deseja cancelar a sua assinatura. Eu posso certamente fazer isso por vocÃª. VocÃª se importaria de me dizer por que estÃ¡ cancelando? Se ele tem a ver com a qualidade do produto ou serviÃ§o, gostarÃ­amos de saber porque estamos sempre nos esforÃ§ando para melhorar.","Assinatura Anular, Cancelamento"
-Phase_complaint,"Desculpe a cabeÃ§a que vocÃª estÃ¡ enfrentando problema com o nosso produto / serviÃ§o. NÃ³s garantimos que iremos abordar a sua reclamaÃ§Ã£o com a devida atenÃ§Ã£o. Gentilmente esperar por algum tempo, atÃ© que trabalhar em resolvÃª-lo.","Queixa, QuestÃµes,"
-Software_Query,"Agradecemos seu contato com perguntas sobre os nossos serviÃ§os de produtos.
-Aqui estÃ£o os detalhes para mesma:
-[Consulta de resoluÃ§Ã£o de detalhes]
-Se vocÃª tiver alguma dÃºvida ao longo do caminho, nÃ£o hesite em chegar.","Consulta, Esclarecimentos, pergunta, resposta,"
-Request_for_Expert,"Agradecemos seu contato com o pedido para obter ajuda com o nosso tÃ©cnico especializado. Em breve, estaremos atribuindo uma pessoa e enviar-lhe his / her de contato e agendamento detalhes.","SME ajuda, necessidade tÃ©cnico, precisa Expert, Precisa de PME, Need Especialista."
-Phase_sla_breach,Lamentamos muito que temos Acordo de NÃ­vel de ServiÃ§o a esta resoluÃ§Ã£o questÃ£o violado. Gentilmente nos dar mais algum tempo e vamos voltar para vocÃª com a resoluÃ§Ã£o adequada.,"SLA violaÃ§Ã£o, Longer Response, nÃ£o ouviu, enquanto se aguarda por muito tempo,"
-Phase_Resolution_Wait,Lamentamos muito que vocÃª tem que esperar para a resoluÃ§Ã£o dos seus problemas. Gentilmente nos dar mais algum tempo e vamos voltar para vocÃª com resoluÃ§Ã£o atempada adequada.,"Estado do meu bilhete, Qualquer Update, Esperando resoluÃ§Ã£o, tempo longo,"
+ Aqui estão as instruções para a mesma:
+ [Instruções detalhes]
+ Se você tiver alguma dúvida ao longo do caminho, não hesite em chegar.","Como, instrução, manual, guia,"
+Software_Technical_Issue,"Obrigado por relatar esse defeito em nosso produto. Nós começamos a trabalhar nele e logo, vamos atualizá-lo sobre a sua resolução.","Questão técnica, não é possível corrigi-lo, não é possível abri-lo, Debug"
+Software_Cancellation,"Muito em ouvir que você deseja cancelar a sua assinatura. Eu posso certamente fazer isso por você. Você se importaria de me dizer por que está cancelando? Se ele tem a ver com a qualidade do produto ou serviço, gostaríamos de saber porque estamos sempre nos esforçando para melhorar.","Assinatura Anular, Cancelamento"
+Phase_complaint,"Desculpe a cabeça que você está enfrentando problema com o nosso produto / serviço. Nós garantimos que iremos abordar a sua reclamação com a devida atenção. Gentilmente esperar por algum tempo, até que trabalhar em resolvê-lo.","Queixa, Questões,"
+Software_Query,"Agradecemos seu contato com perguntas sobre os nossos serviços de produtos.
+ Aqui estão os detalhes para mesma:
+ [Consulta de resolução de detalhes]
+ Se você tiver alguma dúvida ao longo do caminho, não hesite em chegar.","Consulta, Esclarecimentos, pergunta, resposta,"
+Request_for_Expert,"Agradecemos seu contato com o pedido para obter ajuda com o nosso técnico especializado. Em breve, estaremos atribuindo uma pessoa e enviar-lhe his / her de contato e agendamento detalhes.","SME ajuda, necessidade técnico, precisa Expert, Precisa de PME, Need Especialista."
+Phase_sla_breach,Lamentamos muito que temos Acordo de Nível de Serviço a esta resolução questão violado. Gentilmente nos dar mais algum tempo e vamos voltar para você com a resolução adequada.,"SLA violação, Longer Response, não ouviu, enquanto se aguarda por muito tempo,"
+Phase_Resolution_Wait,Lamentamos muito que você tem que esperar para a resolução dos seus problemas. Gentilmente nos dar mais algum tempo e vamos voltar para você com resolução atempada adequada.,"Estado do meu bilhete, Qualquer Update, Esperando resolução, tempo longo,"
 Response_to_Diffuse_Situation,"Muito obrigado por sua pergunta sobre [tema].
-
-Eu sÃ³ queria que vocÃª saiba que eu estou olhando para isso e vai voltar para vocÃª antes do fim de semana com uma resposta.
-
-Se vocÃª precisar de mim para voltar para vocÃª mais cedo, por favor me avise!","Foda-se, Stupid, Caramba, Asshole,"
-Response_to_Angry_situation,Eu realmente sinto muito que vocÃª estÃ¡ enfrentando esse problema. Eu entendo o quÃ£o frustrante deve ser. Vou trabalhar em encontrar uma soluÃ§Ã£o imediatamente!,"Frustrado,"
-Phase_Feedback,"NÃ³s estamos realmente feliz que fomos capazes de resolver este problema para vocÃª. Se vocÃª sentir que foram Ãºteis, vocÃª se importaria de deixar [seu produto / serviÃ§o] um comentÃ¡rio 5 estrelas? VocÃª pode deixar um comentÃ¡rio, indo para [link para rever]. Se vocÃª nÃ£o sente que merece um comentÃ¡rio 5 estrelas, o que podemos fazer para melhor servi-lo?â€","Trabalhou, trabalhando agora, Obrigado pela ajuda, Feche a Ticket, Feche o bilhete, ele estÃ¡ trabalhando, SatisfaÃ§Ã£o"
+ 
+ Eu só queria que você saiba que eu estou olhando para isso e vai voltar para você antes do fim de semana com uma resposta.
+ 
+ Se você precisar de mim para voltar para você mais cedo, por favor me avise!","Foda-se, Stupid, Caramba, Asshole,"
+Response_to_Angry_situation,Eu realmente sinto muito que você está enfrentando esse problema. Eu entendo o quão frustrante deve ser. Vou trabalhar em encontrar uma solução imediatamente!,"Frustrado,"
+Phase_Feedback,"Nós estamos realmente feliz que fomos capazes de resolver este problema para você. Se você sentir que foram úteis, você se importaria de deixar [seu produto / serviço] um comentário 5 estrelas? Você pode deixar um comentário, indo para [link para rever]. Se você não sente que merece um comentário 5 estrelas, o que podemos fazer para melhor servi-lo?”","Trabalhou, trabalhando agora, Obrigado pela ajuda, Feche a Ticket, Feche o bilhete, ele está trabalhando, Satisfação"

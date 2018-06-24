@@ -21,8 +21,9 @@ from nltk.corpus import stopwords
 from agentapp.tickets_learner import tickets_learner
 
 class MeanEmbeddingVectorizer(object):
-    def __init__(self, word2vec):
+    def __init__(self, word2vec, dim_size):
         self.word2vec = word2vec
+        self.dim_size = dim_size 
         # if a text is empty we should return a vector of zeros
         # with the same dimensionality as all the other vectors
         self.dim = len(word2vec.items())
@@ -33,7 +34,7 @@ class MeanEmbeddingVectorizer(object):
     def transform(self, X):
         return np.array([
             np.mean([self.word2vec[w] for w in words if w in self.word2vec]
-                    or [np.zeros(self.dim)], axis=0)
+                    or [np.zeros(self.dim_size)], axis=0)
             for words in X
         ])
 
