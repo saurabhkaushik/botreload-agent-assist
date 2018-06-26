@@ -145,6 +145,36 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         
         get_model().create('feedback', json.dumps(request.json), done=True, cust_id=cust_id)
         return '200'  
+
+    @app.route('/getticketflag', methods=['POST'])
+    def getTicketFlag():
+        logging.info('getTicketFlag : ')
+        cust_id = ''
+        received_data = request.json
+        try: 
+            cust_id = received_data['currentAccount']['subdomain']
+        except KeyError as err:
+            logging.error(err)
+            cust_id = 'default'
+        
+        cust = getCustomerModel().authenticate(cust_id.strip().lower(), newflag=False)
+        if cust == None:
+            cust_id = 'default'
+        else: 
+            cust_id = cust['cust_name']
+
+        logging.info('Customer Id : ' + str(cust_id))
+
+        if cust_id == 'default':
+            status_flag = False
+        else: 
+            status_flag = getCustomerModel().getTicketFlag(cust_id)
+        
+        resp = {}
+        resp["Ticket_Flag"] = status_flag
+        
+        json_resp = json.dumps(resp)
+        return json_resp
     
     @app.errorhandler(404)
     def not_found(error):

@@ -8,16 +8,16 @@ You can create and manage projects at https://console.developers.google.com
 import os
 
 # Development 
-#STORAGE_BUCKET = 'botreload-009'
-#PROJECT_ID = 'br-assist-dev'
+STORAGE_BUCKET = 'botreload-009'
+PROJECT_ID = 'br-assist-dev'
 
 # Production 1 
 #STORAGE_BUCKET = 'botreload-999'
 #PROJECT_ID = 'br-aa-srv-prod'
 
 # Production 2 
-STORAGE_BUCKET = 'botreloadprod002'
-PROJECT_ID = 'botreloadprod002'
+#STORAGE_BUCKET = 'botreloadprod002'
+#PROJECT_ID = 'botreloadprod002'
 
 # The secret key is used by Flask to encrypt session cookies.
 SECRET_KEY = 'secret'

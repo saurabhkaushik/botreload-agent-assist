@@ -81,10 +81,20 @@ def getLanguage(cust_name):
     if len(cust_list[0]) > 0 : 
         lang = cust_list[0][0]['language']
     return lang
+
+def getTicketFlag(cust_name):
+    cust_list = list(cust_name=cust_name.strip().lower(), done=True)    
+    ticketflag = False
+    if len(cust_list[0]) > 0 : 
+        try: 
+            ticketflag = cust_list[0][0]['ticketflag']
+        except KeyError as err: 
+            ticketflag = False
+    return ticketflag
     
 # [START update]
 def update(cust_name, language='en', intent_threshold=100, organization='',
-           email_id='', password ='', newflag=False, retrainflag=False, done=False, id=None):
+           email_id='', password ='', newflag=False, retrainflag=False, done=False, ticketflag = False, id=None):
     ds = get_client()
     
     if id:
@@ -104,6 +114,7 @@ def update(cust_name, language='en', intent_threshold=100, organization='',
             'password' : password,
             'newflag' : newflag,
             'retrainflag': retrainflag,
+            'ticketflag': ticketflag,
             'created': datetime.datetime.utcnow(),
             'done': done
         })

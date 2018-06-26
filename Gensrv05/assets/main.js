@@ -3,15 +3,16 @@ var feedback_data = {selected_response_id : 0, selected_response_prob : 0, ticke
 var past_ticket_data = {upload_ticket_data : [], upload_comment_data : [], ticket_data : ''};
 var response_data = {server_response : ''};
 
-//var SERVER_NAME = 'https://botreloadprod002.appspot.com';
-var SERVER_NAME = 'https://br-assist-dev.appspot.com';
+var SERVER_NAME = 'https://botreloadprod002.appspot.com';
+//var SERVER_NAME = 'https://br-assist-dev.appspot.com';
 
 var context;
 var client = ZAFClient.init();
 var header = 'Hi ';
-var footer = '<br><br>Thanks, <br> - ';
+var footer = '<br><br>Thanks and Regards, <br> - ';
 var called_flag = false;
 var ticket_flag = false;
+var server_ticket_flag = false;
 var ticket_list = [];
 var comment_list = [];
 var iter_ticket = 0;
@@ -35,13 +36,13 @@ function getKey(key) {
 }
 
 if (getKey("ticketflag") == null) {
-	setKey("ticketflag", Date.now());
+	setKey("ticketflag", Date.now());	
 	ticket_flag = true;
 } else {
 	var difference = Date.now() - getKey("ticketflag");
-    var daysDifference = Math.floor(difference/1000/60/60/24);
+    var daysDifference = Math.floor(difference/1000/60/60/24);     
 	if (daysDifference > 1) {
-		ticket_flag = true;
+		ticket_flag = true;				
 	} else {
 		ticket_flag = false;
 	}
@@ -73,7 +74,10 @@ client.on('app.registered', function(appData) {
 		//console.log('app.registered:');		
 		if (called_flag == false) {
 			called_flag = true;
-			getTicketData();
+			//getServerTicketFlag();
+			setTimeout( function() {
+				getServerTicketFlag();
+	        	}, timeout_comment);
 			//syncAllTicketData(ticket_url);
 		} else {
 			return;
@@ -152,7 +156,7 @@ function getResponseData() {
 	    function(response) {
 	      var msg = 'Error ' + response.status + ' ' + response.statusText;
 	      client.invoke('notify', msg, 'error');
-	      console.log('getResponseData:' + msg);
+	      //console.log('getResponseData:' + msg);
 	      showError()
 	    }
 	);
@@ -170,20 +174,21 @@ function syncTicketData() {
 	  };
 	client.request(settings).then(
     function(data) {
-      //client.invoke('notify', 'Received Ticket Responses.');
-      //console.log(data);
-      //console.log('syncTicketData: Success');
+    	setKey("ticketflag", Date.now());
+    	//client.invoke('notify', 'Received Ticket Responses.');
+    	//console.log(data);
+    	//console.log('syncTicketData: Success');
     },
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;
       //client.invoke('notify', msg, 'error');
-      console.log('syncTicketData:' + msg);
+      //console.log('syncTicketData:' + msg);
     }
   );
 }
 
 function syncFeedbackData() {
-	console.log('syncFeedbackData:', feedback_data); // JSON.stringify(feedback_data));
+	//console.log('syncFeedbackData:', feedback_data); // JSON.stringify(feedback_data));
 	var settings = {
 	    url: SERVER_NAME +'/uploadfeedback',
 	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
@@ -201,13 +206,40 @@ function syncFeedbackData() {
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;
       //client.invoke('notify', msg, 'error');
-      console.log('syncFeedbackData:' + msg);
+      //console.log('syncFeedbackData:' + msg);
     }
   );
 }
 
+function getServerTicketFlag() {
+	//console.log('getServerTicketFlag:', ticket_data); // JSON.stringify(feedback_data));
+	var settings = {
+	    url: SERVER_NAME +'/getticketflag',
+	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
+	    type: 'POST',
+	    contentType: 'application/json',
+	    data: JSON.stringify(ticket_data),
+	    dataType: 'json'
+	  };
+	client.request(settings).then(
+		function(data) {
+			//console.log('Received Ticket Flag Responses.', data);
+		    server_ticket_flag = data['Ticket_Flag'];
+		    //console.log (server_ticket_flag)
+		    getTicketData(data);
+		    },
+		    function(response) {
+		    	var msg = 'Error ' + response.status + ' ' + response.statusText;
+		    	client.invoke('notify', msg, 'error');
+		    	console.log('getServerTicketFlag:' + msg);
+		    	getTicketData();
+		    }
+	);
+}
+
 function getTicketData() {	
-	if (ticket_flag == false )
+	//console.log(ticket_flag)
+	if (ticket_flag == false && server_ticket_flag == false)
 		return;
 	//console.log('getTicketData:');
 	var settings = {
@@ -216,7 +248,6 @@ function getTicketData() {
 	    contentType: 'application/json',
 	    dataType: 'json'
 	    	};
-
 	client.request(settings).then(
     function(data) {
         //console.log(data);
@@ -231,12 +262,11 @@ function getTicketData() {
         setTimeout( function() {
         	syncTicketData();
         	}, timeout_comment);
-    	//syncTicketData();
     },
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;
       //client.invoke('notify', msg, 'error');
-      console.log('Error : '+ msg);
+      //console.log('Error : '+ msg);
     }
 	);
 }

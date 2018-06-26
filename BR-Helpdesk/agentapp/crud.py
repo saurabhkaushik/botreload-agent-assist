@@ -67,7 +67,7 @@ def doregister():
     cust = getCustomerModel().authenticate(cust_id)
     if cust == None: 
         cust = getCustomerModel().create(cust_id, language=lang_type, 
-            email_id=email_id, password = password_, newflag=True, done=True) 
+            email_id=email_id, password = password_, newflag=True, retrainflag=True, ticketflag = True, done=True) 
         if cust:
             tickets_learner().import_responsedata(cust['cust_name'], cust['language']) 
             return redirect(url_for('.list', cust_id=cust_id))
