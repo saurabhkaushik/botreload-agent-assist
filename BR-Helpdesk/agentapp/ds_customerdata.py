@@ -73,7 +73,7 @@ def addretraining(cust_name):
     if len(cust_list[0]) > 0 : 
         custdata = cust_list[0][0]
         update(custdata['cust_name'], language=custdata['language'], intent_threshold=custdata['intent_threshold'], organization=custdata['organization'], 
-                        email_id=custdata['email_id'], password=custdata['password'], newflag=custdata['newflag'], retrainflag=True, done=custdata['done'], id=custdata['id'])
+                        email_id=custdata['email_id'], password=custdata['password'], newflag=custdata['newflag'], retrainflag=True, ticketflag=True, done=custdata['done'], id=custdata['id'])
 
 def getLanguage(cust_name):
     cust_list = list(cust_name=cust_name.strip().lower(), done=True)    

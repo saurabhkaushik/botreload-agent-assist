@@ -305,10 +305,20 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         logging.info('Processing processTrainingData For : ' + str(cust_list))
 
         data_analyzer = TrainingDataAnalyzer()
+        intenteng = IntentExtractor() 
+        intenteng_resp = IntentExtractor_resp()
+
         # Extraction of Intent data          
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractIntentData_cust(cust_id_x['cust_name']) 
+                intenteng_resp.prepareTrainingData(cust_id_x['cust_name'])
+                
+                intenteng_resp.startTrainingProcess(cust_id_x['cust_name'])
+                intenteng_resp.startTrainLogPrediction(cust_id_x['cust_name'])        
+                intenteng.prepareTrainingData(cust_id_x['cust_name'])
+                intenteng.startTrainingProcess(cust_id_x['cust_name'])
+
         '''
         # Extraction of Old Ticket data          
         for cust_id_x in cust_list:
