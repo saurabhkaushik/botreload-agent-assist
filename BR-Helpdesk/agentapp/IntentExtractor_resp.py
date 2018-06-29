@@ -83,13 +83,15 @@ class IntentExtractor_resp(object):
         self.test_X = []
         lang = getCustomerModel().getLanguage(cust_id)
         strx = self.utilclass.cleanData(textinput, lang=lang, lowercase=True, remove_stops=True, tag_remove=True)
-        #strx = self.utilspace.preprocessText(strx)
         self.test_X.append(strx.strip().split())
         self.predicted = []
         try:
             self.predicted = self.etree_w2v_tfidf.predict(self.test_X) 
         except ValueError as err: 
             logging.error('getPredictedIntent : ' +  str(err))
+
+        if len(self.predicted) < 1: 
+            self.predicted.append('default')
         logging.info("getPredictedIntent : Completed " + str(cust_id))
         return self.predicted
     
@@ -107,24 +109,16 @@ class IntentExtractor_resp(object):
         predict_df = pd.Series(predicted_list)
         logging.info("getPredictedIntent_list : Completed " + str(cust_id))
         return predict_df
-    
+
+    # Work on Data Frame  
     def startTrainLogPrediction(self, cust_id):
         logging.info("startTrainLogPrediction : Started " + str(cust_id))
-        if len(self.y) < 1: 
-            logging.info('Cant process as no Training ')
-            return
-        tickets_learn = tickets_learner()
-        ticket_data = tickets_learn.getTrainingData(cust_id=cust_id, done=None)
-        lang = getCustomerModel().getLanguage(cust_id)
-        traindata = getTrainingModel()
-        for linestms in ticket_data:           
-            for training_log in linestms:  
-                strx = training_log['tags']  + ' . ' + training_log['query'] 
-                predicted = self.getPredictedIntent(strx, cust_id)  
-                if len(predicted) < 1: 
-                    predicted = ['default']
-                traindata.update(training_log['tags'], training_log['query'], training_log['response'], query_category=training_log['query_category'], 
-                    done=True, id = training_log['id'], resp_category=predicted[0], cust_id=cust_id)
-                print ('processing training data :', training_log['id'])
-
+        traindata = getTrainingModel()  
+        ticketslearn  = tickets_learner()
+        ticket_pd = ticketslearn.getTrainingData_DataFrame(cust_id)              
+        # Tag also need to be included 
+        ticket_pd['resp_category'] = self.getPredictedIntent_list(ticket_pd['query'], cust_id)
+        traindata.batchUpdate(ticket_pd, cust_id=cust_id)
+        
         logging.info("startTrainLogPrediction : Completed " + str(cust_id))
+        return 

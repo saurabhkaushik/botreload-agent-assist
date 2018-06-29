@@ -88,10 +88,35 @@ def update(req_type, data, done=False, id=None, created=None, cust_id=''):
     ds.put(entity)
     return from_datastore(entity)
 
-
 create = update
 # [END update]
 
+# [START update]
+def batchUpdate(traindata, cust_id=''):
+    ds = get_client() 
+    
+    iter = int(len(traindata) / 400)
+    for i in range(iter):
+        i1 = i * 400
+        i2 = ((i+1) * 400) - 1
+        batch_data = traindata.iloc[i1:i2]
+        batch = ds.batch()  
+        batch.begin()  
+        for index, items in batch_data.iterrows():
+            if items['id'] != None:
+                key = ds.key(cust_id +'TrainingLog', int(items['id']))
+            else:
+                key = ds.key(cust_id +'TrainingLog')
+            entity = datastore.Entity(key=key, exclude_from_indexes=['json_data'])
+            entity.update({
+                    'type': items['type'],
+                    'created': datetime.datetime.utcnow(),
+                    'json_data': items['json_data'],
+                    'done': items['done']
+                })
+            batch.put(entity)
+        batch.commit()
+    return 
 
 def delete(id, cust_id=''):
     ds = get_client()

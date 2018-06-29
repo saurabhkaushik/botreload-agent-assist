@@ -29,6 +29,36 @@ class tickets_learner(object):
             token = next_page_token
             resp_data.append(resp_logs)
         return resp_data 
+
+    def getTrainingLog(self, cust_id, log_type, done=True):   
+        logging.info ('getTrainingLog : '  + str(cust_id))
+        trainlog = get_model()
+        ticket_data = []
+        next_page_token = 0
+        token = None
+        while next_page_token != None:             
+            ticket_logs, next_page_token = trainlog.list(cursor=token, log_type=log_type, cust_id=cust_id, done=True)
+            token = next_page_token
+            ticket_data.append(ticket_logs)
+        return ticket_data 
+    
+    def getTrainingData_DataFrame(self, cust_id):
+        logging.info("prepareTrainingData : Started : " + str(cust_id))
+        tickets_learn = tickets_learner()
+        ticket_data = tickets_learn.getTrainingData(cust_id=cust_id, done=None)
+    
+        ticket_struct = []
+        for linestms in ticket_data:           
+            for linestm in linestms:
+                if linestm['response'].strip() != '':
+                    ticket_struct.append({'id' : linestm['id'], 'query' : linestm['query'], 'query_category' : linestm['query_category'], 
+                    'feedback_flag' : linestm['feedback_flag'], 'feedback_prob' : linestm['feedback_prob'], 'done' : linestm['done'],
+                    'response': linestm['response'].strip(), 'tags' : linestm['tags']})
+        ticket_pd = pd.DataFrame(ticket_struct)
+
+        logging.info ("Total Training Examples : %s" % len(ticket_pd))
+        logging.info("prepareTrainingData : Completed : " + str(cust_id))
+        return ticket_pd
     
     def import_customerdata(self): 
         logging.info ('import_customerdata : Started ')

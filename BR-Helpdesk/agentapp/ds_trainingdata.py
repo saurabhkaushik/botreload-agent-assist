@@ -11,7 +11,6 @@ def init_app(app):
 def get_client():
     return datastore.Client(current_app.config['PROJECT_ID'])
 
-
 # [START from_datastore]
 def from_datastore(entity):
     """Translates Datastore results into the format expected by the
@@ -76,7 +75,6 @@ def read(id, cust_id=''):
     results = ds.get(key)
     return from_datastore(results)
 
-
 # [START update]
 def update(tags, query, response, query_category='', resp_category='', done=False, id=None, feedback_flag=False, feedback_prob=0, cust_id=''):
     ds = get_client()
@@ -110,6 +108,38 @@ def update(tags, query, response, query_category='', resp_category='', done=Fals
 create = update
 # [END update]
 
+
+# [START update]
+def batchUpdate(traindata, cust_id=''):
+    ds = get_client() 
+    
+    iter = int(len(traindata) / 400)
+    for i in range(iter):
+        i1 = i * 400
+        i2 = ((i+1) * 400) - 1
+        batch_data = traindata.iloc[i1:i2]
+        batch = ds.batch()  
+        batch.begin()  
+        for index, items in batch_data.iterrows():
+            if items['id'] != None:
+                key = ds.key(cust_id +'TrainingData', int(items['id']))
+            else:
+                key = ds.key(cust_id +'TrainingData')
+            entity = datastore.Entity(key=key, exclude_from_indexes=['query', 'response'])
+            entity.update({
+                    'tags': items['tags'],
+                    'query' : items['query'],
+                    'query_category' : items['query_category'], 
+                    'response' : items['response'],
+                    'resp_category': items['resp_category'],  
+                    'feedback_flag': items['feedback_flag'],
+                    'feedback_prob' : items['feedback_prob'], 
+                    'created': datetime.datetime.utcnow(),
+                    'done': items['done']
+                })
+            batch.put(entity)
+        batch.commit()
+    return 
 
 def delete(id, cust_id=''):
     ds = get_client()

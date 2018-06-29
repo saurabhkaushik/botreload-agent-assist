@@ -305,19 +305,11 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         logging.info('Processing processTrainingData For : ' + str(cust_list))
 
         data_analyzer = TrainingDataAnalyzer()
-        intenteng = IntentExtractor() 
-        intenteng_resp = IntentExtractor_resp()
 
-        # Extraction of Intent data          
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractIntentData_cust(cust_id_x['cust_name']) 
                 intenteng_resp.prepareTrainingData(cust_id_x['cust_name'])
-                
-                intenteng_resp.startTrainingProcess(cust_id_x['cust_name'])
-                intenteng_resp.startTrainLogPrediction(cust_id_x['cust_name'])        
-                intenteng.prepareTrainingData(cust_id_x['cust_name'])
-                intenteng.startTrainingProcess(cust_id_x['cust_name'])
 
         '''
         # Extraction of Old Ticket data          
@@ -333,6 +325,38 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractNewTicketData_cust(cust_id_x['cust_name'])   
         '''     
+        return '200'
+
+    # Process and Retrain the customer 
+    @app.route('/processretraincustomer', methods=['GET'])
+    def processRetrainCustomer():
+        logging.info('processExtractTrainData : ')        
+        cust_id = request.args.get('cust_id')
+        cust_list =[]
+        if cust_id == None:             
+            cust_list, __ = getCustomerModel().list(retrainflag=True, done=True)
+        else: 
+            cust_list = [{'cust_name' : cust_id}]
+        logging.info('Processing processExtractTrainData For : ' + str(cust_list))
+
+        data_analyzer = TrainingDataAnalyzer()
+        intenteng = IntentExtractor() 
+        intenteng_resp = IntentExtractor_resp()
+        cust_model = getCustomerModel() 
+        # Extraction of Intent data          
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.extractIntentData_cust(cust_id_x['cust_name']) 
+                intenteng_resp.prepareTrainingData(cust_id_x['cust_name'])
+                
+                intenteng_resp.startTrainingProcess(cust_id_x['cust_name'])
+                intenteng_resp.startTrainLogPrediction(cust_id_x['cust_name'])        
+                intenteng.prepareTrainingData(cust_id_x['cust_name'])
+                intenteng.startTrainingProcess(cust_id_x['cust_name'])
+                
+                cust_model.update(cust_x['cust_name'], language=cust_x['language'], intent_threshold=cust_x['intent_threshold'], organization=cust_x['organization'], email_id=cust_x['email_id'], password =cust_x['password'], newflag=cust_x['newflag'], retrainflag=False, done=True, id=cust_x['id'])
+                logging.info('Processed new Customer : ' + cust_x['cust_name'])
+
         return '200'
         
     @app.route('/testingservice', methods=['GET'])

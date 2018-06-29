@@ -2,6 +2,7 @@ import datetime
 from agentapp.model_select import get_model, getTrainingModel, getResponseModel, getCustomerModel
 import json
 import logging 
+from agentapp.tickets_learner import tickets_learner
 import csv
 from flask import current_app
 import pandas as pd
@@ -182,12 +183,12 @@ class TrainingDataAnalyzer(object):
         logging.info ('extractIntentData_cust : Started : ' + str(cust_id))
         trainlog = get_model()
         traindata = getTrainingModel() 
-
-        next_page_token = 0
-        token = None        
-        while next_page_token != None:             
-            intent_logs, next_page_token = trainlog.list(log_type='intent', cursor=token, cust_id=cust_id, done=True)
-            token = next_page_token
+        tickets_learn = tickets_learner()
+        
+        ticket_struct = []
+        trainlog_struct = []
+        intent_data = tickets_learn.getTrainingLog(cust_id=cust_id, log_type = 'intent', done=None)
+        for intent_logs in intent_data:           
             for intent_log in intent_logs: 
                 intents_data = intent_log["json_data"] 
                 intents_data_json = json.loads(intents_data)                
@@ -216,9 +217,15 @@ class TrainingDataAnalyzer(object):
                             response = intents_data_json['comments'][i]['value']
                             response = cleanhtml (response)
                             break
-                traindata.create(tags, str(subject + ' . ' + description), response, id = id, done=False, cust_id=cust_id)
-                trainlog.delete(intent_log['id'], cust_id=cust_id)
-                print('Creating for Intent : ' , intents_data_json['id'], cust_id)
+                ticket_struct.append({'id' : id, 'query' : str(subject + ' . ' + description), 'query_category' : '', 
+                    'feedback_flag' : False, 'feedback_prob' : 100, 'done' : False, 'response': response, 'tags' : tags})
+                trainlog_struct.append({'id' : intent_log['id'], 'type': intent_log['type'], 'created': intent_log['created'], 'json_data': intent_log['json_data'], 'done': False})
+                #trainlog.delete(intent_log['id'], cust_id=cust_id)
+
+        ticket_pd = pd.DataFrame(ticket_struct)
+        trainlog_pd = pd.DataFrame(trainlog_struct)
+        traindata.batchUpdate(ticket_pd, cust_id)
+        trainlog.batchUpdate(trainlog_pd, cust_id)
         logging.info ('extractIntentData_cust : Completed : ' + str(cust_id))  
     
     def extractFeedbackData_default(self, src_cust_id='default'):   
