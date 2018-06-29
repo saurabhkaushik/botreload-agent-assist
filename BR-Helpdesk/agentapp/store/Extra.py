@@ -221,12 +221,17 @@ class TrainingDataAnalyzer(object):
                 ticket_struct.append({'id' : id, 'query' : str(subject + ' . ' + description), 'query_category' : '', 
                     'feedback_flag' : False, 'feedback_prob' : 100, 'done' : False, 'response': response, 'resp_category': '', 'tags' : tags})
                 trainlog_struct.append({'id' : intent_log['id'], 'type': intent_log['type'], 'created': intent_log['created'], 'json_data': intent_log['json_data'], 'done': False})
-          
+                #trainlog.delete(intent_log['id'], cust_id=cust_id)
+                #print (ticket_struct)
+                #print (trainlog_struct)
+         
         if (len (ticket_struct) > 1):
             ticket_pd = pd.DataFrame(ticket_struct)
             trainlog_pd = pd.DataFrame(trainlog_struct)
-            ticket_pd = ticket_pd.drop_duplicates(subset=['id'], keep='last')
-            trainlog_pd = trainlog_pd.drop_duplicates(subset=['id'], keep='last')
+            print (len(ticket_pd))
+            ticket_pd = ticket_pd.drop_duplicates(subset=['id'], keep=False)
+            trainlog_pd = trainlog_pd.drop_duplicates(subset=['id'], keep=False)
+            print (len(ticket_pd))
             traindata.batchUpdate(ticket_pd, cust_id)
             trainlog.batchUpdate(trainlog_pd, cust_id)
         logging.info ('extractIntentData_cust : Completed : ' + str(cust_id))  

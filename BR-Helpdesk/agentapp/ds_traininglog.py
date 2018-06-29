@@ -34,10 +34,10 @@ def from_datastore(entity):
 
 
 # [START list]
-def list(log_type=None, limit=999, cursor=None, cust_id='', done=None):
+def list(log_type=None, limit=999, cursor=None, cust_id='', done=None) : 
     ds = get_client()
 
-    query = ds.query(kind= cust_id +'TrainingLog') # , order=['type'])
+    query = ds.query(kind= cust_id +'TrainingLog')
     if log_type != None and log_type != '': 
         query.add_filter('type', '=', log_type)
     if done != None: 
@@ -79,7 +79,7 @@ def update(req_type, data, done=False, id=None, created=None, cust_id=''):
     
     entity.update({
             'type': req_type,
-            'created': created,
+            'created': datetime.datetime.utcnow(),
             'json_data': data,
             'done': done
         })
@@ -95,9 +95,9 @@ create = update
 def batchUpdate(traindata, cust_id=''):
     ds = get_client() 
     
-    iter = int(len(traindata) / 400)
-    for i in range(iter):
-        i1 = i * 400
+    iter = int(len(traindata) / 400) + 1
+    for i in range(iter):        
+        i1 = (i) * 400
         i2 = ((i+1) * 400) - 1
         batch_data = traindata.iloc[i1:i2]
         batch = ds.batch()  

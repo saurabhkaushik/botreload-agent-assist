@@ -36,7 +36,7 @@ def from_datastore(entity):
 def list(cust_name='', newflag=None, retrainflag=None, limit=999, cursor=None, done=None):
     ds = get_client()
 
-    query = ds.query(kind='CustomerData')     
+    query = ds.query(kind='CustomerData')#, order=['id'])     
     if done != None: 
         query.add_filter('done', '=', done)
     if newflag != None: 
@@ -123,10 +123,42 @@ def update(cust_name, language='en', intent_threshold=100, organization='',
     ds.put(entity)
     return from_datastore(entity)
 
-
 create = update
 # [END update]
 
+# [START update]
+def batchUpdate(traindata, cust_id=''):
+    ds = get_client() 
+    
+    iter = int(len(traindata) / 400) + 1
+    for i in range(iter):        
+        i1 = (i) * 400
+        i2 = ((i+1) * 400) - 1
+        batch_data = traindata.iloc[i1:i2]
+        batch = ds.batch()  
+        batch.begin()  
+        for index, items in batch_data.iterrows():
+            if items['id'] != None:
+                key = ds.key(cust_id +'CustomerData', int(items['id']))
+            else:
+                key = ds.key(cust_id +'CustomerData')
+            entity = datastore.Entity(key=key, exclude_from_indexes=['query', 'response'])
+            entity.update({
+                'cust_name': items['cust_name'],
+                'language': items['language'],
+                'intent_threshold': items['intent_threshold'],
+                'organization' : items['organization'],
+                'email_id' : items['email_id'],
+                'password' : items['password'],
+                'newflag' : items['newflag'],
+                'retrainflag': items['retrainflag'],
+                'ticketflag': items['ticketflag'],
+                'created': datetime.datetime.utcnow(),
+                'done': items['done']
+                })
+            batch.put(entity)
+        batch.commit()
+    return 
 
 def delete(id):
     ds = get_client()

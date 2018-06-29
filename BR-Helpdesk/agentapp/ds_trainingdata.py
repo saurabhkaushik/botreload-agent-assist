@@ -35,7 +35,7 @@ def from_datastore(entity):
 def list(limit=999, cursor=None, cust_id='', feedback_flag=None, done=None):
     ds = get_client() 
 
-    query = ds.query(kind= cust_id +'TrainingData') 
+    query = ds.query(kind= cust_id +'TrainingData')#, order=['id'])
     if done != None: 
         query.add_filter('done', '=', done)
     if feedback_flag != None: 
@@ -113,9 +113,9 @@ create = update
 def batchUpdate(traindata, cust_id=''):
     ds = get_client() 
     
-    iter = int(len(traindata) / 400)
-    for i in range(iter):
-        i1 = i * 400
+    iter = int(len(traindata) / 400) + 1
+    for i in range(iter):        
+        i1 = (i) * 400
         i2 = ((i+1) * 400) - 1
         batch_data = traindata.iloc[i1:i2]
         batch = ds.batch()  
@@ -137,7 +137,7 @@ def batchUpdate(traindata, cust_id=''):
                     'created': datetime.datetime.utcnow(),
                     'done': items['done']
                 })
-            batch.put(entity)
+            batch.put(entity)            
         batch.commit()
     return 
 

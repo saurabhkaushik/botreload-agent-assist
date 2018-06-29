@@ -36,7 +36,7 @@ def from_datastore(entity):
 def list(res_category=None, limit=999, cursor=None, modifiedflag=None, defaultflag=None, cust_id=None, done=None):
     ds = get_client()
 
-    query = ds.query(kind=cust_id + 'ResponseData') 
+    query = ds.query(kind=cust_id + 'ResponseData')#, order=['id']) 
     if res_category != None and res_category != '': 
         query.add_filter('res_category', '=', res_category)
     if done != None: 
@@ -94,10 +94,41 @@ def update(cat_name, res_category, response_text, tags, resp_tags, modifiedflag=
     ds.put(entity)
     return from_datastore(entity)
 
-
 create = update
 # [END update]
 
+# [START update]
+def batchUpdate(traindata, cust_id=''):
+    ds = get_client() 
+    
+    iter = int(len(traindata) / 400) + 1
+    for i in range(iter):        
+        i1 = (i) * 400
+        i2 = ((i+1) * 400) - 1
+        batch_data = traindata.iloc[i1:i2]
+        batch = ds.batch()  
+        batch.begin()  
+        for index, items in batch_data.iterrows():
+            if items['id'] != None:
+                key = ds.key(cust_id +'ResponseData', int(items['id']))
+            else:
+                key = ds.key(cust_id +'ResponseData')
+            entity = datastore.Entity(key=key, exclude_from_indexes=['query', 'response'])
+            entity.update({
+                'resp_name': items['resp_name'],
+                'res_category': items['res_category'],
+                'response_text': items['response_text'],
+                'tags' : items['tags'],
+                'modifiedflag' : items['modifiedflag'],
+                'defaultflag' : items['defaultflag'],
+                'newflag' : items['newflag'],
+                'resp_tags': items['resp_tags'],
+                'created': datetime.datetime.utcnow(),
+                'done': items['done']
+                })
+            batch.put(entity)
+        batch.commit()
+    return 
 
 def delete(id, cust_id=''):
     ds = get_client()
