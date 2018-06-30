@@ -33,7 +33,7 @@ def from_datastore(entity):
 # [END from_datastore]
 
 # [START list]
-def list(cust_name='', newflag=None, retrainflag=None, limit=999, cursor=None, done=None):
+def list(cust_name=None, newflag=None, retrainflag=None, limit=999, cursor=None, done=None):
     ds = get_client()
 
     query = ds.query(kind='CustomerData')#, order=['id'])     
@@ -43,7 +43,7 @@ def list(cust_name='', newflag=None, retrainflag=None, limit=999, cursor=None, d
         query.add_filter('newflag', '=', newflag)
     if retrainflag != None: 
         query.add_filter('retrainflag', '=', retrainflag)
-    if cust_name != None and cust_name != '': 
+    if cust_name != None: 
         query.add_filter('cust_name', '=', cust_name)
         
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)

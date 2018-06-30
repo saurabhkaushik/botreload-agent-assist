@@ -186,9 +186,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         cust_list =[]
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
-        else: 
-            lang = request.args.get('language')
-            cust_list = [{'cust_name' : cust_id, 'language' : lang}]
+        else:             
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
         logging.info('Processing startDataImport for : ' + str(cust_list))
 
         ticketLearner = tickets_learner()
@@ -206,7 +205,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
-            cust_list = [{'cust_name' : cust_id}]
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
         logging.info('Processing startTrainingModels For : ' + str(cust_list))
 
         intenteng = IntentExtractor() 
@@ -223,7 +222,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
-            cust_list = [{'cust_name' : cust_id}]
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
         logging.info('Processing buildSmartReplies For : ' + str(cust_list))
         ticketLearner = tickets_learner()
         replyeng = SmartRepliesSelector()
@@ -242,7 +241,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
-            cust_list = [{'cust_name' : cust_id}]
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
         logging.info('Processing startRetraining For : ' + str(cust_list))
        
         intenteng = IntentExtractor() 
@@ -265,7 +264,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(newflag=True, done=True)
         else: 
-            cust_list = [{'cust_name' : cust_id}]
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
         logging.info('Processing processNewCustomer For : ' + str(cust_list))
 
         cust_model = getCustomerModel()
@@ -303,7 +302,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
-            cust_list = [{'cust_name' : cust_id}]
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
         logging.info('Processing processTrainingData For : ' + str(cust_list))
 
         data_analyzer = TrainingDataAnalyzer()
@@ -333,15 +332,15 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     def processRetrainCustomer():
         logging.info('processRetrainCustomer : ')        
         cust_id = request.args.get('cust_id')
-        cust_model = getCustomerModel() 
         cust_list = []
         
         if cust_id == None:             
-            cust_list, __ = cust_model.list(retrainflag=True, done=True)
-        else: 
-            cust_list, __ = cust_model.list(cust_name=cust_id)
+            cust_list, __ = getCustomerModel().list(retrainflag=True, done=True)
+        else:             
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
         logging.info('Processing processRetrainCustomer For : ' + str(cust_list))
-       
+        
+        cust_model = getCustomerModel() 
         data_analyzer = TrainingDataAnalyzer()
         intenteng = IntentExtractor() 
         intenteng_resp = IntentExtractor_resp()
@@ -373,7 +372,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
-            cust_list = [{'cust_name' : cust_id}]
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
         logging.info('Processing modelEvaluate For : ' + str(cust_list))
         
         modeleval = ModelEvaluate()
