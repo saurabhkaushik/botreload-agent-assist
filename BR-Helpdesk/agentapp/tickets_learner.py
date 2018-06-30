@@ -49,11 +49,10 @@ class tickets_learner(object):
     
         ticket_struct = []
         for linestms in ticket_data:           
-            for linestm in linestms:
-                if linestm['response'].strip() != '':
-                    ticket_struct.append({'id' : linestm['id'], 'query' : linestm['query'], 'query_category' : linestm['query_category'], 
-                    'feedback_flag' : linestm['feedback_flag'], 'feedback_prob' : linestm['feedback_prob'], 'done' : linestm['done'],
-                    'response': linestm['response'].strip(), 'tags' : linestm['tags']})
+            for linestm in linestms:                
+                ticket_struct.append({'id' : linestm['id'], 'query' : linestm['query'], 'query_category' : linestm['query_category'], 
+                'feedback_flag' : linestm['feedback_flag'], 'feedback_prob' : linestm['feedback_prob'], 'done' : True,
+                'response': linestm['response'].strip(), 'tags' : linestm['tags']})
         ticket_pd = pd.DataFrame(ticket_struct)
 
         logging.info ("Total Training Examples : %s" % len(ticket_pd))
