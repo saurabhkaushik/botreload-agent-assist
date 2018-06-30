@@ -115,10 +115,10 @@ class IntentExtractor_resp(object):
         logging.info("startTrainLogPrediction : Started " + str(cust_id))
         traindata = getTrainingModel()  
         ticketslearn  = tickets_learner()
-        ticket_pd = ticketslearn.getTrainingData_DataFrame(cust_id)              
-        # Tag also need to be included 
-        ticket_pd['resp_category'] = self.getPredictedIntent_list(ticket_pd['query'], cust_id)
-        traindata.batchUpdate(ticket_pd, cust_id=cust_id)
+        ticket_pd = ticketslearn.getTrainingData_DataFrame(cust_id) 
+        if (len (ticket_pd) > 0):
+            ticket_pd['resp_category'] = self.getPredictedIntent_list(ticket_pd['query'], cust_id)
+            traindata.batchUpdate(ticket_pd, cust_id=cust_id)
         
         logging.info("startTrainLogPrediction : Completed " + str(cust_id))
         return 
