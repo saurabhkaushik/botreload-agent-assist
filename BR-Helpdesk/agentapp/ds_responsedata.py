@@ -121,7 +121,6 @@ def batchUpdate(traindata, cust_id=''):
                 'tags' : items['tags'],
                 'modifiedflag' : items['modifiedflag'],
                 'defaultflag' : items['defaultflag'],
-                'newflag' : items['newflag'],
                 'resp_tags': items['resp_tags'],
                 'created': datetime.datetime.utcnow(),
                 'done': items['done']

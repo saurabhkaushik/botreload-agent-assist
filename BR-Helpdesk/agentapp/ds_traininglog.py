@@ -95,10 +95,10 @@ create = update
 def batchUpdate(traindata, cust_id=''):
     ds = get_client() 
     
-    iter = int(len(traindata) / 400) + 1
+    iter = int(len(traindata) / 100) + 1
     for i in range(iter):        
-        i1 = (i) * 400
-        i2 = ((i+1) * 400) - 1
+        i1 = (i) * 100
+        i2 = ((i+1) * 100) - 1
         batch_data = traindata.iloc[i1:i2]
         batch = ds.batch()  
         batch.begin()  

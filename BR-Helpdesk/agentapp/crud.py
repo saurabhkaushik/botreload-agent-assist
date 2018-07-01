@@ -63,13 +63,16 @@ def doregister():
         logging.error('\'' + cust_id + '\' is invalid customer subdomain. ')
         return render_template("register.html", error_msg='Error: Invalid User Organization')
     cust_id = cust_id.strip().lower()
-
+    intenteng = IntentExtractor() 
     cust = getCustomerModel().authenticate(cust_id)
     if cust == None: 
         cust = getCustomerModel().create(cust_id, language=lang_type, 
             email_id=email_id, password = password_, newflag=True, retrainflag=True, ticketflag = True, done=True) 
         if cust:
-            tickets_learner().import_responsedata(cust['cust_name'], cust['language']) 
+            tickets_learner().import_responsedata(cust['cust_name'], cust['language'])
+            tickets_learner().import_trainingdata(cust['cust_name'], cust['language']) 
+            intenteng.prepareTrainingData(cust['cust_name']) 
+            intenteng.startTrainingProcess(cust['cust_name']) 
             return redirect(url_for('.list', cust_id=cust_id))
     else: 
         return redirect(url_for('.list', cust_id=cust_id))

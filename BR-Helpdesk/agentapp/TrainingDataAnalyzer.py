@@ -188,6 +188,7 @@ class TrainingDataAnalyzer(object):
         ticket_struct = []
         trainlog_struct = []
         intent_data = tickets_learn.getTrainingLog(cust_id=cust_id, log_type = 'intent', done=True)
+        logging.info ('No of Training Data Processing : ', len (intent_data))
         for intent_logs in intent_data:           
             for intent_log in intent_logs: 
                 #print (intent_log)

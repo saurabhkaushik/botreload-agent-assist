@@ -77,9 +77,15 @@ class tickets_learner(object):
             train_list = list(reader)
         rid = 100
         #while rid < 200: 
+        traindata_struct = []
         for linestm in train_list:
-            getTrainingModel().create(linestm[0].strip(), linestm[1].strip(), '', resp_category=linestm[2].strip(), done=True, id=rid, cust_id=cust_id)
+            traindata_struct.append({'id' : rid, 'query' : linestm[0].strip(), 'query_category' : '', 
+                    'feedback_flag' : False, 'feedback_prob' : 100, 'done' : True, 'response': linestm[1].strip(), 
+                    'resp_category': linestm[2].strip(), 'tags' : ''})
+            #getTrainingModel().create(linestm[0].strip(), linestm[1].strip(), '', resp_category=linestm[2].strip(), done=True, id=rid, cust_id=cust_id)
             rid += 1
+        traindata_pd = pd.DataFrame(traindata_struct)
+        getTrainingModel().batchUpdate(traindata_pd, cust_id)
         logging.info ('import_trainingdata : Completed '  + str(cust_id))
     
     def import_responsedata(self, cust_id, lang_type): 
@@ -88,9 +94,21 @@ class tickets_learner(object):
             reader = csv.reader(f)
             train_list = list(reader)
         rid = 100
+        respdata_struct = []
         for linestm in train_list:
-            getResponseModel().create(linestm[0].strip(), linestm[0].strip(), linestm[1].strip(), linestm[2].strip(), linestm[2].strip(), defaultflag=True, done=True, id=rid, cust_id=cust_id)
+            respdata_struct.append({'id' : rid, 'resp_name': linestm[0].strip(),
+                    'res_category': linestm[0].strip(),
+                    'response_text' : linestm[1].strip(),
+                    'tags' : linestm[2].strip(),
+                    'modifiedflag': False,
+                    'defaultflag' : True,
+                    'resp_tags' : linestm[2].strip(),
+                    'created': datetime.datetime.utcnow(),
+                    'done': True})            
+            #getResponseModel().create(linestm[0].strip(), linestm[0].strip(), linestm[1].strip(), linestm[2].strip(), linestm[2].strip(), defaultflag=True, done=True, id=rid, cust_id=cust_id)
             rid += 1
+        respdata_pd = pd.DataFrame(respdata_struct)
+        getResponseModel().batchUpdate(respdata_pd, cust_id)
         logging.info ('import_responsedata : Completed ' + str(cust_id))
             
     def get_response_mapping(self, response, cust_id):

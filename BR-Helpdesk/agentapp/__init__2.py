@@ -330,7 +330,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     # Process and Retrain the customer 
     @app.route('/processretraincustomer', methods=['GET'])
     def processRetrainCustomer():
-        logging.info('processRetrainCustomer : ')        
+        logging.info('\nprocessRetrainCustomer : ')        
         cust_id = request.args.get('cust_id')
         cust_list = []
         
