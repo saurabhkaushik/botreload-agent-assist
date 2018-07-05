@@ -16,8 +16,8 @@ class StorageOps(object):
         self.storage_client = storage.Client()
 
     def get_bucket(self, cust_id):
-        print('get_bucket:' + str(cust_id))         
-        try:
+        print('get_bucket:' + str(cust_id))           
+        try:           
             bucket = self.storage_client.get_bucket(current_app.config['STORAGE_BUCKET']) 
             m_blob = bucket.get_blob(cust_id + '_model.pkl')
             if m_blob == None:

@@ -8,12 +8,8 @@ You can create and manage projects at https://console.developers.google.com
 import os
 
 # Development 
-#STORAGE_BUCKET = 'botreload-009'
-#PROJECT_ID = 'br-assist-dev'
-
-# Production 1 
-#STORAGE_BUCKET = 'botreload-999'
-#PROJECT_ID = 'br-aa-srv-prod'
+#STORAGE_BUCKET = 'botreloaddev002'
+#PROJECT_ID = 'botreloaddev002'
 
 # Production 2 
 STORAGE_BUCKET = 'botreloadprod002'

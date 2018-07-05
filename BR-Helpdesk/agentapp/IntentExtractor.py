@@ -55,6 +55,30 @@ class IntentExtractor(object):
         logging.info ("prepareTrainingData : Completed " + str(cust_id))
         return
     
+    def prepareTrainingData_nospacy(self, cust_id):
+        logging.info("prepareTrainingData : Started " + str(cust_id))
+        self.X, self.y = [], []
+        tickets_learn = tickets_learner()
+        ticket_data = tickets_learn.getTrainingData(cust_id=cust_id)
+        
+        lang = getCustomerModel().getLanguage(cust_id)
+        xX = []
+        yY = []
+        for linestms in ticket_data:           
+            for linestm in linestms:
+                strx = str(linestm['tags'] + ' . ' + linestm['query']).strip()
+                strx = str(self.utilclass.cleanData(strx, lang=lang, lowercase=True, remove_stops=True, tag_remove=True))               
+                if (strx != ''):
+                    xX.append(strx.strip().split())
+                    yY.append(str(linestm['resp_category']).strip())
+        self.X = xX
+        self.y = yY
+        
+        self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
+        logging.info ("Total Training Examples : %s" % len(self.y))
+        logging.info ("prepareTrainingData : Completed " + str(cust_id))
+        return
+    
     def startTrainingProcess(self, cust_id):        
         logging.info("startTrainingProcess : Started " + str(cust_id))
         if len(self.y) < 1: 

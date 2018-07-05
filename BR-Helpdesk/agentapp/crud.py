@@ -71,7 +71,7 @@ def doregister():
         if cust:
             tickets_learner().import_responsedata(cust['cust_name'], cust['language'])
             tickets_learner().import_trainingdata(cust['cust_name'], cust['language']) 
-            intenteng.prepareTrainingData(cust['cust_name']) 
+            intenteng.prepareTrainingData_nospacy(cust['cust_name']) 
             intenteng.startTrainingProcess(cust['cust_name']) 
             return redirect(url_for('.list', cust_id=cust_id))
     else: 

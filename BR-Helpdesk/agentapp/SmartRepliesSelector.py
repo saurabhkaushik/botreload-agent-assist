@@ -132,6 +132,7 @@ class SmartRepliesSelector(object):
                     for items in respx_list:
                         if items in respy_list: 
                             count +=1
+                    #diff_cent = int((len(respx_list) - count) * 100 / len(respx_list))
                     if (count == len(respx_list)): 
                         resp_model.delete(resp_logx['id'], cust_id)
                         logging.info('Deleting Duplicate Response id : ' + str(resp_logx['id']) + ' Over ' + str(resp_logy['id']))
