@@ -188,10 +188,10 @@ class TrainingDataAnalyzer(object):
         ticket_struct = []
         trainlog_struct = []
         intent_data = tickets_learn.getTrainingLog(cust_id=cust_id, log_type = 'intent', done=True)
-        logging.info ('No of Training Data Processing : ' + str(len (intent_data)))
-        for intent_logs in intent_data:           
-            for intent_log in intent_logs: 
-                #print (intent_log)
+        len_traindata = 0
+        for intent_logs in intent_data:   
+            len_traindata += len (intent_logs)        
+            for intent_log in intent_logs:                 
                 intents_data = intent_log["json_data"] 
                 intents_data_json = json.loads(intents_data)                
                 try:                     
@@ -220,9 +220,10 @@ class TrainingDataAnalyzer(object):
                             response = cleanhtml (response)
                             break
                 ticket_struct.append({'id' : id, 'query' : str(subject + ' . ' + description), 'query_category' : '', 
-                    'feedback_flag' : False, 'feedback_prob' : 100, 'done' : False, 'response': response, 'resp_category': '', 'tags' : tags})
+                    'feedback_flag' : False, 'feedback_prob' : 0, 'done' : False, 'response': response, 'resp_category': '', 'tags' : tags})
                 trainlog_struct.append({'id' : intent_log['id'], 'type': intent_log['type'], 'created': intent_log['created'], 'json_data': intent_log['json_data'], 'done': False})
-          
+
+        logging.info ('No of Training Data Processing : ' + str(len_traindata)) 
         if (len (ticket_struct) > 1):
             ticket_pd = pd.DataFrame(ticket_struct)
             trainlog_pd = pd.DataFrame(trainlog_struct)
@@ -263,25 +264,45 @@ class TrainingDataAnalyzer(object):
         logging.info ('extractFeedbackData_cust : Started : ' + str(cust_id))
         trainlog = get_model()
         traindata = getTrainingModel() 
-
-        next_page_token = 0
-        token = None        
-        while next_page_token != None:             
-            intent_logs, next_page_token = trainlog.list(log_type='feedback', cursor=token, cust_id=cust_id, done=True)
-            token = next_page_token
-            for intent_log in intent_logs: 
+        respdata = getResponseModel()
+        tickets_learn = tickets_learner()
+        
+        ticket_struct = []
+        trainlog_struct = []
+        intent_data = tickets_learn.getTrainingLog(cust_id=cust_id, log_type = 'feedback', done=True)
+        len_traindata = 0
+        for intent_logs in intent_data:
+            len_traindata += len (intent_logs)           
+            for intent_log in intent_logs:                
                 intents_data = intent_log["json_data"] 
                 intents_data_json = json.loads(intents_data)
                 selected_response_id = intents_data_json["selected_response_id"]
-                selected_response_prob = intents_data_json["selected_response_prob"]
+                selected_response_prob = intents_data_json["selected_response_prob"] if 'selected_response_prob' in intents_data_json else 0
                 cust_id = intents_data_json["ticket_data"]['currentAccount']['subdomain'] 
                 id = intents_data_json["ticket_data"]['id']                
                 train_data = traindata.read(id, cust_id=cust_id)
-                response_data = getResponseModel().read(selected_response_id, cust_id=cust_id)
+                response_data = respdata.read(selected_response_id, cust_id=cust_id)
                 if train_data != None and response_data != None: 
-                    traindata.update(train_data["tags"], train_data["query"], train_data["response"], query_category=train_data['query_category'], resp_category=response_data['res_category'], feedback_flag=True, feedback_prob=selected_response_prob, done=True, id=train_data['id'], cust_id=cust_id)
-                    trainlog.delete(intent_log['id'], cust_id=cust_id)
+                    traindata.update(train_data["tags"], train_data["query"], train_data["response"], query_category=train_data['query_category'], 
+                                     resp_category=response_data['res_category'], feedback_flag=True, feedback_prob=selected_response_prob, 
+                                     done=True, id=train_data['id'], cust_id=cust_id)
+                    ticket_struct.append({'id' : train_data['id'], 'query' : train_data['query'], 'query_category' : train_data['query_category'], 
+                        'feedback_resp' : response_data['res_category'], 'feedback_flag' : True, 'feedback_prob' : selected_response_prob, 
+                        'done' : train_data['done'], 'response': train_data['response'], 
+                        'resp_category': train_data['resp_category'], 'predict_prob': train_data['predict_prob'] if 'predict_prob' in train_data else 0, 
+                        'tags' : train_data['tags']})
+                    trainlog_struct.append({'id' : intent_log['id'], 'type': intent_log['type'], 'created': intent_log['created'], 
+                                            'json_data': intent_log['json_data'], 'done': False})
                     print('Updating Feedback : ' , id, cust_id)
+
+        logging.info ('No of Training Data Processing : ' + str(len_traindata))
+        if (len (ticket_struct) > 1):
+            ticket_pd = pd.DataFrame(ticket_struct)
+            trainlog_pd = pd.DataFrame(trainlog_struct)
+            ticket_pd = ticket_pd.drop_duplicates(subset=['id'], keep='last')
+            trainlog_pd = trainlog_pd.drop_duplicates(subset=['id'], keep='last')
+            traindata.batchUpdate(ticket_pd, cust_id)
+            trainlog.batchUpdate(trainlog_pd, cust_id)
         logging.info ('extractFeedbackData_cust : Completed : ' + str(cust_id))  
     
     def extractNewTicketData_cust(self, cust_id):   

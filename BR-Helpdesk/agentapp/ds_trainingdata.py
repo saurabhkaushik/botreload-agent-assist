@@ -13,15 +13,6 @@ def get_client():
 
 # [START from_datastore]
 def from_datastore(entity):
-    """Translates Datastore results into the format expected by the
-    application.
-
-    Datastore typically returns:
-        [Entity{key: (kind, id), prop: val, ...}]
-
-    This returns:
-        {id: id, prop: val, ...}
-    """
     if not entity:
         return None
     if isinstance(entity, builtin_list):
@@ -76,7 +67,8 @@ def read(id, cust_id=''):
     return from_datastore(results)
 
 # [START update]
-def update(tags, query, response, query_category='', resp_category='', done=False, id=None, feedback_flag=False, feedback_prob=0, cust_id=''):
+def update(tags, query, response, query_category='', resp_category='', done=False, id=None, 
+           feedback_resp = '', feedback_flag=False, feedback_prob=0, predict_prob=0, cust_id=''):
     ds = get_client()
     
     if id:
@@ -94,8 +86,10 @@ def update(tags, query, response, query_category='', resp_category='', done=Fals
             'query_category' : query_category, 
             'response' : response,
             'resp_category': resp_category,  
+            'feedback_resp' : feedback_resp,
             'feedback_flag': feedback_flag,
             'feedback_prob' : feedback_prob, 
+            'predict_prob' : predict_prob, 
             'created': datetime.datetime.utcnow(),
             'done': done
         })
@@ -132,8 +126,10 @@ def batchUpdate(traindata, cust_id=''):
                     'query_category' : items['query_category'], 
                     'response' : items['response'],
                     'resp_category': items['resp_category'],  
-                    'feedback_flag': items['feedback_flag'],
-                    'feedback_prob' : items['feedback_prob'], 
+                    'feedback_resp' : items['feedback_resp'] if 'feedback_resp' in items else '',
+                    'feedback_flag': items['feedback_flag'] if 'feedback_flag' in items else False,
+                    'feedback_prob' : items['feedback_prob'] if 'feedback_prob' in items else 0, 
+                    'predict_prob' : items['predict_prob'] if 'predict_prob' in items else 0, 
                     'created': datetime.datetime.utcnow(),
                     'done': items['done']
                 })
