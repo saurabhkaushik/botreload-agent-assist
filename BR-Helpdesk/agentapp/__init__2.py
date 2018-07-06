@@ -307,21 +307,18 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
 
         data_analyzer = TrainingDataAnalyzer()
         
-        '''
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractIntentData_cust(cust_id_x['cust_name']) 
-               
+
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.extractFeedbackData_cust(cust_id_x['cust_name'])
+        '''       
         # Extraction of Old Ticket data          
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractTicketData_cust(cust_id_x['cust_name'])
-        '''
-        # Extraction of Feedback data          
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.extractFeedbackData_cust(cust_id_x['cust_name'])
-        '''
         # Extraction of New Ticket data 
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
