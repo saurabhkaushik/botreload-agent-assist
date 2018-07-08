@@ -58,7 +58,10 @@ def update(analytics_data, id=None):
     
     entity.update({
             'cust_id': analytics_data['cust_id'],
-            'total_tickets': analytics_data['total_tickets'],
+            'ticket_total_count': analytics_data['ticket_total_count'],
+            'response_total_count': analytics_data['response_total_count'],
+            'response_modified_count': analytics_data['response_modified_count'],
+            'response_default_count': analytics_data['response_default_count'],
             'total_ticket_with_response': analytics_data['total_tickets_with_response'],
             'Mean_Accuracy_Intent_vs_Response': analytics_data['Mean_Accuracy_Intent_vs_Response'],
             'Mean_Accuracy_Intent_vs_Saved': analytics_data['Mean_Accuracy_Intent_vs_Saved'],
@@ -66,7 +69,7 @@ def update(analytics_data, id=None):
             'Percentage_Match_Tags_vs_Query': analytics_data['Percentage_Match_Tags_vs_Query'],
             'Bleu_Score_Intent': analytics_data['Bleu_Score_Intent'],
             'Bleu_Score_Response': analytics_data['Bleu_Score_Response'],
-            'last_ticket_timestamp': analytics_data['last_ticket_timestamp'],
+            'ticket_last_timestamp': analytics_data['ticket_last_timestamp'],
             'Feedback_tickets_count' : analytics_data['Feedback_tickets_count'],
             'Mean_feedback_prob' : analytics_data['Mean_feedback_prob'],
             'Mean_predict_prob' : analytics_data['Mean_predict_prob'],

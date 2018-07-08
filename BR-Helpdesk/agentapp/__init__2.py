@@ -349,6 +349,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             if cust_id_x['cust_name'] != 'default':  
                 logging.info('\n Start Retraining Customer : ' + cust_id_x['cust_name'])               
                 data_analyzer.extractIntentData_cust(cust_id_x['cust_name']) 
+                data_analyzer.extractFeedbackData_cust(cust_id_x['cust_name'])
                 intenteng_resp.prepareTrainingData(cust_id_x['cust_name'])                
                 intenteng_resp.startTrainingProcess(cust_id_x['cust_name'])
                 intenteng_resp.startTrainLogPrediction(cust_id_x['cust_name'])        

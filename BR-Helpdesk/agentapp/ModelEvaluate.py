@@ -28,23 +28,27 @@ class ModelEvaluate(object):
         ticket_data = tickets_learn.getTrainingData(cust_id=cust_id)
         self.analytics_pd['cust_id'] = cust_id
         ticket_struct = []
-        self.analytics_pd['total_tickets'] = 0
+        self.analytics_pd['ticket_total_count'] = 0
         for linestms in ticket_data: 
-            self.analytics_pd['total_tickets'] += len(linestms)          
+            self.analytics_pd['ticket_total_count'] += len(linestms)          
             for linestm in linestms:                
                 if linestm['response'].strip() != '':
                     ticket_struct.append({'id' : linestm['id'], 'query' : linestm['query'], 
                                           'response': linestm['response'].strip(), 'tags' : linestm['tags'], 
                                           'resp_category' : linestm['resp_category'], 'feedback_resp' : linestm['feedback_resp'] if 'feedback_resp' in linestm else '',
                                           'feedback_prob' : linestm['feedback_prob'],'predict_prob' : linestm['predict_prob'] if 'predict_prob' in linestm else 0,
+                                          'feedback_flag' : linestm['feedback_flag'],
                                           'created' : linestm['created']})
         self.ticket_pd = pd.DataFrame(ticket_struct)
-        #print (self.ticket_pd)
-        if (len(self.ticket_pd) > 0): 
-            self.analytics_pd['total_tickets_with_response'] = len(self.ticket_pd)
-            self.analytics_pd['last_ticket_timestamp'] = max(self.ticket_pd['created'])
-            self.analytics_pd['Mean_feedback_prob'] = self.ticket_pd['feedback_prob'].mean()
-            self.analytics_pd['Mean_predict_prob'] = self.ticket_pd['predict_prob'].mean()
+        
+        resp_struct = []
+        resp_data = tickets_learn.getResponseData(cust_id=cust_id)
+        self.analytics_pd['response_total_count'] = 0
+        for linestms in resp_data: 
+            self.analytics_pd['response_total_count'] += len(linestms)          
+            for linestm in linestms:                
+                resp_struct.append({'id' : linestm['id'], 'modifiedflag': linestm['modifiedflag'], 'defaultflag' : linestm['defaultflag']})
+        self.response_pd = pd.DataFrame(resp_struct)
         
         logging.info ("Total Training Examples : %s" % len(self.ticket_pd))
         logging.info("prepareTrainingData : Completed : " + str(cust_id))
@@ -134,7 +138,17 @@ class ModelEvaluate(object):
     
     def createConfusionMatrix(self, cust_id):
         logging.info("createConfusionMatrix : Started " + str(cust_id))
+            
         if (len(self.ticket_pd) > 0): 
+        #if (len(self.response_pd) > 0):
+        
+            self.analytics_pd['response_modified_count'] = int(self.response_pd[self.response_pd['modifiedflag'] == True].count()['modifiedflag'])
+            self.analytics_pd['response_default_count'] = int(self.response_pd[self.response_pd['defaultflag'] == True].count()['defaultflag'])
+
+            self.analytics_pd['total_tickets_with_response'] = len(self.ticket_pd)
+            self.analytics_pd['ticket_last_timestamp'] = max(self.ticket_pd['created'])
+            self.analytics_pd['Mean_feedback_prob'] = self.ticket_pd['feedback_prob'].mean()
+            self.analytics_pd['Mean_predict_prob'] = self.ticket_pd['predict_prob'].mean()
             
             self.analytics_pd['Mean_Accuracy_Intent_vs_Response'] = np.mean(self.ticket_pd['TrainingModel_intent'] == self.ticket_pd['ResponseModel_intent'])
             self.analytics_pd['Mean_Accuracy_Intent_vs_Saved'] = np.mean(self.ticket_pd['TrainingModel_intent'] == self.ticket_pd['resp_category'])
@@ -142,9 +156,8 @@ class ModelEvaluate(object):
             self.analytics_pd['Percentage_Match_Tags_vs_Query'] = self.ticket_pd['percentage_match_in_response_list'].mean()
             self.analytics_pd['Bleu_Score_Intent'] = self.ticket_pd['bleu_score_intent'].mean()
             self.analytics_pd['Bleu_Score_Response'] = self.ticket_pd['bleu_score_response'].mean()
-            self.analytics_pd['Feedback_tickets_count'] = np.mean(len(str(self.ticket_pd['feedback_resp'])) > 0)
-            
-            logging.info("\nMean Intent Model vs Response Model     : \n" + str(self.analytics_pd['Mean_Accuracy_Intent_vs_Response']))
+            self.analytics_pd['Feedback_tickets_count'] = int(self.ticket_pd[self.ticket_pd['feedback_flag'] == True].count()['feedback_flag'])
+            logging.info("Mean Intent Model vs Response Model     : \n" + str(self.analytics_pd['Mean_Accuracy_Intent_vs_Response']))
             logging.info("Mean Intent Model vs Saved Model        : \n" + str(self.analytics_pd['Mean_Accuracy_Intent_vs_Saved']))
     
             logging.info("Average Percentage Match in query : \n" + str(self.analytics_pd['Percentage_Match_Tags_vs_Query']))
