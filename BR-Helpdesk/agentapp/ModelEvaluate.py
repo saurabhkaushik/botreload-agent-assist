@@ -40,10 +40,11 @@ class ModelEvaluate(object):
                                           'created' : linestm['created']})
         self.ticket_pd = pd.DataFrame(ticket_struct)
         #print (self.ticket_pd)
-        self.analytics_pd['total_tickets_with_response'] = len(self.ticket_pd)
-        self.analytics_pd['last_ticket_timestamp'] = max(self.ticket_pd['created'])
-        self.analytics_pd['Mean_feedback_prob'] = self.ticket_pd['feedback_prob'].mean()
-        self.analytics_pd['Mean_predict_prob'] = self.ticket_pd['predict_prob'].mean()
+        if (len(self.ticket_pd) > 0): 
+            self.analytics_pd['total_tickets_with_response'] = len(self.ticket_pd)
+            self.analytics_pd['last_ticket_timestamp'] = max(self.ticket_pd['created'])
+            self.analytics_pd['Mean_feedback_prob'] = self.ticket_pd['feedback_prob'].mean()
+            self.analytics_pd['Mean_predict_prob'] = self.ticket_pd['predict_prob'].mean()
         
         logging.info ("Total Training Examples : %s" % len(self.ticket_pd))
         logging.info("prepareTrainingData : Completed : " + str(cust_id))
