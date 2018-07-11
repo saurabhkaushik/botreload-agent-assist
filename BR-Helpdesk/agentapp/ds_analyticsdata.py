@@ -22,12 +22,14 @@ def from_datastore(entity):
 # [END from_datastore]
 
 # [START list]
-def list(limit=999, cursor=None, done=None) : 
+def list(limit=999, cust_id=None, cursor=None, done=None) : 
     ds = get_client()
 
     query = ds.query(kind= 'AnalyticsData')
     if done != None: 
         query.add_filter('done', '=', done)
+    if cust_id != None: 
+        query.add_filter('cust_id', '=', cust_id)
     query_iterator = query.fetch(limit=limit, start_cursor=cursor)
     page = next(query_iterator.pages)
 

@@ -5,10 +5,11 @@ from agentapp.tickets_learner import tickets_learner
 from agentapp.StorageOps import StorageOps
 from agentapp.SmartRepliesSelector import SmartRepliesSelector
 from agentapp.model_select import get_model, getTrainingModel, getCustomerModel
+from agentapp.CustomerDashboard import CustomerDashboard 
 from agentapp.TrainingDataAnalyzer import TrainingDataAnalyzer
 from agentapp.UtilityClass import UtilityClass
 from agentapp.ModelEvaluate import ModelEvaluate
-
+import dash
 from flask import current_app, redirect
 from flask import Flask, jsonify
 from flask import request
@@ -29,7 +30,11 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     storage = StorageOps()
     app.debug = debug
     app.testing = testing
-
+    
+    dash_app = dash.Dash(__name__, server=app)#, url_base_pathname='/dashboard')     
+    cust_dash = CustomerDashboard(dash_app)
+    cust_dash.appLayout()
+    
     if config_overrides:
         app.config.update(config_overrides)
 
@@ -178,6 +183,22 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         
         json_resp = json.dumps(resp)
         return json_resp
+
+    
+    @app.route("/dashboard", methods=['GET'])
+    def dashboard():
+        logging.info('dashboard : ')
+        cust_id = request.args.get('cust_id')
+        cust_list =[]
+        if cust_id == None:             
+            cust_list, __ = getCustomerModel().list(done=True)
+        else:             
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
+        logging.info('Processing startDataImport for : ' + str(cust_list))
+
+          
+        return cust_dash.chartDisplay(cust_id) 
+        #return redirect(url_for('crud.login'))
     
     @app.route('/importdata', methods=['GET'])
     def startDataImport():

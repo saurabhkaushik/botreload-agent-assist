@@ -1,4 +1,4 @@
-from agentapp.model_select import get_model, getTrainingModel, getResponseModel, getCustomerModel
+from agentapp.model_select import get_model, getTrainingModel, getResponseModel, getCustomerModel, getAnalyticsModel
 import json
 import logging 
 import csv
@@ -38,6 +38,17 @@ class tickets_learner(object):
         token = None
         while next_page_token != None:             
             ticket_logs, next_page_token = trainlog.list(cursor=token, log_type=log_type, cust_id=cust_id, done=done)
+            token = next_page_token
+            ticket_data.append(ticket_logs)
+        return ticket_data 
+    
+    def getAnalyticsData(self, cust_id, done=True):   
+        logging.info ('getAnalyticsData : '  + str(cust_id))
+        ticket_data = []
+        next_page_token = 0
+        token = None
+        while next_page_token != None:             
+            ticket_logs, next_page_token = getAnalyticsModel().list(cursor=token, cust_id=cust_id, done=done)
             token = next_page_token
             ticket_data.append(ticket_logs)
         return ticket_data 
