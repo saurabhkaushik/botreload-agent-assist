@@ -3,13 +3,16 @@
 {% block content %}
 <div class="navbar-header">
    <a href="/smartreply/list?cust_id={{cust_id}}" class="btn btn-success btn-sm">Home</a>
+   <a href="/smartreply/dashboard?cust_id={{cust_id}}" class="btn btn-success btn-sm">Operation Analytics</a>
 </div> 
+<br><br>
 <h4>Smart Reply - List </h4>
 <b><font size="2" color="red">{{error_msg}}</font></b><br>
-<a href="/smartreply/add?cust_id={{cust_id}}" class="btn btn-success btn-sm">
+<a href="/smartreply/add?cust_id={{cust_id}}" class="btn btn-success btn-sm" align=right>
   <i class="glyphicon glyphicon-plus"></i>
   Add Smart Reply
 </a>
+
 <table border=1>
 <tr><th>Response Name</th><th>Response Text</th><th>Response Tags</th><th>    Actions   </th></tr> 
 {% for book in books %}

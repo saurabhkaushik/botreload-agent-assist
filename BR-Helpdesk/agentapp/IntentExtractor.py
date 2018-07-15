@@ -51,6 +51,7 @@ class IntentExtractor(object):
         self.y = yY
         
         self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
+
         logging.info ("Total Training Examples : %s" % len(self.y))
         logging.info ("prepareTrainingData : Completed " + str(cust_id))
         return
@@ -73,8 +74,9 @@ class IntentExtractor(object):
                     yY.append(str(linestm['resp_category']).strip())
         self.X = xX
         self.y = yY
-        
+
         self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
+
         logging.info ("Total Training Examples : %s" % len(self.y))
         logging.info ("prepareTrainingData : Completed " + str(cust_id))
         return
@@ -84,6 +86,10 @@ class IntentExtractor(object):
         if len(self.y) < 1: 
             logging.info('Cant process as no Training ')
             return
+
+        #from imblearn.over_sampling import SMOTE, ADASYN
+        #self.X, self.y = SMOTE().fit_sample(self.X, self.y)
+
         dim_size = 100
         self.model = Word2Vec(self.X, size=dim_size, window=5, min_count=1, workers=3)
         self.model.wv.index2word
@@ -93,14 +99,14 @@ class IntentExtractor(object):
         #                ("extra trees", ExtraTreesClassifier(n_estimators=200))])
         #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", TfidfEmbeddingVectorizer(w2v)), 
         #                ("MultinomialNB", MultinomialNB())])
-        #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
-        #               ("SVC", LogisticRegression(random_state=0))]) 
         self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v, dim_size)), 
-                       ("SVC", SVC(kernel='linear', probability=True))])
+                       ("LogisticRegression", LogisticRegression(random_state=0))]) 
+        #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v, dim_size)), 
+        #               ("SVC", SVC(kernel='linear', probability=True))])
         self.etree_w2v_tfidf.fit(self.X, self.y)
         
         pickle_out = pickle.dumps(self.etree_w2v_tfidf)
-        self.storage.put_bucket(pickle_out, cust_id) 
+        self.storage.put_bucket(pickle_out, cust_id, filetype='pkl') 
                 
         logging.info ("Total Training Samples : %s" % len(self.y))
         logging.info("startTrainingProcess : Completed " + str(cust_id))

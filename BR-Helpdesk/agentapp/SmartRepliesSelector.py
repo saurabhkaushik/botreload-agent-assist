@@ -92,8 +92,7 @@ class SmartRepliesSelector(object):
             return 
         
         resp_model = getResponseModel()
-        storageOps = StorageOps()
-
+        
         last_id = 9999
         tickets_learn = tickets_learner()
         resp_data = tickets_learn.getResponseData(cust_id=cust_id, modifiedflag=False, defaultflag=False)
@@ -112,7 +111,7 @@ class SmartRepliesSelector(object):
         self.removeRespDuplicate(cust_id)   
 
         csvfile = self.ticket_pd.to_csv()        
-        storageOps.put_bucket(csvfile, str("SmartReply_DataFrame_" + str(cust_id))) 
+        self.storage.put_bucket(csvfile, str("SmartReply_DataFrame_" + str(cust_id)), filetype='csv') 
         logging.info ('populateResponseData : Completed ' + str(cust_id))
         return
 

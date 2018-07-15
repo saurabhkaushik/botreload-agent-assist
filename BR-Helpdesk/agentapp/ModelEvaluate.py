@@ -92,7 +92,7 @@ class ModelEvaluate(object):
             self.ticket_pd['bleu_score_response'] = self.ticket_pd.apply(lambda x: self.getBleuScore(x['response'], x['response_response_text']), axis=1)
             
             csvfile = self.ticket_pd.to_csv()
-            self.storage.put_bucket(csvfile, str("TrainingModel_Evaluate_" + str(cust_id))) 
+            self.storage.put_bucket(csvfile, str("TrainingModel_Evaluate_" + str(cust_id)), filetype='csv') 
         logging.info("startEvaluation : Completed : " + str(cust_id))
         return
     
@@ -140,7 +140,6 @@ class ModelEvaluate(object):
         logging.info("createConfusionMatrix : Started " + str(cust_id))
             
         if (len(self.ticket_pd) > 0): 
-        #if (len(self.response_pd) > 0):
         
             self.analytics_pd['response_modified_count'] = int(self.response_pd[self.response_pd['modifiedflag'] == True].count()['modifiedflag'])
             self.analytics_pd['response_default_count'] = int(self.response_pd[self.response_pd['defaultflag'] == True].count()['defaultflag'])

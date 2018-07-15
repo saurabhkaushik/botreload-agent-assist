@@ -29,11 +29,11 @@ class StorageOps(object):
             print('Sorry, that bucket does not exist!')        
         return None
         
-    def put_bucket(self, file, cust_id):
+    def put_bucket(self, file, cust_id, filetype='pkl'):
         print('put_bucket:' + str(cust_id))
         try:
             bucket = self.storage_client.get_bucket(current_app.config['STORAGE_BUCKET'])
-            filename = cust_id + '_model.pkl'
+            filename = cust_id + '_model.' + filetype
             m_blob = bucket.blob(filename)            
             m_blob.upload_from_string(file)
         except google.cloud.exceptions.NotFound:

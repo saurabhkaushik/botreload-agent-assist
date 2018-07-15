@@ -45,8 +45,9 @@ class IntentExtractor_resp(object):
                     yY.append(str(linestm['res_category']).strip())
         self.X = xX
         self.y = yY
-        
+                
         self.X, self.y = np.array(self.X, dtype=object), np.array(self.y, dtype=object)
+
         logging.info ("Total Training Examples : %s" % len(self.y))
         logging.info("prepareTrainingData : Completed " + str(cust_id))
         return
@@ -56,6 +57,10 @@ class IntentExtractor_resp(object):
         if len(self.y) < 1: 
             logging.info('Cant process as no Training ')
             return
+
+        #from imblearn.over_sampling import SMOTE, ADASYN
+        #self.X, self.y = SMOTE().fit_sample(self.X, self.y)
+
         dim_size = 100
         self.model = Word2Vec(self.X, size=dim_size, window=5, min_count=1, workers=3)
         self.model.wv.index2word
@@ -63,12 +68,12 @@ class IntentExtractor_resp(object):
         w2v = {w: vec for w, vec in zip(self.model.wv.index2word, self.model.wv.syn0)}
         #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
         #                ("extra trees", ExtraTreesClassifier(n_estimators=200))])
-        #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", TfidfEmbeddingVectorizer(w2v)), 
+        #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v, dim_size)), 
         #                ("MultinomialNB", MultinomialNB())])
-        #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)), 
-        #               ("SVC", LogisticRegression(random_state=0))]) 
         self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v, dim_size)), 
-                       ("SVC", SVC(kernel='linear', probability=True))])
+                        ("LogisticRegression", LogisticRegression(random_state=0))]) 
+        #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v, dim_size)), 
+        #               ("SVC", SVC(kernel='linear', probability=True))])
         self.etree_w2v_tfidf.fit(self.X, self.y)
         
         logging.info ("Total Training Samples : %s" % len(self.y))
@@ -94,7 +99,7 @@ class IntentExtractor_resp(object):
             self.predicted.append('default')
         logging.info("getPredictedIntent : Completed " + str(cust_id))
         return self.predicted
-    
+
     def getPredictedIntent_list(self, X_in, cust_id): 
         logging.info("getPredictedIntent_list : Started " + str(cust_id))
         
@@ -117,8 +122,40 @@ class IntentExtractor_resp(object):
         ticketslearn  = tickets_learner()
         ticket_pd = ticketslearn.getTrainingData_DataFrame(cust_id) 
         if (len (ticket_pd) > 0):
-            ticket_pd['resp_category'] = self.getPredictedIntent_list(ticket_pd['query'], cust_id)
+            ticket_pd['resp_category'], ticket_pd['predict_prob'] = self.getPredictedIntent_prob(ticket_pd['query'], cust_id)
             traindata.batchUpdate(ticket_pd, cust_id=cust_id)
         
         logging.info("startTrainLogPrediction : Completed " + str(cust_id))
         return 
+        
+    def getPredictedIntent_prob(self, X_in, cust_id): 
+        logging.info("getPredictedIntent_list : Started " + str(cust_id))
+        
+        lang = getCustomerModel().getLanguage(cust_id)
+        X_in = X_in.apply(lambda x : self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True, 
+                                                              tag_remove=True).strip().split())
+        
+        try:            
+            predicted_list = self.etree_w2v_tfidf.predict(X_in) 
+            predicted_prob = self.etree_w2v_tfidf.predict_proba(X_in)           
+        except ValueError as err: 
+            logging.error('getPredictedIntent_list : ' + str(err))            
+        
+        intent_predict_df = pd.DataFrame(predicted_list, columns=['predicted_list'])
+        #intent_predict_df ['predicted_prob'] = pd.Series(predicted_prob)
+        #print (predicted_prob)
+        predict_prob = []
+        predict_class = []
+        for items in predicted_prob:
+            predict_df = pd.DataFrame({'Class': self.etree_w2v_tfidf.classes_, 'Prob' : items})
+            predict_prob.append(predict_df.loc[predict_df['Prob'].idxmax(), 'Prob'])
+            predict_class.append(predict_df.loc[predict_df['Prob'].idxmax(), 'Class'])
+         
+        intent_predict_df['predict_class'] = pd.Series(predict_class)
+        intent_predict_df['predict_prob'] = pd.Series(predict_prob)
+        
+        #print (intent_predict_df)        
+        
+        logging.info("getPredictedIntent_list : Completed " + str(cust_id))
+        return intent_predict_df['predict_class'], intent_predict_df['predict_prob']
+    

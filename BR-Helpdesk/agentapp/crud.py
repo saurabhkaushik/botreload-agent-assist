@@ -100,6 +100,26 @@ def doretrain():
         return redirect(url_for('.list', error_msg='Thanks for submitting data. Soon, we will retain the model and notify you.', cust_id=cust_id))
 # [END doregister]
 
+@crud.route("/dashboard", methods=['GET', 'POST'])
+def dashboard():    
+    cust_id = request.args.get('cust_id', None)
+    ticket_learn = tickets_learner() 
+    analytic_data = ticket_learn.getAnalyticsData(cust_id)
+    error_msg = ''
+    for linestms in analytic_data:           
+        ticket_served = linestms[0]['ticket_total_count'] if len(linestms) > 0 else 0
+        ticket_applied = linestms[0]['Feedback_tickets_count'] if len(linestms) > 0 else 0
+        ticket_not_applied = int(ticket_served - ticket_applied) if len(linestms) > 0 else 0
+        response_total = linestms[0]['response_total_count'] if len(linestms) > 0 else 0
+        response_modified = linestms[0]['response_modified_count'] if len(linestms) > 0 else 0
+        response_default = linestms[0]['response_default_count'] if len(linestms) > 0 else 0
+        response_new = int(response_total - (response_modified + response_default)) if len(linestms) > 0 else 0
+    return render_template(
+        "dashboard.html", cust_id=cust_id, error_msg=error_msg, 
+        ticket_served=ticket_served, ticket_applied=ticket_applied, response_total=response_total, 
+        response_modified=response_modified, response_default=response_default, response_new=response_new,
+        ticket_not_applied=ticket_not_applied)        
+
 # [START list]
 @crud.route("/list")
 def list():    

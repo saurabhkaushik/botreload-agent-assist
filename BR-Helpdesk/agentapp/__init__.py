@@ -1,10 +1,14 @@
 from agentapp.EntityExtractor import EntityExtractor
 from agentapp.IntentExtractor import IntentExtractor
+from agentapp.IntentExtractor_resp import IntentExtractor_resp
 from agentapp.tickets_learner import tickets_learner
 from agentapp.StorageOps import StorageOps
+from agentapp.SmartRepliesSelector import SmartRepliesSelector
 from agentapp.model_select import get_model, getTrainingModel, getCustomerModel
+from agentapp.CustomerDashboard import CustomerDashboard 
 from agentapp.TrainingDataAnalyzer import TrainingDataAnalyzer
 from agentapp.UtilityClass import UtilityClass
+from agentapp.ModelEvaluate import ModelEvaluate
 
 from flask import current_app, redirect
 from flask import Flask, jsonify
@@ -26,7 +30,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     storage = StorageOps()
     app.debug = debug
     app.testing = testing
-
+        
     if config_overrides:
         app.config.update(config_overrides)
 
@@ -175,17 +179,3 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         
         json_resp = json.dumps(resp)
         return json_resp
-    
-    @app.errorhandler(404)
-    def not_found(error):
-        return make_response(jsonify({'error': 'Not found'}), 404)
-
-    @app.errorhandler(500)
-    def server_error(e):
-        return """
-        An internal error occurred: <pre>{}</pre>
-        See logs for full stacktrace.
-        """.format(e), 500
-
-    return app
-
