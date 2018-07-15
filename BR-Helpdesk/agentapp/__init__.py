@@ -5,7 +5,6 @@ from agentapp.tickets_learner import tickets_learner
 from agentapp.StorageOps import StorageOps
 from agentapp.SmartRepliesSelector import SmartRepliesSelector
 from agentapp.model_select import get_model, getTrainingModel, getCustomerModel
-from agentapp.CustomerDashboard import CustomerDashboard 
 from agentapp.TrainingDataAnalyzer import TrainingDataAnalyzer
 from agentapp.UtilityClass import UtilityClass
 from agentapp.ModelEvaluate import ModelEvaluate

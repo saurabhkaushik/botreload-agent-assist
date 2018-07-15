@@ -103,8 +103,10 @@ class IntentExtractor(object):
                        ("LogisticRegression", LogisticRegression(random_state=0))]) 
         #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v, dim_size)), 
         #               ("SVC", SVC(kernel='linear', probability=True))])
-        self.etree_w2v_tfidf.fit(self.X, self.y)
-        
+        try: 
+            self.etree_w2v_tfidf.fit(self.X, self.y)
+        except ValueError as err:
+            logging.error(err)
         pickle_out = pickle.dumps(self.etree_w2v_tfidf)
         self.storage.put_bucket(pickle_out, cust_id, filetype='pkl') 
                 

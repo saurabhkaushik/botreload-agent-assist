@@ -74,7 +74,10 @@ class IntentExtractor_resp(object):
                         ("LogisticRegression", LogisticRegression(random_state=0))]) 
         #self.etree_w2v_tfidf = Pipeline([("word2vec vectorizer", MeanEmbeddingVectorizer(w2v, dim_size)), 
         #               ("SVC", SVC(kernel='linear', probability=True))])
-        self.etree_w2v_tfidf.fit(self.X, self.y)
+        try: 
+            self.etree_w2v_tfidf.fit(self.X, self.y)
+        except ValueError as err:
+            logging.error(err)
         
         logging.info ("Total Training Samples : %s" % len(self.y))
         logging.info("startTrainingProcess : Completed " + str(cust_id))
