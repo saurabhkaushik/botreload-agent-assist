@@ -6,7 +6,6 @@ import logging
 from agentapp.IntentExtractor import IntentExtractor
 
 crud = Blueprint('crud', __name__)
-intenteng = IntentExtractor()
 
 # [START login]
 @crud.route("/")

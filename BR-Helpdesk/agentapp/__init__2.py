@@ -256,30 +256,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
                 intenteng.startTrainingProcess(cust_id_x['cust_name'])
         return '200'
 
-    @app.route('/processnewcustomer', methods=['GET'])
-    def processNewCustomer():
-        logging.info('processnewcustomer : ')        
-        cust_id = request.args.get('cust_id')
-        cust_list =[]
-        if cust_id == None:             
-            cust_list, __ = getCustomerModel().list(newflag=True, done=True)
-        else: 
-            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
-        logging.info('Processing processNewCustomer For : ' + str(cust_list))
-
-        cust_model = getCustomerModel()
-        ticketLearner = tickets_learner()
-        intenteng = IntentExtractor()
-        for cust_x in cust_list:             
-            ticketLearner.import_trainingdata(cust_x['cust_name'], cust_x['language']) 
-            intenteng.prepareTrainingData(cust_x['cust_name']) 
-            intenteng.startTrainingProcess(cust_x['cust_name'])
-            cust_model.update(cust_x['cust_name'], language=cust_x['language'], intent_threshold=cust_x['intent_threshold'], 
-                              organization=cust_x['organization'], email_id=cust_x['email_id'], password =cust_x['password'],
-                              newflag=False, done=True, id=cust_x['id'])
-            logging.info('Processed new Customer : ' + cust_x['cust_name'])
-        return '200'
-    
     @app.route('/copyoldtrainingdata', methods=['GET'])
     def copyOldTrainingData():
         logging.info('copyOldTrainingData : ')        
@@ -381,8 +357,32 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             modeleval.startEvaluation(cust_id_x['cust_name'])
             modeleval.createConfusionMatrix(cust_id_x['cust_name'])         
         return '200'
+    
+    '''   
+    @app.route('/processnewcustomer', methods=['GET'])
+    def processNewCustomer():
+        logging.info('processnewcustomer : ')        
+        cust_id = request.args.get('cust_id')
+        cust_list =[]
+        if cust_id == None:             
+            cust_list, __ = getCustomerModel().list(newflag=True, done=True)
+        else: 
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
+        logging.info('Processing processNewCustomer For : ' + str(cust_list))
 
-    ''' 
+        cust_model = getCustomerModel()
+        ticketLearner = tickets_learner()
+        intenteng = IntentExtractor()
+        for cust_x in cust_list:             
+            ticketLearner.import_trainingdata(cust_x['cust_name'], cust_x['language']) 
+            intenteng.prepareTrainingData(cust_x['cust_name']) 
+            intenteng.startTrainingProcess(cust_x['cust_name'])
+            cust_model.update(cust_x['cust_name'], language=cust_x['language'], intent_threshold=cust_x['intent_threshold'], 
+                              organization=cust_x['organization'], email_id=cust_x['email_id'], password =cust_x['password'],
+                              newflag=False, done=True, id=cust_x['id'])
+            logging.info('Processed new Customer : ' + cust_x['cust_name'])
+        return '200'
+    
     @app.route('/testingservice', methods=['GET'])
     def startTestingModels():
         logging.info('startTestingModels : ')
@@ -429,4 +429,3 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         """.format(e), 500
 
     return app
-

@@ -269,7 +269,7 @@ class TrainingDataAnalyzer(object):
         
         ticket_struct = []
         trainlog_struct = []
-        intent_data = tickets_learn.getTrainingLog(cust_id=cust_id, log_type = 'feedback', done=True)
+        intent_data = tickets_learn.getTrainingLog(cust_id=cust_id, log_type = 'feedback', done=None)
         len_traindata = 0
         for intent_logs in intent_data:
             len_traindata += len (intent_logs)           
@@ -277,20 +277,23 @@ class TrainingDataAnalyzer(object):
                 intents_data = intent_log["json_data"] 
                 intents_data_json = json.loads(intents_data)
                 selected_response_id = intents_data_json["selected_response_id"]
-                selected_response_prob = intents_data_json["selected_response_prob"] if 'selected_response_prob' in intents_data_json else 0
+                selected_response_prob = (intents_data_json["selected_response_prob"]/100) if 'selected_response_prob' in intents_data_json else 0
                 cust_id = intents_data_json["ticket_data"]['currentAccount']['subdomain'] 
                 id = intents_data_json["ticket_data"]['id']                
                 train_data = traindata.read(id, cust_id=cust_id)
                 response_data = respdata.read(selected_response_id, cust_id=cust_id)                
                 if train_data != None and response_data != None: 
-                    traindata.update(train_data["tags"], train_data["query"], response_data["response_text"], query_category=train_data['query_category'], 
-                                     resp_category=response_data['res_category'], feedback_flag=True, feedback_prob=selected_response_prob, 
+                    '''
+                    traindata.update(train_data["tags"], train_data['query'], response_data["response_text"], query_category=train_data['query_category'], 
+                                     resp_category=train_data['resp_category'], feedback_resp=response_data['res_category'],
+                                     feedback_flag=True, feedback_prob=selected_response_prob, predict_prob = train_data['predict_prob'],
                                      done=True, id=train_data['id'], cust_id=cust_id)
+                    '''
                     ticket_struct.append({'id' : train_data['id'], 'query' : train_data['query'], 'query_category' : train_data['query_category'], 
+                        'response': response_data["response_text"], 'resp_category': train_data['resp_category'], 
                         'feedback_resp' : response_data['res_category'], 'feedback_flag' : True, 'feedback_prob' : selected_response_prob, 
-                        'done' : train_data['done'], 'response': train_data['response'], 
-                        'resp_category': train_data['resp_category'], 'predict_prob': train_data['predict_prob'] if 'predict_prob' in train_data else 0, 
-                        'tags' : train_data['tags']})
+                        'predict_prob': train_data['predict_prob'] if 'predict_prob' in train_data else 0, 
+                        'done' : train_data['done'], 'tags' : train_data['tags']})
                     trainlog_struct.append({'id' : intent_log['id'], 'type': intent_log['type'], 'created': intent_log['created'], 
                                             'json_data': intent_log['json_data'], 'done': False})
                     print('Updating Feedback : ' , id, cust_id)
