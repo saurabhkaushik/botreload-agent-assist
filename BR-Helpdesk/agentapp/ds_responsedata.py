@@ -7,10 +7,8 @@ builtin_list = list
 def init_app(app):
     pass
 
-
 def get_client():
     return datastore.Client(current_app.config['PROJECT_ID'])
-
 
 # [START from_datastore]
 def from_datastore(entity):
@@ -57,13 +55,11 @@ def list(res_category=None, limit=999, cursor=None, modifiedflag=None, defaultfl
     return entities, next_cursor
 # [END list]
 
-
 def read(id, cust_id=''):
     ds = get_client()
     key = ds.key(cust_id + 'ResponseData', int(id))
     results = ds.get(key)
     return from_datastore(results)
-
 
 # [START update]
 def update(cat_name, res_category, response_text, tags, resp_tags, modifiedflag=False, defaultflag=False, done=False, id=None, cust_id=''):

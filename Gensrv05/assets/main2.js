@@ -1,11 +1,10 @@
 var ticket_data = {id : 0, description:'', comment:'', comments: '', currentUser:'', subject:'', assignee:'', requester:'' , currentAccount:''};
 var feedback_data = {selected_response_id : 0, selected_response_prob : 0, ticket_data : ''};
 var past_ticket_data = {upload_ticket_data : [], upload_comment_data : [], ticket_data : ''};
-var article_data = {article_data : '', ticket_data : ''};
 var response_data = {server_response : ''};
 
 var SERVER_NAME = 'https://botreloadprod002.appspot.com';
-//var SERVER_NAME = 'https://botreloaddev002.appspot.com';
+//var SERVER_NAME = 'https://br-assist-dev.appspot.com';
 
 var context;
 var client = ZAFClient.init();
@@ -128,7 +127,7 @@ function applyComment(event, id, prob, kid) {
     feedback_data.selected_response_id = id;
     feedback_data.selected_response_prob = prob;
     feedback_data.ticket_data = ticket_data;
-    sendFeedbackData(feedback_data);
+    syncFeedbackData(feedback_data);
 };
 
 function sendPortal(event) {
@@ -163,6 +162,55 @@ function getResponseData() {
 	);
 }
 
+function syncTicketData() {	
+	//console.log('syncTicketData:', past_ticket_data); //JSON.stringify(past_ticket_data));
+	var settings = {
+	    url: SERVER_NAME +'/uploadtickets',
+	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
+	    type: 'POST',
+	    contentType: 'application/json',
+	    data: JSON.stringify(past_ticket_data),
+	    dataType: 'json'
+	  };
+	client.request(settings).then(
+    function(data) {
+    	setKey("ticketflag", Date.now());
+    	//client.invoke('notify', 'Received Ticket Responses.');
+    	//console.log(data);
+    	//console.log('syncTicketData: Success');
+    },
+    function(response) {
+      var msg = 'Error ' + response.status + ' ' + response.statusText;
+      //client.invoke('notify', msg, 'error');
+      //console.log('syncTicketData:' + msg);
+    }
+  );
+}
+
+function syncFeedbackData() {
+	//console.log('syncFeedbackData:', feedback_data); // JSON.stringify(feedback_data));
+	var settings = {
+	    url: SERVER_NAME +'/uploadfeedback',
+	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
+	    type: 'POST',
+	    contentType: 'application/json',
+	    data: JSON.stringify(feedback_data),
+	    dataType: 'json'
+	  };
+	client.request(settings).then(
+    function(data) {
+      //client.invoke('notify', 'Received Ticket Responses.');
+      //console.log(data);
+      //console.log('syncFeedbackData: Success');
+    },
+    function(response) {
+      var msg = 'Error ' + response.status + ' ' + response.statusText;
+      //client.invoke('notify', msg, 'error');
+      //console.log('syncFeedbackData:' + msg);
+    }
+  );
+}
+
 function getServerTicketFlag() {
 	//console.log('getServerTicketFlag:', ticket_data); // JSON.stringify(feedback_data));
 	var settings = {
@@ -188,86 +236,12 @@ function getServerTicketFlag() {
 		    }
 	);
 }
-function sendTicketData() {	
-	//console.log('sendTicketData:', past_ticket_data); //JSON.stringify(past_ticket_data));
-	var settings = {
-	    url: SERVER_NAME +'/uploadtickets',
-	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
-	    type: 'POST',
-	    contentType: 'application/json',
-	    data: JSON.stringify(past_ticket_data),
-	    dataType: 'json'
-	  };
-	client.request(settings).then(
-    function(data) {
-    	setKey("ticketflag", Date.now());
-    	//client.invoke('notify', 'Received Ticket Responses.');
-    	//console.log(data);
-    	//console.log('sendTicketData: Success');
-    },
-    function(response) {
-      var msg = 'Error ' + response.status + ' ' + response.statusText;
-      //client.invoke('notify', msg, 'error');
-      //console.log('sendTicketData:' + msg);
-    }
-  );
-}
-
-function sendFeedbackData() {
-	//console.log('sendFeedbackData:', feedback_data); // JSON.stringify(feedback_data));
-	var settings = {
-	    url: SERVER_NAME +'/uploadfeedback',
-	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
-	    type: 'POST',
-	    contentType: 'application/json',
-	    data: JSON.stringify(feedback_data),
-	    dataType: 'json'
-	  };
-	client.request(settings).then(
-    function(data) {
-      //client.invoke('notify', 'Received Ticket Responses.');
-      //console.log(data);
-      //console.log('sendFeedbackData: Success');
-    },
-    function(response) {
-      var msg = 'Error ' + response.status + ' ' + response.statusText;
-      //client.invoke('notify', msg, 'error');
-      //console.log('sendFeedbackData:' + msg);
-    }
-  );
-}
-
-function sendArticleData() {	
-	//console.log('sendArticleData:', article_data); //JSON.stringify(article_data)); 
-	var settings = {
-	    url: SERVER_NAME +'/uploadarticles',
-	    //headers: {"Authorization": "Bearer 0/68e815b2751c4bf45d1e25295f8fb39a"},
-	    type: 'POST',
-	    contentType: 'application/json',
-	    data: JSON.stringify(article_data),
-	    dataType: 'json'
-	  };
-	client.request(settings).then(
-    function(data) {
-    	setKey("ticketflag", Date.now());
-    	//client.invoke('notify', 'Received Ticket Responses.');
-    	//console.log(data);
-    	//console.log('sendArticleData: Success');
-    },
-    function(response) {
-      var msg = 'Error ' + response.status + ' ' + response.statusText;
-      //client.invoke('notify', msg, 'error');
-      //console.log('sendArticleData:' + msg);
-    }
-  );
-}
 
 function getTicketData() {	
-	//console.log('getTicketData:');
-	//ticket_flag = true;
-	//server_ticket_flag=true;
+	//console.log(ticket_flag)
 	if (ticket_flag == false && server_ticket_flag == false)
-		return;	
+		return;
+	//console.log('getTicketData:');
 	var settings = {
 		url: '/api/v2/tickets.json',
 	    type: 'GET',
@@ -277,22 +251,17 @@ function getTicketData() {
 	client.request(settings).then(
     function(data) {
         //console.log(data);
-    	past_ticket_data.upload_ticket_data = data.tickets;
-    	past_ticket_data.ticket_data = ticket_data;
+    	past_ticket_data.upload_ticket_data = data.tickets
+    	past_ticket_data.ticket_data = ticket_data
     	for (i = 0; i < data.tickets.length; i++) {
     	   	if (iter_comment++ < max_comments) {
-    	   		getCommentData(data.tickets[i]);
+    	   		getCommentData(data.tickets[i]);    	
     	   	}
     	}
-    	getArticleData();
     	past_ticket_data.upload_comment_data = comment_list;
         setTimeout( function() {
-        	sendTicketData();
+        	syncTicketData();
         	}, timeout_comment);
-        setTimeout( function() {
-        	sendArticleData();
-        	}, (timeout_comment*2));
-        //sendArticleData();
     },
     function(response) {
       var msg = 'Error ' + response.status + ' ' + response.statusText;
@@ -313,7 +282,7 @@ function getCommentData(tickets_x) {
 	}; 		
 	client.request(settings).then(
     function(data) {
-    	var comment_struct = {id: data.id, comments : data.comments}
+    	var comment_struct = {id: tickets_x.id, comments : data.comments}
     	comment_list.push(comment_struct);
     	return;
     },
@@ -325,7 +294,7 @@ function getCommentData(tickets_x) {
 	);
 }
 
-function getArticleData() {
+function getArticlesData(articles_x) {
 	//console.log ('getArticlesData : ');
 	var settings = {
 		url: '/api/v2/help_center/articles.json',
@@ -335,8 +304,8 @@ function getArticleData() {
 	}; 		
 	client.request(settings).then(
     function(data) {
-    	article_data.article_data = data.articles;
-    	article_data.ticket_data = ticket_data;
+    	var comment_struct = {id: tickets_x.id, comments : data.comments}
+    	comment_list.push(comment_struct);
     	return;
     },
     function(response) {

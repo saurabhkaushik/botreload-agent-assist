@@ -4,7 +4,7 @@ from agentapp.IntentExtractor_resp import IntentExtractor_resp
 from agentapp.tickets_learner import tickets_learner
 from agentapp.StorageOps import StorageOps
 from agentapp.SmartRepliesSelector import SmartRepliesSelector
-from agentapp.model_select import get_model, getTrainingModel, getCustomerModel
+from agentapp.model_select import get_model, getTrainingModel, getCustomerModel, getResponseModel
 from agentapp.TrainingDataAnalyzer import TrainingDataAnalyzer
 from agentapp.UtilityClass import UtilityClass
 from agentapp.ModelEvaluate import ModelEvaluate
@@ -22,6 +22,8 @@ import json
 import time
 import os
 import logging 
+import datetime
+import pandas as pd 
 
 def create_app(config, debug=False, testing=False, config_overrides=None):
     app = Flask(__name__)
@@ -124,6 +126,45 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         logging.info('Customer Id : ' + str(cust_id))
         
         get_model().create('tickets', json.dumps(request.json), done=True, cust_id=cust_id)
+        return '200' 
+
+    @app.route('/uploadarticles', methods=['POST'])
+    def uploadArticles():
+        logging.info('uploadArticles : ')
+        cust_id = ''
+        received_data = request.json
+        #print (received_data)
+        try: 
+            cust_id = received_data['ticket_data']['currentAccount']['subdomain']
+        except KeyError as err:
+            logging.error(err)
+            cust_id = 'default'
+        
+        cust = getCustomerModel().authenticate(cust_id.strip().lower(), newflag=False)
+        if cust == None:
+            cust_id = 'default'
+        else: 
+            cust_id = cust['cust_name']
+
+        logging.info('Customer Id : ' + str(cust_id))
+        response_struct = []
+        article_data = received_data['article_data']
+        respdata = getResponseModel()
+        for items in article_data:
+            response_text = str(items['body'])
+            resp_name = items['title'].split()[:5]
+            resp_name = ' '.join(resp_name).title().replace(" ", "_")
+            utils_class = UtilityClass()
+            response_text = utils_class.cleanhtml(response_text)
+            if len(response_text) > 600:                
+                response_text = str ('Please find response for your query at following link. \n ' + items['html_url'])
+            response_struct.append({'id' : items['id'], 'resp_name': resp_name, 'res_category': str(cust_id + '_Article_' + str(items['id'])), 
+                                    'response_text' : response_text, 'tags' : items['title'],
+                                    'modifiedflag': False, 'defaultflag' : False, 'resp_tags' : '', 'created': datetime.datetime.utcnow(), 
+                                    'done': True})
+        if (len (response_struct) > 1):
+            response_pd = pd.DataFrame(response_struct)
+            respdata.batchUpdate(response_pd, cust_id)
         return '200' 
     
     @app.route('/uploadfeedback', methods=['POST'])
