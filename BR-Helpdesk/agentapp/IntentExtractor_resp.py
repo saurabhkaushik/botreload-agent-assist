@@ -113,7 +113,9 @@ class IntentExtractor_resp(object):
         try:
             predicted_list = self.etree_w2v_tfidf.predict(X_in) 
         except ValueError as err: 
-            logging.error('getPredictedIntent_list : ' + str(err))            
+            logging.error('getPredictedIntent_list : ' + str(err))   
+        except AttributeError as err: 
+            logging.error('getPredictedIntent_list : ' + str(err)) 
         predict_df = pd.Series(predicted_list)
         logging.info("getPredictedIntent_list : Completed " + str(cust_id))
         return predict_df
@@ -132,7 +134,7 @@ class IntentExtractor_resp(object):
         return 
         
     def getPredictedIntent_prob(self, X_in, cust_id): 
-        logging.info("getPredictedIntent_list : Started " + str(cust_id))
+        logging.info("getPredictedIntent_prob : Started " + str(cust_id))
         
         lang = getCustomerModel().getLanguage(cust_id)
         X_in = X_in.apply(lambda x : self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True, 
@@ -142,7 +144,7 @@ class IntentExtractor_resp(object):
             predicted_list = self.etree_w2v_tfidf.predict(X_in) 
             predicted_prob = self.etree_w2v_tfidf.predict_proba(X_in)           
         except ValueError as err: 
-            logging.error('getPredictedIntent_list : ' + str(err))            
+            logging.error('getPredictedIntent_prob : ' + str(err))            
         
         intent_predict_df = pd.DataFrame(predicted_list, columns=['predicted_list'])
         #intent_predict_df ['predicted_prob'] = pd.Series(predicted_prob)
