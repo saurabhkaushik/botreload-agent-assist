@@ -8,17 +8,12 @@ from pandas_ml import ConfusionMatrix
 from sklearn.metrics import  f1_score, precision_score, recall_score
 import csv
 from collections import defaultdict
-from agentapp.model_select import get_model, getTrainingModel, getResponseModel
-from agentapp.tickets_learner import tickets_learner
-from flask import current_app
 import logging
-#from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
 import nltk
 nltk.download('stopwords')
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
-from agentapp.tickets_learner import tickets_learner
 
 class MeanEmbeddingVectorizer(object):
     def __init__(self, word2vec, dim_size):

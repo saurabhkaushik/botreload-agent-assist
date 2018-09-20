@@ -352,8 +352,11 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(retrainflag=True, done=True)
-        else:             
-            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
+        else: 
+            if cust_id == 'all':       
+                cust_list, __ = getCustomerModel().list(done=True)
+            else:      
+                cust_list, __ = getCustomerModel().list(cust_name=cust_id)
         logging.info('Processing processRetrainCustomer For : ' + str(cust_list))
         
         cust_model = getCustomerModel() 
