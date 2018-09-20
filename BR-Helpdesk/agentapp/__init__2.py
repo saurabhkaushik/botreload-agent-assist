@@ -239,41 +239,22 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         return '200'  
     
     @app.route('/starttraining', methods=['GET'])
-    def startTrainingModels():
-        logging.info('startTrainingModels : ')
+    def startTraining():
+        logging.info('startTraining : ')
         cust_id = request.args.get('cust_id')
         cust_list =[]
         if cust_id == None:             
             cust_list, __ = getCustomerModel().list(done=True)
         else: 
             cust_list, __ = getCustomerModel().list(cust_name=cust_id)
-        logging.info('Processing startTrainingModels For : ' + str(cust_list))
+        logging.info('Processing startTraining For : ' + str(cust_list))
 
         intenteng = IntentExtractor() 
         for cust_id_x in cust_list:
             intenteng.prepareTrainingData(cust_id_x['cust_name']) 
             intenteng.startTrainingProcess(cust_id_x['cust_name'])
         return '200'  
-    
-    @app.route('/buildsmartreplies', methods=['GET'])
-    def buildSmartReplies():
-        logging.info('buildSmartReplies : ') 
-        cust_id = request.args.get('cust_id')
-        cust_list =[]
-        if cust_id == None:             
-            cust_list, __ = getCustomerModel().list(done=True)
-        else: 
-            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
-        logging.info('Processing buildSmartReplies For : ' + str(cust_list))
-        ticketLearner = tickets_learner()
-        replyeng = SmartRepliesSelector()
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                replyeng.prepareTrainingData(cust_id_x['cust_name'])
-                replyeng.generateNewResponse(cust_id_x['cust_name'])
-                replyeng.populateResponseData(cust_id_x['cust_name'])
-        return '200'
-            
+                
     @app.route('/startretraining', methods=['GET'])
     def startRetraining():
         logging.info('startRetraining : ')        
@@ -297,6 +278,85 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
                 intenteng.startTrainingProcess(cust_id_x['cust_name'])
         return '200'
 
+    # Process and Retrain the customer 
+    @app.route('/processretraincustomer', methods=['GET'])
+    def startFullRetraining():
+        logging.info('\nstartFullRetraining : ')        
+        cust_id = request.args.get('cust_id')
+        cust_list = []
+        
+        if cust_id == None:             
+            cust_list, __ = getCustomerModel().list(retrainflag=True, done=True)
+        else: 
+            if cust_id == 'all':       
+                cust_list, __ = getCustomerModel().list(done=True)
+            else:      
+                cust_list, __ = getCustomerModel().list(cust_name=cust_id)
+        logging.info('Processing startFullRetraining For : ' + str(cust_list))
+        
+        cust_model = getCustomerModel() 
+        data_analyzer = TrainingDataAnalyzer()
+        intenteng = IntentExtractor() 
+        intenteng_resp = IntentExtractor_resp()
+        
+        # Extraction of Intent data          
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default':  
+                logging.info('\n Start Retraining Customer : ' + cust_id_x['cust_name'])               
+                data_analyzer.extractIntentData_cust(cust_id_x['cust_name']) 
+                data_analyzer.extractFeedbackData_cust(cust_id_x['cust_name'])
+                intenteng_resp.prepareTrainingData(cust_id_x['cust_name'])                
+                intenteng_resp.startTrainingProcess(cust_id_x['cust_name'])
+                intenteng_resp.startTrainLogPrediction(cust_id_x['cust_name'])        
+                intenteng.prepareTrainingData(cust_id_x['cust_name'])
+                intenteng.startTrainingProcess(cust_id_x['cust_name'])
+                
+                cust_model.update(cust_id_x['cust_name'], language=cust_id_x['language'], 
+                                  intent_threshold=cust_id_x['intent_threshold'], organization=cust_id_x['organization'], 
+                                  email_id=cust_id_x['email_id'], password =cust_id_x['password'], newflag=cust_id_x['newflag'], 
+                                  retrainflag=False, done=True, id=cust_id_x['id'])
+                logging.info(' Completed Retraining Customer : ' + cust_id_x['cust_name'] + '\n')
+
+        return '200'   
+
+    @app.route('/buildsmartreplies', methods=['GET'])
+    def buildSmartReplies():
+        logging.info('buildSmartReplies : ') 
+        cust_id = request.args.get('cust_id')
+        cust_list =[]
+        if cust_id == None:             
+            cust_list, __ = getCustomerModel().list(done=True)
+        else: 
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
+        logging.info('Processing buildSmartReplies For : ' + str(cust_list))
+        ticketLearner = tickets_learner()
+        replyeng = SmartRepliesSelector()
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                replyeng.prepareTrainingData(cust_id_x['cust_name'])
+                replyeng.generateNewResponse(cust_id_x['cust_name'])
+                replyeng.populateResponseData(cust_id_x['cust_name'])
+        return '200'
+
+    @app.route('/modelevaluate', methods=['GET'])
+    def evaluateModel():
+        logging.info('evaluateModel : ')
+        cust_id = request.args.get('cust_id')
+        cust_list =[]
+        if cust_id == None:             
+            cust_list, __ = getCustomerModel().list(done=True)
+        else: 
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
+        logging.info('Processing evaluateModel For : ' + str(cust_list))
+        
+        modeleval = ModelEvaluate()
+        for cust_id_x in cust_list:
+            modeleval.prepareTrainingData(cust_id_x['cust_name'])
+            modeleval.startEvaluation(cust_id_x['cust_name'])
+            modeleval.createConfusionMatrix(cust_id_x['cust_name'])         
+        return '200'
+
+    '''
     @app.route('/copyoldtrainingdata', methods=['GET'])
     def copyOldTrainingData():
         logging.info('copyOldTrainingData : ')        
@@ -331,7 +391,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractFeedbackData_cust(cust_id_x['cust_name'])
-        '''       
+            
         # Extraction of Old Ticket data          
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
@@ -340,69 +400,9 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         for cust_id_x in cust_list:
             if cust_id_x['cust_name'] != 'default': 
                 data_analyzer.extractNewTicketData_cust(cust_id_x['cust_name'])   
-        '''     
+           
         return '200'
-
-    # Process and Retrain the customer 
-    @app.route('/processretraincustomer', methods=['GET'])
-    def processRetrainCustomer():
-        logging.info('\nprocessRetrainCustomer : ')        
-        cust_id = request.args.get('cust_id')
-        cust_list = []
-        
-        if cust_id == None:             
-            cust_list, __ = getCustomerModel().list(retrainflag=True, done=True)
-        else: 
-            if cust_id == 'all':       
-                cust_list, __ = getCustomerModel().list(done=True)
-            else:      
-                cust_list, __ = getCustomerModel().list(cust_name=cust_id)
-        logging.info('Processing processRetrainCustomer For : ' + str(cust_list))
-        
-        cust_model = getCustomerModel() 
-        data_analyzer = TrainingDataAnalyzer()
-        intenteng = IntentExtractor() 
-        intenteng_resp = IntentExtractor_resp()
-        
-        # Extraction of Intent data          
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default':  
-                logging.info('\n Start Retraining Customer : ' + cust_id_x['cust_name'])               
-                data_analyzer.extractIntentData_cust(cust_id_x['cust_name']) 
-                data_analyzer.extractFeedbackData_cust(cust_id_x['cust_name'])
-                intenteng_resp.prepareTrainingData(cust_id_x['cust_name'])                
-                intenteng_resp.startTrainingProcess(cust_id_x['cust_name'])
-                intenteng_resp.startTrainLogPrediction(cust_id_x['cust_name'])        
-                intenteng.prepareTrainingData(cust_id_x['cust_name'])
-                intenteng.startTrainingProcess(cust_id_x['cust_name'])
-                
-                cust_model.update(cust_id_x['cust_name'], language=cust_id_x['language'], 
-                                  intent_threshold=cust_id_x['intent_threshold'], organization=cust_id_x['organization'], 
-                                  email_id=cust_id_x['email_id'], password =cust_id_x['password'], newflag=cust_id_x['newflag'], 
-                                  retrainflag=False, done=True, id=cust_id_x['id'])
-                logging.info(' Completed Retraining Customer : ' + cust_id_x['cust_name'] + '\n')
-
-        return '200'
-    
-    @app.route('/modelevaluate', methods=['GET'])
-    def modelEvaluate():
-        logging.info('modelEvaluate : ')
-        cust_id = request.args.get('cust_id')
-        cust_list =[]
-        if cust_id == None:             
-            cust_list, __ = getCustomerModel().list(done=True)
-        else: 
-            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
-        logging.info('Processing modelEvaluate For : ' + str(cust_list))
-        
-        modeleval = ModelEvaluate()
-        for cust_id_x in cust_list:
-            modeleval.prepareTrainingData(cust_id_x['cust_name'])
-            modeleval.startEvaluation(cust_id_x['cust_name'])
-            modeleval.createConfusionMatrix(cust_id_x['cust_name'])         
-        return '200'
-    
-    '''   
+      
     @app.route('/processnewcustomer', methods=['GET'])
     def processNewCustomer():
         logging.info('processnewcustomer : ')        
