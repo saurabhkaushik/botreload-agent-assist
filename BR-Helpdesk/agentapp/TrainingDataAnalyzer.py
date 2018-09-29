@@ -324,11 +324,16 @@ class TrainingDataAnalyzer(object):
                 for ticket_data in tickets_data_json['upload_ticket_data']: 
                     comments = ''
                     for comment_data in tickets_data_json['upload_comment_data']:
-                        if (comment_data['id'] == ticket_data['id']):
-                            try:
-                                comments = comment_data['comments'][1]['plain_body']
-                            except IndexError as err: 
-                                logging.debug('')
+                        print (comment_data)
+                        #print (ticket_data['id'])
+                        try: 
+                            if (comment_data['id'] == ticket_data['id']):
+                                try:
+                                    comments = comment_data['comments'][1]['plain_body']
+                                except IndexError as err: 
+                                    logging.debug(err)
+                        except KeyError as err: 
+                            logging.debug(err)
                     comments = cleanhtml (comments)
                     description = ticket_data['description']
                     subject = ticket_data['subject'] 

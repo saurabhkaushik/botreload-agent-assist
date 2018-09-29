@@ -356,6 +356,39 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             modeleval.createConfusionMatrix(cust_id_x['cust_name'])         
         return '200'
 
+    @app.route('/processtrainingdata', methods=['GET'])
+    def processTrainingData():
+        logging.info('processTrainingData : ')        
+        cust_id = request.args.get('cust_id')
+        cust_list =[]
+        if cust_id == None:             
+            cust_list, __ = getCustomerModel().list(done=True)
+        else: 
+            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
+        logging.info('Processing processTrainingData For : ' + str(cust_list))
+
+        data_analyzer = TrainingDataAnalyzer()
+        
+        '''
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.extractIntentData_cust(cust_id_x['cust_name']) 
+
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.extractFeedbackData_cust(cust_id_x['cust_name'])
+            
+        # Extraction of Old Ticket data          
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.extractTicketData_cust(cust_id_x['cust_name'])
+        '''
+        # Extraction of New Ticket data 
+        for cust_id_x in cust_list:
+            if cust_id_x['cust_name'] != 'default': 
+                data_analyzer.extractNewTicketData_cust(cust_id_x['cust_name'])   
+           
+        return '200'
     '''
     @app.route('/copyoldtrainingdata', methods=['GET'])
     def copyOldTrainingData():
@@ -371,38 +404,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         data_analyzer.copyDefaultTrainingLog()
         return '200'
     
-    @app.route('/processtrainingdata', methods=['GET'])
-    def processTrainingData():
-        logging.info('processTrainingData : ')        
-        cust_id = request.args.get('cust_id')
-        cust_list =[]
-        if cust_id == None:             
-            cust_list, __ = getCustomerModel().list(done=True)
-        else: 
-            cust_list, __ = getCustomerModel().list(cust_name=cust_id)
-        logging.info('Processing processTrainingData For : ' + str(cust_list))
-
-        data_analyzer = TrainingDataAnalyzer()
-        
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.extractIntentData_cust(cust_id_x['cust_name']) 
-
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.extractFeedbackData_cust(cust_id_x['cust_name'])
-            
-        # Extraction of Old Ticket data          
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.extractTicketData_cust(cust_id_x['cust_name'])
-        # Extraction of New Ticket data 
-        for cust_id_x in cust_list:
-            if cust_id_x['cust_name'] != 'default': 
-                data_analyzer.extractNewTicketData_cust(cust_id_x['cust_name'])   
-           
-        return '200'
-      
     @app.route('/processnewcustomer', methods=['GET'])
     def processNewCustomer():
         logging.info('processnewcustomer : ')        
