@@ -4,7 +4,7 @@ var past_ticket_data = {upload_ticket_data : [], upload_comment_data : [], ticke
 var article_data = {article_data : '', ticket_data : ''};
 var response_data = {server_response : ''};
 
-var SERVER_NAME = 'https://botreloadprod004.appspot.com';
+var SERVER_NAME = 'https://botreloadprod006.appspot.com';
 //var SERVER_NAME = 'https://botreloaddev004.appspot.com';
 
 var context;

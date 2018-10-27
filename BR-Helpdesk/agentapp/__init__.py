@@ -112,7 +112,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             cust_id = received_data['ticket_data']['currentAccount']['subdomain']
         except KeyError as err:
             logging.error(err)
-            cust_id = 'default'
+            return '200'
         
         cust = getCustomerModel().authenticate(cust_id.strip().lower(), newflag=False)
         if cust == None:
@@ -135,7 +135,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
             cust_id = received_data['ticket_data']['currentAccount']['subdomain']
         except KeyError as err:
             logging.error(err)
-            cust_id = 'default'
+            return '200'
         
         cust = getCustomerModel().authenticate(cust_id.strip().lower(), newflag=False)
         if cust == None:

@@ -41,8 +41,8 @@ class SmartRepliesSelector(object):
     
     def generateNewResponse(self, cust_id):
         logging.info('generateNewResponse : Started : ' + str(cust_id))
-        self.ticket_pd['response_cluster'] = -1
-        self.ticket_pd['select_response'] = np.nan
+        self.ticket_pd.loc[:, 'response_cluster'] = -1
+        self.ticket_pd.loc[:, 'select_response'] = np.nan
         
         X_q = []
         try :

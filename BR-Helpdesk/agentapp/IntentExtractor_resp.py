@@ -26,6 +26,7 @@ class IntentExtractor_resp(object):
     def __init__(self):
         self.utilclass = UtilityClass()
         self.utilspace = UtilityClass_spacy()
+        self.model = None 
 
     def prepareTrainingData(self, cust_id):
         logging.info("prepareTrainingData : Started " + str(cust_id))
@@ -54,7 +55,7 @@ class IntentExtractor_resp(object):
             
     def startTrainingProcess(self, cust_id):
         logging.info("startTrainingProcess : Started " + str(cust_id))
-        if len(self.y) < 1: 
+        if len(self.y) < 5: 
             logging.info('Cant process as no Training ')
             return
 
@@ -85,7 +86,7 @@ class IntentExtractor_resp(object):
         
     def getPredictedIntent(self, textinput, cust_id): 
         logging.info("getPredictedIntent : Started " + str(cust_id))
-        if len(self.y) < 1: 
+        if self.model == None: 
             logging.info('Cant process as no Training ')
             return
         self.test_X = []
@@ -105,6 +106,9 @@ class IntentExtractor_resp(object):
 
     def getPredictedIntent_list(self, X_in, cust_id): 
         logging.info("getPredictedIntent_list : Started " + str(cust_id))
+        if self.model == None: 
+            logging.info('Cant process as no Training ')
+            return
         
         lang = getCustomerModel().getLanguage(cust_id)
         X_in = X_in.apply(lambda x : self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True, tag_remove=True).strip().split())
@@ -123,6 +127,11 @@ class IntentExtractor_resp(object):
     # Work on Data Frame  
     def startTrainLogPrediction(self, cust_id):
         logging.info("startTrainLogPrediction : Started " + str(cust_id))
+        
+        if self.model == None: 
+            logging.info('Cant process as no Training ')
+            return
+        
         traindata = getTrainingModel()  
         ticketslearn  = tickets_learner()
         ticket_pd = ticketslearn.getTrainingData_DataFrame(cust_id) 
@@ -135,6 +144,10 @@ class IntentExtractor_resp(object):
         
     def getPredictedIntent_prob(self, X_in, cust_id): 
         logging.info("getPredictedIntent_prob : Started " + str(cust_id))
+        
+        if self.model == None: 
+            logging.info('Cant process as no Training ')
+            return
         
         lang = getCustomerModel().getLanguage(cust_id)
         X_in = X_in.apply(lambda x : self.utilclass.cleanData(x, lang=lang, lowercase=True, remove_stops=True, 
