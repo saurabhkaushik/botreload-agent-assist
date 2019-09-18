@@ -4,7 +4,8 @@ var past_ticket_data = {upload_ticket_data : [], upload_comment_data : [], ticke
 var article_data = {article_data : '', ticket_data : ''};
 var response_data = {server_response : ''};
 
-var SERVER_NAME = 'https://botreloadprod006.appspot.com';
+var SERVER_NAME = 'https://aaappsrv.botreload.com';
+//var SERVER_NAME = 'http://botreloadprod004.appspot.com';
 //var SERVER_NAME = 'https://botreloaddev004.appspot.com';
 
 var context;
@@ -157,7 +158,7 @@ function getResponseData() {
 	    function(response) {
 	      var msg = 'Error ' + response.status + ' ' + response.statusText;
 	      client.invoke('notify', msg, 'error');
-	      //console.log('getResponseData:' + msg);
+	      console.log('getResponseData:' + msg);
 	      showError()
 	    }
 	);

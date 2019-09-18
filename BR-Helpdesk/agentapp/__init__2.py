@@ -38,6 +38,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     # Configure logging
     if not app.testing:
         logging.basicConfig(level=logging.INFO)
+        
+    logging.getLogger().setLevel(logging.INFO)
 
     # Setup the data model.
     with app.app_context():
