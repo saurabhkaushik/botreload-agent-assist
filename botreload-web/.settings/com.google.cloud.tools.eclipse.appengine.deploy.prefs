@@ -1,6 +1,7 @@
 account.email=saurabh.kaushik.in@gmail.com
 eclipse.preferences.version=1
 include.optional.configuration.files=true
+project.allowObsoleteRuntime=false
 project.bucket=
 project.id=botreload-web
 project.previousVersion.stop=true
