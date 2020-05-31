@@ -12,8 +12,8 @@ import os
 #PROJECT_ID = 'botreloaddev004'
 
 # Production 4 
-STORAGE_BUCKET = 'botreloadprod006'
-PROJECT_ID = 'botreloadprod006'
+STORAGE_BUCKET = ''
+PROJECT_ID = ''
 
 # The secret key is used by Flask to encrypt session cookies.
 SECRET_KEY = 'secret'
