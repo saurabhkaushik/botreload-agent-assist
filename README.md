@@ -1,5 +1,5 @@
 # Botreload Agent Assist 
-
+[![LinkedIn][linkedin-shield]][linkedin-url] [![Twitter][twitter-shield]][twitter-url]
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -21,14 +21,14 @@
 * Automatically curates and generates Smart Replies for each business unit separately 
 
 ### Built With
-* [Python]()
-* [Scikit-learn]()
-* [NLTK]()
-* [Spacy]()
-* [Flask]()
-* [Node JS]()
-* [Google Cloud Datastore]()
-* [Google Cloud App Engin]()
+* [Python 3.7](https://www.python.org/)
+* [Scikit-learn](https://scikit-learn.org/stable/)
+* [NLTK](https://www.nltk.org/)
+* [Spacy](https://spacy.io/)
+* [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+* [Node JS](https://nodejs.org/en/)
+* [Google Cloud App Engine](https://cloud.google.com/appengine/)
+* [Google Cloud Datastore](https://cloud.google.com/datastore)
 * [Bootstrap](https://getbootstrap.com)
 * [JQuery](https://jquery.com)
 
@@ -64,7 +64,13 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Saurabh Kaushik - [@saurabhkaushik](https://twitter.com/saurabhkaushik) - support@botreload.com
-Saurabh Kaushik - [@saurabhkaushik](http://www.linkedin.com/in/saurabhkaushik) - saurabh.kaushik.in@gmail.com 
+Saurabh Kaushik @Twitter - [@saurabhkaushik](https://twitter.com/saurabhkaushik) 
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Saurabh Kaushik @LinkedIn - [@saurabhkaushik](http://www.linkedin.com/in/saurabhkaushik) 
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
+[linkedin-url]: http://www.linkedin.com/in/saurabhkaushik
+[twitter-shield]: https://img.shields.io/twitter/follow/saurabhkaushik?style=social
+[twitter-url]: https://twitter.com/saurabhkaushik 
