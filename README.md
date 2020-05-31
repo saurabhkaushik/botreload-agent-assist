@@ -20,6 +20,8 @@
 * Automatically curates and learns Intents of queries for each business unit seprately 
 * Automatically curates and generates Smart Replies for each business unit separately 
 
+More internal details are at medium article. [Developing Answer Bot for Customer Service](https://medium.com/@saurabhkaushik/developing-answer-bot-for-customer-service-41e8fda71a14)
+
 ### Built With
 * [Python 3.7](https://www.python.org/)
 * [Scikit-learn](https://scikit-learn.org/stable/)
