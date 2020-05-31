@@ -1,12 +1,13 @@
-# botreload-agent-assist
-Botreload Agent Assist 
+# Botreload Agent Assist 
 
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-[BotReload Agent Assist] (http://botreload.com/product_agentassist.html) is a Smart Reply Bot for Customer Support system which automatically identifies intent and entitites of incoming customer query and generates a reply using AI Tech (NLP / ML). This bot was launched on Zendesk in 2017, serving multiple clients with thousends of query per day. 
+<p align="center">
+<img src="http://botreload.com/img/AA-logo.jpg" alt=""
+	title="" width="150" height="150" align=center />
+</p>
+[BotReload Agent Assist](http://botreload.com/product_agentassist.html) is a Smart Reply Bot for Customer Support system which automatically identifies intent and entitites of incoming customer query and generates a reply using AI Tech (NLP / ML). This bot was launched on Zendesk in 2017, serving multiple clients with thousends of query per day. 
 
 Key Features: 
 * Suggest most Relevant Reply - Suggest quick and most relevant reply to customer query. Its algorithm is design based on Research paper published by Google.
