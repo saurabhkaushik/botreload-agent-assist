@@ -1,4 +1,4 @@
-# Botreload Agent Assist 
+# Answer Bot for Customer Service (Zendesk Marketplace)  
 [![LinkedIn][linkedin-shield]][linkedin-url] [![Twitter][twitter-shield]][twitter-url]
 
 <!-- ABOUT THE PROJECT -->
